@@ -5,8 +5,9 @@ from aiomysql import Pool, create_pool
 
 
 async def db_connection(running_loop: ProactorEventLoop, config: Config) -> tuple[Pool, _PoolAcquireContextManager]:
-
-    pool: Pool = create_pool(
+    global connection
+    
+    pool: Pool = await create_pool(
         loop=running_loop,
         host=config.db.host,
         port=config.db.port,
