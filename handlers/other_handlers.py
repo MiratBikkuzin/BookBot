@@ -8,5 +8,5 @@ router: Router = Router(name='OtherRouter')
 
 
 @router.message()
-async def echo(message: Message):
-    await message.answer(LEXICON_RU['other_text'])
+async def process_other(message: Message):
+    await message.answer(LEXICON_RU['other_text'] % message.text)
