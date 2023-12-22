@@ -13,10 +13,18 @@ async def db_connection(running_loop: ProactorEventLoop, config: Config) -> tupl
         port=config.db.port,
         db=config.db.name,
         user=config.db.user,
-        password=config.db.password
+        password=config.db.password,
+        autocommit=True
     )
 
     async with pool.acquire() as connection:
         pass
 
     return pool, connection
+
+
+async def execute_query(query: str, main_operand: str, *args: tuple) -> None:
+    async with connection.cursor() as cursor:
+        await cursor.execute(query, args)
+        if main_operand.lower() == 'select':
+            return await cursor.fetchone()
