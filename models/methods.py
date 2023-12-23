@@ -23,10 +23,10 @@ async def db_connection(running_loop: ProactorEventLoop, config: Config) -> tupl
     return pool, connection
 
 
-async def execute_query(query: str, main_operand: str, *args: tuple) -> None:
+async def execute_query(query: str, main_operand: str, *args: tuple) -> tuple | list[tuple]:
 
     async with connection.cursor() as cursor:
-        
+
         await cursor.execute(query, args)
 
         main_operand: str = main_operand.lower()
