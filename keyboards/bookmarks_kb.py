@@ -5,11 +5,11 @@ from aiogram.types import InlineKeyboardMarkup, InlineKeyboardButton
 from aiogram.utils.keyboard import InlineKeyboardBuilder
 
 
-def create_bookmarks_kb(*args: tuple[int]) -> InlineKeyboardMarkup:
+def create_bookmarks_kb(*bookmarks_pages: tuple[int]) -> InlineKeyboardMarkup:
 
     kb_builder: InlineKeyboardBuilder = InlineKeyboardBuilder()
 
-    for button in sorted(args):
+    for button in sorted(bookmarks_pages):
         kb_builder.row(InlineKeyboardButton(
             text=f'{button} - {book[button][:85]}',
             callback_data=str(button)
@@ -29,11 +29,11 @@ def create_bookmarks_kb(*args: tuple[int]) -> InlineKeyboardMarkup:
     return kb_builder.as_markup()
 
 
-def create_edit_kb(*args: tuple[int]) -> InlineKeyboardMarkup:
+def create_edit_kb(*bookmarks_pages: tuple[int]) -> InlineKeyboardMarkup:
 
     kb_builder: InlineKeyboardBuilder = InlineKeyboardBuilder()
 
-    for button in sorted(args):
+    for button in sorted(bookmarks_pages):
         kb_builder.row(InlineKeyboardButton(
             text=f'{LEXICON_RU['del']} {button} - {book[button][:85]}',
             callback_data=f'{button}del'
