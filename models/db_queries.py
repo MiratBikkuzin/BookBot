@@ -15,6 +15,6 @@ WHERE `user_id` = %s"""
 
 
 select_user_bookmarks_query: str = """
-SELECT `user_id`, `bookmark_page`
+SELECT `bookmark_page`
 FROM `user_bookmarks`
 WHERE `user_id` = %s"""
