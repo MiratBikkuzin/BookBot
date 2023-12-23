@@ -55,3 +55,19 @@ async def process_beginning_command(message: Message) -> None:
             'forward'
         )
     )
+
+
+@router.message(Command(commands='continue'))
+async def process_continue_command(message: Message) -> None:
+    
+    _, user_book_page = await execute_query(select_user_info_query, 'SELECT', message.from_user.id)
+    user_page_text: str = book[user_book_page]
+
+    await message.answer(
+        text=user_page_text,
+        reply_markup=create_pagination_kb(
+            'backward',
+            f'{user_book_page}/{len(book)}',
+            'forward'
+        )
+    )
