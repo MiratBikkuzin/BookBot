@@ -38,3 +38,20 @@ async def process_start_command(message: Message) -> None:
 @router.message(Command(commands='help'))
 async def process_help_command(message: Message) -> None:
     await message.answer(LEXICON_RU[message.text])
+
+
+@router.message(Command(commands='beginning'))
+async def process_beginning_command(message: Message) -> None:
+
+    user_book_page: int = 1
+    await execute_query(update_user_page_query, 'UPDATE', user_book_page)
+    user_page_text: str = book[user_book_page]
+
+    await message.answer(
+        text=user_page_text,
+        reply_markup=create_pagination_kb(
+            'backward',
+            f'{user_book_page}/{len(book)}',
+            'forward'
+        )
+    )
