@@ -24,7 +24,15 @@ async def db_connection(running_loop: ProactorEventLoop, config: Config) -> tupl
 
 
 async def execute_query(query: str, main_operand: str, *args: tuple) -> None:
+
     async with connection.cursor() as cursor:
+        
         await cursor.execute(query, args)
-        if main_operand.lower() == 'select':
+
+        main_operand: str = main_operand.lower()
+
+        if main_operand == 'select_one':
             return await cursor.fetchone()
+        
+        if main_operand == 'select_all':
+            return await cursor.fetchall()
