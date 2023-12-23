@@ -32,8 +32,9 @@ async def process_start_command(message: Message) -> None:
     if not await execute_query(select_user_info_query, 'SELECT_ONE', user_id):
         await execute_query(add_user_info_query, 'INSERT', user_id, 0)
         await message.answer(LEXICON_RU[message.text] % firstname)
-        
-    await message.answer(LEXICON_RU['reset_start'] % firstname)
+
+    else:
+        await message.answer(LEXICON_RU['reset_start'] % firstname)
 
 
 @router.message(Command(commands='help'))
