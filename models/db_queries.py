@@ -12,3 +12,9 @@ select_user_info_query: str = """
 SELECT `user_id`, `page`
 FROM `users_info`
 WHERE `user_id` = %s"""
+
+
+select_user_bookmarks_query: str = """
+SELECT `user_id`, `bookmark_page`
+FROM `user_bookmarks`
+WHERE `user_id` = %s"""
