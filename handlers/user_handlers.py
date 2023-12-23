@@ -17,6 +17,7 @@ from aiogram.types import (
     CallbackQuery,
     ChatMemberUpdated
 )
+from itertools import chain
 
 
 router: Router = Router(name='UserRouter')
@@ -71,3 +72,25 @@ async def process_continue_command(message: Message) -> None:
             'forward'
         )
     )
+
+
+@router.message(Command(commands='bookmarks'))
+async def process_bookmarks_command(message: Message) -> None:
+
+    if await execute_query(select_user_bookmarks_query, 'SELECT_ONE', message.from_user.id):
+
+        user_bookmarks: iter[int] = chain.from_iterable(
+            await execute_query(
+                select_user_bookmarks_query,
+                'SELECT_ALL',
+                message.from_user.id
+            )
+        )
+
+        await message.answer(
+            text=LEXICON_RU[message.text],
+            reply_markup=create_bookmarks_kb(*user_bookmarks)
+        )
+
+    else:
+        await message.answer(LEXICON_RU['no_bookmarks'])
