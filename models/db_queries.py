@@ -15,11 +15,11 @@ WHERE `user_id` = %s"""
 
 
 add_user_bookmark_query: str = """
-INSERT INTO `user_bookmarks` (`user_id`, `bookmark_page`)
+INSERT INTO `users_bookmarks` (`user_id`, `bookmark_page`)
 VALUES (%s, %s)"""
 
 
 select_user_bookmarks_query: str = """
 SELECT `bookmark_page`
-FROM `user_bookmarks`
+FROM `users_bookmarks`
 WHERE `user_id` = %s"""
