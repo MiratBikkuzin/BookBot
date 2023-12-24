@@ -170,3 +170,8 @@ async def process_page_backward(callback: CallbackQuery) -> None:
     )
 
 
+@router.callback_query(IsDigitCallbackData())
+async def process_bookmark_press(callback: CallbackQuery) -> None:
+    await callback.message.edit_text(book[int(callback.data)])
+
+
