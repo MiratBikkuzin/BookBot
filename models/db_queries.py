@@ -5,7 +5,8 @@ VALUES (%s, %s)"""
 
 update_user_page_query: str = """
 UPDATE `users_info`
-SET `page` = %s"""
+SET `page` = %s
+WHERE `user_id` = %s"""
 
 
 select_user_info_query: str = """
