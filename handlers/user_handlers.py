@@ -133,3 +133,21 @@ async def process_edit_bookmark(callback: CallbackQuery) -> None:
     )
 
 
+@router.callback_query(F.data == 'forward')
+async def process_page_forward(callback: CallbackQuery) -> None:
+
+    user_id, user_book_page = await execute_query(select_user_info_query, 'SELECT_ONE', callback.from_user.id)
+    user_book_page += 1
+
+    await execute_query(update_user_page_query, 'UPDATE',
+                        user_book_page, user_id)
+    await callback.message.edit_text(
+        text=book[user_book_page],
+        reply_markup=create_pagination_kb(
+            'backward',
+            f'{user_book_page}/{len(book)}',
+            'forward'
+        )
+    )
+
+
