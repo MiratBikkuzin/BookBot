@@ -27,5 +27,5 @@ WHERE `user_id` = %s"""
 
 
 del_user_bookmark_query: str = """
-DELETE `users_bookmarks`
+DELETE FROM `users_bookmarks`
 WHERE `user_id` = %s AND `bookmark_page` = %s"""
