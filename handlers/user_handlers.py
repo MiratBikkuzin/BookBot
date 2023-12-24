@@ -83,11 +83,9 @@ async def process_bookmarks_command(message: Message) -> None:
     if await execute_query(select_user_bookmarks_query, 'SELECT_ONE', message.from_user.id):
 
         user_bookmarks: iter[int] = chain.from_iterable(
-            await execute_query(
-                select_user_bookmarks_query,
-                'SELECT_ALL',
-                message.from_user.id
-            )
+            await execute_query(select_user_bookmarks_query,
+                                'SELECT_ALL',
+                                message.from_user.id)
         )
 
         await message.answer(
@@ -102,9 +100,15 @@ async def process_bookmarks_command(message: Message) -> None:
 @router.callback_query(IsAddBookmarkCallbackData())
 async def process_add_bookmark(callback: CallbackQuery, bookmark_page: int) -> None:
 
-    if not await execute_query(select_user_bookmarks_query, 'SELECT_ALL', callback.from_user.id):
+    user_bookmarks: iter[int] = chain.from_iterable(
+        await execute_query(select_user_bookmarks_query,
+                            'SELECT_ALL',
+                            callback.from_user.id)
+    )
+
+    if bookmark_page not in user_bookmarks:
         await execute_query(add_user_bookmark_query, 'INSERT',
-                        callback.from_user.id, bookmark_page)
+                            callback.from_user.id, bookmark_page)
         await callback.answer('Страница добавлена в закладки!')
 
     else:
@@ -118,11 +122,9 @@ async def process_add_bookmark(callback: CallbackQuery, bookmark_page: int) -> N
 async def process_edit_bookmark(callback: CallbackQuery) -> None:
     
     user_bookmarks: iter[int] = chain.from_iterable(
-        await execute_query(
-            select_user_bookmarks_query,
-            'SELECT_ALL',
-            callback.from_user.id
-        )
+        await execute_query(select_user_bookmarks_query,
+                            'SELECT_ALL',
+                            callback.from_user.id)
     )
 
     await callback.message.edit_text(
