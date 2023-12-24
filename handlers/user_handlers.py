@@ -173,3 +173,29 @@ async def process_edit_bookmark(callback: CallbackQuery) -> None:
         text=LEXICON_RU['edit_bookmarks'],
         reply_markup=create_edit_kb(*user_bookmarks)
     )
+
+
+@router.callback_query(IsDelBookmarkCallbackData())
+async def process_del_bookmark_press(callback: CallbackQuery, del_bookmark_page: int) -> None:
+
+    user_id: int = callback.from_user.id
+    
+    await execute_query(del_user_bookmark_query, 'DELETE',
+                        user_id, del_bookmark_page)
+    
+    user_bookmarks: tuple[int] = tuple(chain.from_iterable(
+        await execute_query(select_user_bookmarks_query,
+                            'SELECT_ALL',
+                            user_id)
+    ))
+
+    if user_bookmarks:
+        await callback.message.edit_text(
+            text=LEXICON_RU['/bookmarks'],
+            reply_markup=create_bookmarks_kb(*user_bookmarks)
+        )
+
+    else:
+        await callback.message.edit_text(LEXICON_RU['no_bookmarks'])
+
+
