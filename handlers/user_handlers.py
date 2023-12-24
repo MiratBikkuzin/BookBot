@@ -103,8 +103,16 @@ async def process_bookmarks_command(message: Message) -> None:
 
 @router.callback_query(IsAddBookmarkCallbackData())
 async def process_add_bookmark(callback: CallbackQuery, bookmark_page: int) -> None:
-    await execute_query(add_user_bookmark_query, 'INSERT',
+
+    if not await execute_query(select_user_bookmarks_query, 'SELECT_ALL', callback.from_user.id):
+        await execute_query(add_user_bookmark_query, 'INSERT',
                         callback.from_user.id, bookmark_page)
-    await callback.answer('Страница добавлена в закладки!')
+        await callback.answer('Страница добавлена в закладки!')
+
+    else:
+        await callback.answer(
+            text='Страница уже есть в ваших закладках',
+            show_alert=True
+        )
 
 
