@@ -16,4 +16,6 @@ class IsDigitCallbackData(BaseFilter):
 
 class IsDelBookmarkCallbackData(BaseFilter):
     async def __call__(self, callback: CallbackQuery) -> bool:
-        return callback.data.endswith('del') and callback.data[:-3].isdigit()
+        callback_data: str = callback.data
+        if callback_data.endswith('del') and callback_data[:-3].isdigit():
+            return {'del_bookmark_page': int(callback_data[:-3])}
