@@ -51,10 +51,9 @@ async def process_beginning_command(message: Message) -> None:
 
     user_book_page: int = 1
     await execute_query(update_user_page_query, 'UPDATE', user_book_page)
-    user_page_text: str = book[user_book_page]
 
     await message.answer(
-        text=user_page_text,
+        text=book[user_book_page],
         reply_markup=create_pagination_kb(
             'backward',
             f'{user_book_page}/{len(book)}',
@@ -67,10 +66,9 @@ async def process_beginning_command(message: Message) -> None:
 async def process_continue_command(message: Message) -> None:
     
     _, user_book_page = await execute_query(select_user_info_query, 'SELECT_ONE', message.from_user.id)
-    user_page_text: str = book[user_book_page]
 
     await message.answer(
-        text=user_page_text,
+        text=book[user_book_page],
         reply_markup=create_pagination_kb(
             'backward',
             f'{user_book_page}/{len(book)}',
