@@ -199,3 +199,6 @@ async def process_del_bookmark_press(callback: CallbackQuery, del_bookmark_page:
         await callback.message.edit_text(LEXICON_RU['no_bookmarks'])
 
 
+@router.callback_query(F.data == 'cancel')
+async def process_cancel_press(callback: CallbackQuery) -> None:
+    await callback.message.edit_text(LEXICON_RU['cancel_text'])
