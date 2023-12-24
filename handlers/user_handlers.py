@@ -55,11 +55,7 @@ async def process_beginning_command(message: Message) -> None:
 
     await message.answer(
         text=book[user_book_page],
-        reply_markup=create_pagination_kb(
-            'backward',
-            f'{user_book_page}/{len(book)}',
-            'forward'
-        )
+        reply_markup=create_pagination_kb()
     )
 
 
@@ -70,11 +66,7 @@ async def process_continue_command(message: Message) -> None:
 
     await message.answer(
         text=book[user_book_page],
-        reply_markup=create_pagination_kb(
-            'backward',
-            f'{user_book_page}/{len(book)}',
-            'forward'
-        )
+        reply_markup=create_pagination_kb(user_book_page)
     )
 
 
@@ -129,11 +121,7 @@ async def process_page_forward(callback: CallbackQuery) -> None:
                         user_book_page, user_id)
     await callback.message.edit_text(
         text=book[user_book_page],
-        reply_markup=create_pagination_kb(
-            'backward',
-            f'{user_book_page}/{len(book)}',
-            'forward'
-        )
+        reply_markup=create_pagination_kb(user_book_page)
     )
 
 
@@ -148,11 +136,7 @@ async def process_page_backward(callback: CallbackQuery) -> None:
                         user_book_page, user_id)
     await callback.message.edit_text(
         text=book[user_book_page],
-        reply_markup=create_pagination_kb(
-            'backward',
-            f'{user_book_page}/{len(book)}',
-            'forward'
-        )
+        reply_markup=create_pagination_kb(user_book_page)
     )
 
 
