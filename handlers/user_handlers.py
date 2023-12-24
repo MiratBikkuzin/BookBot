@@ -50,7 +50,8 @@ async def process_help_command(message: Message) -> None:
 async def process_beginning_command(message: Message) -> None:
 
     user_book_page: int = 1
-    await execute_query(update_user_page_query, 'UPDATE', user_book_page)
+    await execute_query(update_user_page_query, 'UPDATE',
+                        user_book_page, message.from_user.id)
 
     await message.answer(
         text=book[user_book_page],
