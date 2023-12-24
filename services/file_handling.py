@@ -25,7 +25,7 @@ def prepare_book(path: str) -> None:
     while start < len(book_text):
         part_text, part_size = _get_part_text(book_text, start, PAGE_SIZE)
         book[page_num] = part_text
-        start += part_size
+        start += part_size + 1
         page_num += 1
 
 
