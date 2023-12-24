@@ -4,7 +4,11 @@ from lexicon.lexicon import LEXICON_RU
 from models.db_queries import *
 from models.methods import execute_query
 from services.file_handling import book
-from filters.filters import IsDigitCallbackData, IsDelBookmarkCallbackData
+from filters.filters import (
+    IsAddBookmarkCallbackData,
+    IsDigitCallbackData,
+    IsDelBookmarkCallbackData
+)
 
 from aiogram import Router, F
 from aiogram.filters import (
@@ -95,3 +99,12 @@ async def process_bookmarks_command(message: Message) -> None:
 
     else:
         await message.answer(LEXICON_RU['no_bookmarks'])
+
+
+@router.callback_query(IsAddBookmarkCallbackData())
+async def process_add_bookmark(callback: CallbackQuery, bookmark_page: int) -> None:
+    await execute_query(add_user_bookmark_query, 'INSERT',
+                        callback.from_user.id, bookmark_page)
+    await callback.answer('Страница добавлена в закладки!')
+
+
