@@ -4,7 +4,7 @@ import logging
 from config_data.config import Config, load_config
 from db.methods import db_connection
 from keyboards.main_menu import set_main_menu
-from handlers import user_handlers, other_handlers
+from handlers import start_handlers, book_handlers, bookmark_handlers, other_handlers
 
 from aiogram import Bot, Dispatcher
 
@@ -29,8 +29,12 @@ async def main() -> None:
 
     await set_main_menu(bot)
 
-    dp.include_router(user_handlers.router)
-    dp.include_router(other_handlers.router)
+    dp.include_routers(
+        start_handlers.router,
+        book_handlers.router,
+        bookmark_handlers.router,
+        other_handlers.router
+    )
 
     pool, connection = await db_connection(running_loop=asyncio.get_running_loop(),
                                            config=config)
