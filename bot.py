@@ -2,7 +2,7 @@ import asyncio
 import logging
 
 from config_data.config import Config, load_config
-from models.methods import db_connection
+from db.methods import db_connection
 from keyboards.main_menu import set_main_menu
 from handlers import user_handlers, other_handlers
 
