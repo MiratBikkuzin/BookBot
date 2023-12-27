@@ -7,7 +7,7 @@ from filters.filters import (
 )
 from services.file_handling import book
 from lexicon.lexicon import LEXICON_RU
-from keyboards.bookmarks_kb import create_bookmarks_kb, create_edit_kb
+from keyboards.bookmarks_kb import BookmarkFactory
 
 from aiogram import Router, F
 from aiogram.filters import Command
@@ -31,7 +31,7 @@ async def process_bookmarks_command(message: Message) -> None:
 
         await message.answer(
             text=LEXICON_RU[message.text],
-            reply_markup=create_bookmarks_kb(*user_bookmarks)
+            reply_markup=BookmarkFactory.create_bookmarks_kb(*user_bookmarks)
         )
 
     else:
@@ -75,7 +75,7 @@ async def process_edit_bookmark(callback: CallbackQuery) -> None:
 
     await callback.message.edit_text(
         text=LEXICON_RU['edit_bookmarks'],
-        reply_markup=create_edit_kb(*user_bookmarks)
+        reply_markup=BookmarkFactory.create_edit_kb(*user_bookmarks)
     )
 
 
@@ -96,7 +96,7 @@ async def process_del_bookmark_press(callback: CallbackQuery, del_bookmark_page:
     if user_bookmarks:
         await callback.message.edit_text(
             text=LEXICON_RU['/bookmarks'],
-            reply_markup=create_bookmarks_kb(*user_bookmarks)
+            reply_markup=BookmarkFactory.create_bookmarks_kb(*user_bookmarks)
         )
 
     else:
