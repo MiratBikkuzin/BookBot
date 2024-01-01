@@ -8,7 +8,7 @@ from aiogram.utils.keyboard import InlineKeyboardBuilder
 class BookmarkFactory:
 
     @staticmethod
-    def create_bookmarks_kb(*bookmarks_pages: tuple[int]) -> InlineKeyboardMarkup:
+    def create_bookmarks_kb(bookmarks_pages: tuple[int]) -> InlineKeyboardMarkup:
 
         kb_builder: InlineKeyboardBuilder = InlineKeyboardBuilder()
 
@@ -32,7 +32,7 @@ class BookmarkFactory:
         return kb_builder.as_markup()
     
     @staticmethod
-    def create_edit_kb(*bookmarks_pages: tuple[int]) -> InlineKeyboardMarkup:
+    def create_edit_kb(bookmarks_pages: tuple[int]) -> InlineKeyboardMarkup:
 
         kb_builder: InlineKeyboardBuilder = InlineKeyboardBuilder()
 
