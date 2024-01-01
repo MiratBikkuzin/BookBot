@@ -48,3 +48,13 @@ class BookmarkFactory:
             ))
 
         return kb_builder.as_markup()
+    
+    @staticmethod
+    def back_from_bookmark() -> InlineKeyboardMarkup:
+        
+        back_button: InlineKeyboardButton = InlineKeyboardButton(
+            text=LEXICON_RU['back_bookmark_button'],
+            callback_data='back_fr_bookmark'
+        )
+
+        return InlineKeyboardMarkup(inline_keyboard=[[back_button]])
