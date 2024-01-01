@@ -63,7 +63,7 @@ async def process_add_bookmark(callback: CallbackQuery, bookmark_page: int) -> N
 async def process_bookmark_press(callback: CallbackQuery) -> None:
     await callback.message.edit_text(
         text=book[int(callback.data)],
-        reply_markup=BookmarkFactory.back_from_bookmark()
+        reply_markup=BookmarkFactory.back_from_bookmark_kb()
     )
 
 
