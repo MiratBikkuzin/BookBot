@@ -53,7 +53,7 @@ class BookmarkFactory:
     def back_from_bookmark_kb() -> InlineKeyboardMarkup:
         
         back_button: InlineKeyboardButton = InlineKeyboardButton(
-            text=LEXICON_RU['back_bookmark'],
+            text=LEXICON_RU['back_bookmark_button'],
             callback_data='back_bookmark'
         )
 
