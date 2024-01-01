@@ -61,7 +61,10 @@ async def process_add_bookmark(callback: CallbackQuery, bookmark_page: int) -> N
 
 @router.callback_query(IsDigitCallbackData())
 async def process_bookmark_press(callback: CallbackQuery) -> None:
-    await callback.message.edit_text(book[int(callback.data)])
+    await callback.message.edit_text(
+        text=book[int(callback.data)],
+        reply_markup=BookmarkFactory.back_from_bookmark()
+    )
 
 
 @router.callback_query(F.data == 'edit_bookmarks')
