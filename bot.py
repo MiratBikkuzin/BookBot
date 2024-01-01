@@ -3,8 +3,7 @@ import logging
 
 from config_data.config import Config, load_config
 from db.methods import db_connection
-from handlers.user_handlers import (start_handlers, book_handlers,
-                                    bookmark_handlers, other_handlers)
+from handlers import *
 from keyboards.main_menu import set_main_menu
 
 from aiogram import Bot, Dispatcher
