@@ -23,7 +23,7 @@ async def process_bookmarks_command(message: Message) -> None:
 
     user_id: int = message.from_user.id
 
-    if await execute_query(select_user_bookmarks_query, 'SELECT_ONE', user_id):
+    if await execute_query(user_bookmarks_query, 'SELECT_ONE', user_id):
         await message.answer(
             text=LEXICON_RU[message.text],
             reply_markup=BookmarkFactory.create_bookmarks_kb(await get_user_bookmarks(user_id))
@@ -39,7 +39,7 @@ async def process_add_bookmark(callback: CallbackQuery, bookmark_page: int) -> N
     user_id: int = callback.from_user.id
 
     if bookmark_page not in await get_user_bookmarks(user_id):
-        await execute_query(add_user_bookmark_query, 'INSERT',
+        await execute_query(add_user_bookmark, 'INSERT',
                             user_id, bookmark_page)
         await callback.answer('Страница добавлена в закладки!')
 
@@ -79,7 +79,7 @@ async def process_del_bookmark_press(callback: CallbackQuery, del_bookmark_page:
 
     user_id: int = callback.from_user.id
     
-    await execute_query(del_user_bookmark_query, 'DELETE',
+    await execute_query(del_user_bookmark, 'DELETE',
                         user_id, del_bookmark_page)
     user_bookmarks: tuple[int] = await get_user_bookmarks(user_id)
 

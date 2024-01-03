@@ -16,8 +16,8 @@ async def process_start_command(message: Message) -> None:
     user_id: int = message.from_user.id
     firstname: str = message.from_user.first_name
 
-    if not await execute_query(select_user_info_query, 'SELECT_ONE', user_id):
-        await execute_query(add_user_info_query, 'INSERT', user_id, 0)
+    if not await execute_query(user_info_query, 'SELECT_ONE', user_id):
+        await execute_query(add_user_info, 'INSERT', user_id, 0)
         await message.answer(LEXICON_RU[message.text] % firstname)
 
     else:

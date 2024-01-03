@@ -15,7 +15,7 @@ router: Router = Router(name=__name__)
 async def process_beginning_command(message: Message) -> None:
 
     user_book_page: int = 1
-    await execute_query(update_user_page_query, 'UPDATE',
+    await execute_query(update_user_page, 'UPDATE',
                         user_book_page, message.from_user.id)
 
     await message.answer(
@@ -27,7 +27,7 @@ async def process_beginning_command(message: Message) -> None:
 @router.message(Command(commands='continue'))
 async def process_continue_command(message: Message) -> None:
     
-    _, user_book_page = await execute_query(select_user_info_query, 'SELECT_ONE', message.from_user.id)
+    _, user_book_page = await execute_query(user_info_query, 'SELECT_ONE', message.from_user.id)
 
     await message.answer(
         text=book[user_book_page],
@@ -38,10 +38,10 @@ async def process_continue_command(message: Message) -> None:
 @router.callback_query(F.data.in_(('forward', 'backward')))
 async def process_page_turning(callback: CallbackQuery) -> None:
 
-    user_id, user_book_page = await execute_query(select_user_info_query, 'SELECT_ONE', callback.from_user.id)
+    user_id, user_book_page = await execute_query(user_info_query, 'SELECT_ONE', callback.from_user.id)
     user_book_page += -1 if callback.data == 'backward' else 1
 
-    await execute_query(update_user_page_query, 'UPDATE',
+    await execute_query(update_user_page, 'UPDATE',
                         user_book_page, user_id)
     await callback.message.edit_text(
         text=book[user_book_page],
