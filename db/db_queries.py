@@ -32,11 +32,16 @@ WHERE `user_id` = %s AND `bookmark_page` = %s"""
 
 
 add_admin_books: str = """
-INSERT INTO `admin_books` (`file_tg_id`)
-VALUES (%s)"""
+INSERT INTO `admin_books` (`file_tg_id`, `book_name`)
+VALUES (%s, %s)"""
 
 
 admin_books_query: str = """
-SELECT `file_tg_id`
+SELECT `file_tg_id`, `book_name`
 FROM `admin_books`
 WHERE `admin_book_id` = %s"""
+
+
+admin_books_count_query: str = """
+SELECT COUNT(`admin_book_id`)
+FROM `admin_books`"""
