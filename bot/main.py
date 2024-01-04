@@ -12,7 +12,7 @@ from aiogram import Bot, Dispatcher
 logger = logging.getLogger(__name__)
 
 
-async def main() -> None:
+async def start_bot() -> None:
 
     logging.basicConfig(
         level=logging.INFO,
@@ -48,4 +48,4 @@ async def main() -> None:
 
 
 if __name__ == '__main__':
-    asyncio.run(main())
+    asyncio.run(start_bot())
