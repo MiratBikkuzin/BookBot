@@ -29,3 +29,14 @@ WHERE `user_id` = %s"""
 del_user_bookmark: str = """
 DELETE FROM `users_bookmarks`
 WHERE `user_id` = %s AND `bookmark_page` = %s"""
+
+
+add_admin_books: str = """
+INSERT INTO `admin_books` (`file_tg_id`)
+VALUES (%s)"""
+
+
+admin_books_query: str = """
+SELECT `file_tg_id`
+FROM `admin_books`
+WHERE `admin_book_id` = %s"""
