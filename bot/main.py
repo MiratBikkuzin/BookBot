@@ -3,7 +3,8 @@ import logging
 
 from config_data.config import Config, load_config
 from db.methods import db_connection
-from handlers import *
+from handlers import (start_handlers, book_handlers, bookmark_handlers,
+                      admin_book_handlers, other_handlers)
 from keyboards.main_menu import set_main_menu
 
 from aiogram import Bot, Dispatcher
@@ -34,6 +35,7 @@ async def start_bot() -> None:
         start_handlers.router,
         book_handlers.router,
         bookmark_handlers.router,
+        admin_book_handlers.router,
         other_handlers.router
     )
 
