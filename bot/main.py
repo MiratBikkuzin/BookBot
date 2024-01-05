@@ -7,6 +7,7 @@ from handlers import *
 from keyboards.main_menu import set_main_menu
 
 from aiogram import Bot, Dispatcher
+from aiogram.fsm.storage.memory import MemoryStorage
 
 
 logger = logging.getLogger(__name__)
@@ -25,7 +26,7 @@ async def start_bot() -> None:
     config: Config = load_config()
     bot: Bot = Bot(token=config.tg_bot.bot_token,
                    parse_mode='HTML')
-    dp: Dispatcher = Dispatcher()
+    dp: Dispatcher = Dispatcher(storage=MemoryStorage())
 
     await set_main_menu(bot)
 
