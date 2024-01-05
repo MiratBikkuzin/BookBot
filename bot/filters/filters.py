@@ -9,10 +9,11 @@ class IsAdmin(BaseFilter):
         return message.from_user.id in load_config().tg_bot.admin_ids
     
 
-class IsCorrectDocumentFormat(BaseFilter):
+class IsCorrectAdminBook(BaseFilter):
     async def __call__(self, message: Message) -> bool | None:
-        if message.document:
-            return message.document.file_name.split('.')[-1] in ('fb2', 'txt')
+        if message.document and message.caption:
+            if message.document.file_name.split('.')[-1] in ('fb2', 'txt'):
+                return {'book_file_id': message.document.file_id, 'book_title': message.caption}
 
 
 class IsAddBookmarkCallbackData(BaseFilter):
