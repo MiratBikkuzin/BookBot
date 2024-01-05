@@ -18,7 +18,6 @@ def _get_part_text(text: str, start: int, size: int) -> tuple[str, int]:
 def prepare_book(byte_book_text: io.BytesIO, book_name: str) -> None:
 
     book_text: str = byte_book_text.read().decode('utf-8').replace('\n\n', '\n')
-    book[book_name] = {}
 
     start, page_num = 0, 1
 
