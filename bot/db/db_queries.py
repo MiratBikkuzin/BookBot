@@ -32,7 +32,7 @@ WHERE `user_id` = %s AND `bookmark_page` = %s"""
 
 
 add_admin_books: str = """
-INSERT INTO `admin_books` (`file_tg_id`, `book_name`)
+INSERT INTO `admin_books` (`file_tg_id`, `book_title`)
 VALUES (%s, %s)"""
 
 
