@@ -1,43 +1,28 @@
-from environs import Env
-from dataclasses import dataclass
+from pydantic_settings import BaseSettings, SettingsConfigDict
 
 
-@dataclass
-class TgBot:
-    bot_token: str
-    admin_ids: list[int]
+class Settings(BaseSettings):
+    BOT_TOKEN: str
+    ADMIN_IDS: str
+    DB_HOST: str
+    DB_PORT: int
+    DB_NAME: str
+    DB_USER: str
+    DB_PASSWORD: str
+
+    @property
+    def bot_token(self) -> str:
+        return self.BOT_TOKEN
+    
+    @property
+    def admin_ids(self) -> list[int]:
+        return list(map(int, self.ADMIN_IDS.split(',')))
+    
+    @property
+    def database_url(self) -> str:
+        return f"postgresql+asyncpg://{self.DB_USER}:{self.DB_PASSWORD}@{self.DB_HOST}:{self.DB_PORT}/{self.DB_NAME}"
+    
+    model_config = SettingsConfigDict(env_file='.env')
 
 
-@dataclass
-class DatabaseConfig:
-    host: str
-    port: int
-    name: str
-    user: str
-    password: str
-
-
-@dataclass
-class Config:
-    tg_bot: TgBot
-    db: DatabaseConfig
-
-
-def load_config(path: str | None = None) -> Config:
-
-    env: Env = Env()
-    env.read_env(path)
-
-    return Config(
-        tg_bot=TgBot(
-            bot_token=env('BOT_TOKEN'),
-            admin_ids=list(map(int, env.list('ADMIN_IDS')))
-        ),
-        db=DatabaseConfig(
-            host=env('DB_HOST'),
-            port=env.int('DB_PORT'),
-            name=env('DATABASE'),
-            user=env('DB_USER'),
-            password=env('DB_PASSWORD')
-        )
-    )
+settings: Settings = Settings()
