@@ -31,5 +31,5 @@ class AdminBooksTable(Base):
     id: intpk
     admin_username: Mapped[str]
 
-    admin_book_id: Mapped[str]
+    file_tg_id: Mapped[str]
     book_title: Mapped[str]
