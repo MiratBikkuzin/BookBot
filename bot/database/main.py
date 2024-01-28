@@ -1,10 +1,13 @@
+from typing import Final
+
 from config_data.config import settings
 
 from sqlalchemy.ext.asyncio import async_sessionmaker, create_async_engine, AsyncEngine, AsyncSession
-from sqlalchemy.orm import DeclarativeBase
+from sqlalchemy.orm import declarative_base
 
 
-class Base(DeclarativeBase):
+class Database:
+    BASE: Final = declarative_base()
 
     def __init__(self) -> None:
         self.__engine = create_async_engine(settings.database_url)
