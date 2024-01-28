@@ -1,8 +1,8 @@
 import asyncio
 import logging
 
-from config_data.config import Config, load_config
-from db.methods import db_connection
+from config_data.config import settings
+from database.models import register_models
 from handlers import (start_handlers, book_handlers, bookmark_handlers,
                       admin_book_handlers, other_handlers)
 from keyboards.main_menu import set_main_menu
@@ -24,12 +24,9 @@ async def start_bot() -> None:
 
     logger.info('Starting bot')
 
-    config: Config = load_config()
-    bot: Bot = Bot(token=config.tg_bot.bot_token,
+    bot: Bot = Bot(token=settings.bot_token,
                    parse_mode='HTML')
     dp: Dispatcher = Dispatcher(storage=MemoryStorage())
-
-    await set_main_menu(bot)
 
     dp.include_routers(
         start_handlers.router,
@@ -39,15 +36,11 @@ async def start_bot() -> None:
         other_handlers.router
     )
 
-    pool, connection = await db_connection(running_loop=asyncio.get_running_loop(),
-                                           config=config)
+    await set_main_menu(bot)
+    await register_models()
     
-    async with connection:
-        await bot.delete_webhook(drop_pending_updates=True)
-        await dp.start_polling(bot)
-
-    pool.close()
-    await pool.wait_closed()
+    await bot.delete_webhook(drop_pending_updates=True)
+    await dp.start_polling(bot)
 
 
 if __name__ == '__main__':
