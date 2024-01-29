@@ -1,12 +1,12 @@
-from db.db_queries import *
-from db.methods import execute_query
+from database.methods.create import add_user_bookmark
+from database.methods.delete import del_user_bookmark
 from filters.filters import (
     IsAddBookmarkCallbackData,
     IsDigitCallbackData,
     IsDelBookmarkCallbackData
 )
 from services.file_handling import book
-from services.bookmark_handling import get_user_bookmarks
+from services.bookmark_handling import get_user_bookmarks_tuple
 from lexicon.lexicon import LEXICON_RU
 from keyboards.bookmarks_kb import BookmarkFactory
 
@@ -23,10 +23,10 @@ async def process_bookmarks_command(message: Message) -> None:
 
     user_id: int = message.from_user.id
 
-    if await execute_query(user_bookmarks_query, 'SELECT_ONE', user_id):
+    if await get_user_bookmarks_tuple(user_id=user_id):
         await message.answer(
             text=LEXICON_RU[message.text],
-            reply_markup=BookmarkFactory.create_bookmarks_kb(await get_user_bookmarks(user_id))
+            reply_markup=BookmarkFactory.create_bookmarks_kb(await get_user_bookmarks_tuple(user_id=user_id))
         )
 
     else:
@@ -38,9 +38,8 @@ async def process_add_bookmark(callback: CallbackQuery, bookmark_page: int) -> N
 
     user_id: int = callback.from_user.id
 
-    if bookmark_page not in await get_user_bookmarks(user_id):
-        await execute_query(add_user_bookmark, 'INSERT',
-                            user_id, bookmark_page)
+    if bookmark_page not in await get_user_bookmarks_tuple(user_id=user_id):
+        await add_user_bookmark(user_id=user_id, bookmark_page=bookmark_page)
         await callback.answer('Страница добавлена в закладки!')
 
     else:
@@ -62,7 +61,7 @@ async def process_bookmark_press(callback: CallbackQuery) -> None:
 async def process_back_bookmark_press(callback: CallbackQuery):
     await callback.message.edit_text(
         text=LEXICON_RU['/bookmarks'],
-        reply_markup=BookmarkFactory.create_bookmarks_kb(await get_user_bookmarks(callback.from_user.id))
+        reply_markup=BookmarkFactory.create_bookmarks_kb(await get_user_bookmarks_tuple(user_id=callback.from_user.id))
     )
     
 
@@ -70,7 +69,7 @@ async def process_back_bookmark_press(callback: CallbackQuery):
 async def process_edit_bookmark(callback: CallbackQuery) -> None:
     await callback.message.edit_text(
         text=LEXICON_RU['edit_bookmarks'],
-        reply_markup=BookmarkFactory.create_edit_kb(await get_user_bookmarks(callback.from_user.id))
+        reply_markup=BookmarkFactory.create_edit_kb(await get_user_bookmarks_tuple(user_id=callback.from_user.id))
     )
 
 
@@ -79,9 +78,9 @@ async def process_del_bookmark_press(callback: CallbackQuery, del_bookmark_page:
 
     user_id: int = callback.from_user.id
     
-    await execute_query(del_user_bookmark, 'DELETE',
-                        user_id, del_bookmark_page)
-    user_bookmarks: tuple[int] = await get_user_bookmarks(user_id)
+    await del_user_bookmark(user_id=user_id, bookmark_page=del_bookmark_page)
+
+    user_bookmarks: tuple[int] = await get_user_bookmarks_tuple(user_id=user_id)
 
     if user_bookmarks:
         await callback.message.edit_text(

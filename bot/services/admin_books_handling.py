@@ -1,2 +1,2 @@
-from db.db_queries import add_admin_books, admin_books_query, admin_books_count_query
-from db.methods import execute_query
+from database.methods.create import add_admin_books
+from database.methods.get import get_admin_books, get_count_admin_books

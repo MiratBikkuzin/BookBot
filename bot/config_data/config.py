@@ -9,6 +9,7 @@ class Settings(BaseSettings):
     DB_NAME: str
     DB_USER: str
     DB_PASSWORD: str
+    DB_SCHEMA: str
 
     @property
     def bot_token(self) -> str:
@@ -21,6 +22,10 @@ class Settings(BaseSettings):
     @property
     def database_url(self) -> str:
         return f"postgresql+asyncpg://{self.DB_USER}:{self.DB_PASSWORD}@{self.DB_HOST}:{self.DB_PORT}/{self.DB_NAME}"
+    
+    @property
+    def database_schema(self) -> str:
+        return self.DB_SCHEMA
     
     model_config = SettingsConfigDict(env_file='.env')
 

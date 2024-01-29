@@ -1,5 +1,4 @@
-from db.db_queries import add_admin_books
-from db.methods import execute_query
+from database.methods.create import add_admin_books
 from filters.filters import IsAdmin, IsCorrectAdminBook
 from states.states import FSMAdminBook, default_state
 from services.file_handling import prepare_book
@@ -31,7 +30,7 @@ async def admin_send_book(message: Message, bot: Bot, book_file_id: str,
     
     if prepare_book(await bot.download(book_file_id), book_title):
         await message.answer(text=LEXICON_RU['wait_admin_book_download'])
-        await execute_query(add_admin_books, 'INSERT', book_file_id, book_title)
+        await add_admin_books(admin_username=message.from_user.username, file_tg_id=book_file_id, book_title=book_title)
         await message.answer(text=LEXICON_RU['admin_book_download_end'])
         await state.clear()
 

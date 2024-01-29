@@ -14,9 +14,9 @@ async def add_user_bookmark(user_id: int, bookmark_page: int) -> None:
         await session.commit()
 
 
-async def add_admin_books(admin_username: str, admin_book_id: str, book_title: str) -> None:
+async def add_admin_books(admin_username: str, file_tg_id: str, book_title: str) -> None:
     async with Database().session as session:
         session.add(AdminBooksTable(admin_username=admin_username,
-                                    admin_book_id=admin_book_id,
+                                    file_tg_id=file_tg_id,
                                     book_title=book_title))
         await session.commit()

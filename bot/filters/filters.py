@@ -1,4 +1,4 @@
-from config_data.config import load_config
+from config_data.config import settings
 
 from aiogram.filters import BaseFilter
 from aiogram.types import Message, CallbackQuery
@@ -6,7 +6,7 @@ from aiogram.types import Message, CallbackQuery
 
 class IsAdmin(BaseFilter):
     async def __call__(self, message: Message) -> bool:
-        return message.from_user.id in load_config().tg_bot.admin_ids
+        return message.from_user.id in settings.admin_ids
     
 
 class IsCorrectAdminBook(BaseFilter):

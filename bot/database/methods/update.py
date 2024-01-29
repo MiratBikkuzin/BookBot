@@ -9,7 +9,7 @@ async def update_user_page(new_page: int, user_id: int) -> None:
         stmt = (
             update(UsersTable)
             .values(page=new_page)
-            .where(UsersTable.c.user_id == user_id)
+            .where(UsersTable.user_id == user_id)
         )
         await session.execute(stmt)
         await session.commit()

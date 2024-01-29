@@ -38,7 +38,7 @@ class BookmarkFactory:
 
         for button in sorted(bookmarks_pages):
             kb_builder.row(InlineKeyboardButton(
-                text=f'{LEXICON_RU['del']} {button} - {book[button][:85]}',
+                text=f"{LEXICON_RU['del']} {button} - {book[button][:85]}",
                 callback_data=f'{button}del'
             ))
 
