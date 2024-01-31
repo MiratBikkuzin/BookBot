@@ -43,3 +43,8 @@ async def unload_book_s3(book_title: str, user_tg_id: int, is_admin: bool = Fals
             return json.loads(await stream.read())
         
 
+async def delete_book_s3(book_title: str, user_tg_id: int, is_admin: bool = False) -> bool:
+    async with settings.s3_client as s3:
+        s3: S3Client
+        key: str = _get_s3_book_key(book_title, user_tg_id, is_admin)
+        await s3.delete_object(Bucket=settings.s3_bucket, Key=key)
