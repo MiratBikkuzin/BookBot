@@ -1,22 +1,26 @@
-from database.models import UsersTable, BookmarksTable, AdminBooksTable
+from database.models import UsersTable, BookmarksTable, AdminBooksTable, UserBooksTable
 from database.main import Database
 
 
-async def add_user_info(user_id: int, page: int) -> None:
+async def add_user_info(user_id: int) -> None:
     async with Database().session as session:
-        session.add(UsersTable(user_id=user_id, page=page))
+        session.add(UsersTable(user_id=user_id))
         await session.commit()
 
 
-async def add_user_bookmark(user_id: int, bookmark_page: int) -> None:
+async def add_user_bookmark(user_id: int, book_title: str, page_number: int) -> None:
     async with Database().session as session:
-        session.add(BookmarksTable(user_id=user_id, bookmark_page=bookmark_page))
+        session.add(BookmarksTable(user_id, book_title, page_number))
         await session.commit()
 
 
-async def add_admin_books(admin_username: str, file_tg_id: str, book_title: str) -> None:
+async def add_admin_book(admin_username: str, book_title: str, page_count: int) -> None:
     async with Database().session as session:
-        session.add(AdminBooksTable(admin_username=admin_username,
-                                    file_tg_id=file_tg_id,
-                                    book_title=book_title))
+        session.add(AdminBooksTable(admin_username, book_title, page_count)) 
+        await session.commit()
+
+
+async def add_user_book(user_id: int, book_title: str, page_count: int) -> None:
+    async with Database().session as session:
+        session.add(UserBooksTable(user_id, book_title, page_count))
         await session.commit()

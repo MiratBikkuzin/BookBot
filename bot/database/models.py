@@ -53,4 +53,4 @@ class UserBooksTable(Base):
 
     book_title: Mapped[str]
     total_page_count: Mapped[int]
-    current_page_num: Mapped[int]
+    current_page_num: Mapped[int | None]
