@@ -53,4 +53,6 @@ class UserBooksTable(Base):
 
     book_title: Mapped[str]
     total_page_count: Mapped[int]
-    current_page_num: Mapped[int | None]
+    current_page_num: Mapped[int]
+
+    is_admin_book: Mapped[bool]

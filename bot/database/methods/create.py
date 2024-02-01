@@ -20,7 +20,8 @@ async def add_admin_book(admin_username: str, book_title: str, page_count: int) 
         await session.commit()
 
 
-async def add_user_book(user_id: int, book_title: str, page_count: int) -> None:
+async def add_user_book(user_id: int, book_title: str, page_count: int,
+                        is_admin_book: bool = False) -> None:
     async with Database().session as session:
-        session.add(UserBooksTable(user_id, book_title, page_count))
+        session.add(UserBooksTable(user_id, book_title, page_count, 0, is_admin_book))
         await session.commit()

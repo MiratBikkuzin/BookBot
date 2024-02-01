@@ -8,14 +8,14 @@ from typing import BinaryIO
 from types_aiobotocore_s3.client import S3Client
 
 
-def _get_s3_book_key(book_title: str, user_tg_id: int, is_admin: bool = False) -> str:
+def _get_s3_book_key(book_title: str, user_id: int, is_admin: bool = False) -> str:
     if is_admin:
-        return f'admin/{user_tg_id}/{book_title}'
-    return f'{user_tg_id}/{book_title}'
+        return f'admin/{user_id}/{book_title}'
+    return f'{user_id}/{book_title}'
 
 
 async def upload_book_s3(binary_book: BinaryIO, book_title: str,
-                         user_tg_id: int, is_admin: bool = False) -> dict[int: str]:
+                         user_id: int, is_admin: bool = False) -> dict[int: str]:
 
     with binary_book:
         book_text: str = binary_book.read().decode('utf-8').replace('\n\n', '\n')
@@ -25,26 +25,26 @@ async def upload_book_s3(binary_book: BinaryIO, book_title: str,
 
     async with settings.s3_client as s3:
         s3: S3Client
-        key: str = _get_s3_book_key(book_title, user_tg_id, is_admin)
+        key: str = _get_s3_book_key(book_title, user_id, is_admin)
         await s3.put_object(Bucket=settings.s3_bucket, Key=key, Body=json.dumps(book))
 
     return book
 
 
-async def get_book_s3(book_title: str, user_tg_id: int, is_admin: bool = False) -> dict[int: str]:
+async def get_book_s3(book_title: str, user_id: int, is_admin: bool = False) -> dict[int: str]:
 
     async with settings.s3_client as s3:
         s3: S3Client
 
-        key: str = _get_s3_book_key(book_title, user_tg_id, is_admin)
+        key: str = _get_s3_book_key(book_title, user_id, is_admin)
         book_obj = await s3.get_object(Bucket=settings.s3_bucket, Key=key)
 
         async with book_obj['Body'] as stream:
             return json.loads(await stream.read())
         
 
-async def delete_book_s3(book_title: str, user_tg_id: int, is_admin: bool = False) -> bool:
+async def delete_book_s3(book_title: str, user_id: int, is_admin: bool = False) -> bool:
     async with settings.s3_client as s3:
         s3: S3Client
-        key: str = _get_s3_book_key(book_title, user_tg_id, is_admin)
+        key: str = _get_s3_book_key(book_title, user_id, is_admin)
         await s3.delete_object(Bucket=settings.s3_bucket, Key=key)
