@@ -15,23 +15,22 @@ async def register_models() -> None:
 
 
 class UsersTable(Base):
-    __tablename__ = 'UsersInfo'
+    __tablename__ = 'Users'
     __table_args__ = table_args
 
     id: Mapped[intpk]
     user_id: Mapped[int]
 
-    page: Mapped[int]
-
 
 class BookmarksTable(Base):
-    __tablename__ = 'UsersBookmarks'
+    __tablename__ = 'UserBookmarks'
     __table_args__ = table_args
 
     id: Mapped[intpk]
-    user_id: Mapped[str]
+    user_id: Mapped[int]
 
-    bookmark_page: Mapped[int]
+    book_title: Mapped[str]
+    page_number: Mapped[int]
 
 
 class AdminBooksTable(Base):
@@ -41,5 +40,17 @@ class AdminBooksTable(Base):
     id: Mapped[intpk]
     admin_username: Mapped[str]
 
-    admin_book_id: Mapped[str]
     book_title: Mapped[str]
+    total_page_count: Mapped[int]
+
+
+class UserBooksTable(Base):
+    __tablename__ = 'UserBooks'
+    __table_args__ = table_args
+
+    id: Mapped[intpk]
+    user_id: Mapped[int]
+
+    book_title: Mapped[str]
+    total_page_count: Mapped[int]
+    current_page_num: Mapped[int]

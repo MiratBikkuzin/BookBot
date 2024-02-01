@@ -15,7 +15,7 @@ def _get_s3_book_key(book_title: str, user_tg_id: int, is_admin: bool = False) -
 
 
 async def upload_book_s3(binary_book: BinaryIO, book_title: str,
-                         user_tg_id: int, is_admin: bool = False) -> bool:
+                         user_tg_id: int, is_admin: bool = False) -> dict[int: str]:
 
     with binary_book:
         book_text: str = binary_book.read().decode('utf-8').replace('\n\n', '\n')
@@ -28,10 +28,10 @@ async def upload_book_s3(binary_book: BinaryIO, book_title: str,
         key: str = _get_s3_book_key(book_title, user_tg_id, is_admin)
         await s3.put_object(Bucket=settings.s3_bucket, Key=key, Body=json.dumps(book))
 
-    return True
+    return book
 
 
-async def unload_book_s3(book_title: str, user_tg_id: int, is_admin: bool = False) -> dict[int: str]:
+async def get_book_s3(book_title: str, user_tg_id: int, is_admin: bool = False) -> dict[int: str]:
 
     async with settings.s3_client as s3:
         s3: S3Client
