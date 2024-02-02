@@ -10,8 +10,8 @@ from types_aiobotocore_s3.client import S3Client
 
 def _get_s3_book_key(book_title: str, user_id: int, is_admin: bool = False) -> str:
     if is_admin:
-        return f'admin/{user_id}/{book_title}'
-    return f'{user_id}/{book_title}'
+        return f'admin/{user_id}/{book_title}.json'
+    return f'{user_id}/{book_title}.json'
 
 
 async def upload_book_s3(binary_book: BinaryIO, book_title: str,
