@@ -28,8 +28,8 @@ async def not_update_warning(message: Message):
 async def admin_send_book(message: Message, bot: Bot, book_file_id: str,
                           book_title: str, state: FSMContext):
     
-    book: dict[int: str] = upload_book_s3(await bot.download(book_file_id), book_title,
-                                          message.from_user.id, is_admin=True)
+    book: dict[int: str] = await upload_book_s3(await bot.download(book_file_id), book_title,
+                                                message.from_user.id, is_admin=True)
     
     if book:
         await message.answer(text=LEXICON_RU['wait_admin_book_download'])
