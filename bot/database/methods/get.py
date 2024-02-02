@@ -2,6 +2,7 @@ from database.models import UserBooksTable, BookmarksTable, AdminBooksTable
 from database.main import Database
 
 from sqlalchemy import select, and_
+from itertools import chain
 
 
 async def get_user_info(user_id: int, book_title: str) -> tuple[int, int]:
@@ -16,7 +17,7 @@ async def get_user_info(user_id: int, book_title: str) -> tuple[int, int]:
         return result.fetchone()
     
 
-async def get_user_bookmarks(user_id: int, book_title: str) -> list[tuple[int]]:
+async def get_user_bookmarks(user_id: int, book_title: str) -> tuple[int]:
     async with Database().session as session:
         stmt = (
             select(BookmarksTable.page_number)
@@ -25,7 +26,7 @@ async def get_user_bookmarks(user_id: int, book_title: str) -> list[tuple[int]]:
                         BookmarksTable.book_title == book_title))
         )
         result = await session.execute(stmt)
-        return result.fetchall()
+        return tuple(chain.from_iterable(result.fetchall()))
     
 
 async def get_admin_books() -> tuple[str, str]:
