@@ -5,10 +5,11 @@ from sqlalchemy import select, and_
 from itertools import chain
 
 
-async def get_user_info(user_id: int, book_title: str) -> tuple[int, int]:
+async def get_user_book_info(user_id: int, book_title: str) -> tuple[int, int]:
     async with Database().session as session:
         stmt = (
-            select(UserBooksTable.user_id, UserBooksTable.current_page_num)
+            select(UserBooksTable.user_id, UserBooksTable.total_page_count,
+                   UserBooksTable.current_page_num)
             .select_from(UserBooksTable)
             .where(and_(UserBooksTable.user_id == user_id,
                         UserBooksTable.book_title == book_title))

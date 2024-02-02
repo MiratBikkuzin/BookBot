@@ -1,5 +1,4 @@
 from lexicon.lexicon import LEXICON_RU
-from services.file_handling import book
 
 from aiogram.types import InlineKeyboardMarkup, InlineKeyboardButton
 from aiogram.utils.keyboard import InlineKeyboardBuilder
@@ -17,9 +16,8 @@ def _pagination_kb(*buttons: tuple[str]) -> InlineKeyboardMarkup:
     return kb_builder.as_markup()
 
 
-def create_pagination_kb(page=1) -> InlineKeyboardMarkup:
-
-    page_count: int = len(book)
+async def create_pagination_kb(page_count: int, page: int = 1) -> InlineKeyboardMarkup:
+    
     middle_button: str = f'{page}/{page_count}'
 
     if page == 1:
