@@ -33,7 +33,7 @@ class Settings(BaseSettings):
         return self.DB_SCHEMA
     
     @property
-    async def s3_client(self):
+    def s3_client(self):
         return get_session().create_client('s3', endpoint_url=self.ENDPOINT_S3)
     
     @property
