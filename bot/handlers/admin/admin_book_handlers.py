@@ -1,7 +1,7 @@
-from database.methods.create import add_admin_books
+from database.methods.create import add_admin_book
 from filters.filters import IsAdmin, IsCorrectAdminBook
 from states.states import FSMAdminBook, default_state
-from services.file_handling import prepare_book
+from services.s3_file_handling import upload_book_s3
 from lexicon.lexicon import LEXICON_RU
 
 from aiogram import Router, Bot
@@ -28,9 +28,12 @@ async def not_update_warning(message: Message):
 async def admin_send_book(message: Message, bot: Bot, book_file_id: str,
                           book_title: str, state: FSMContext):
     
-    if prepare_book(await bot.download(book_file_id), book_title):
+    book: dict[int: str] = upload_book_s3(await bot.download(book_file_id), book_title,
+                                          message.from_user.id, is_admin=True)
+    
+    if book:
         await message.answer(text=LEXICON_RU['wait_admin_book_download'])
-        await add_admin_books(admin_username=message.from_user.username, file_tg_id=book_file_id, book_title=book_title)
+        await add_admin_book(message.from_user.username, book_title, page_count=len(book))
         await message.answer(text=LEXICON_RU['admin_book_download_end'])
         await state.clear()
 
