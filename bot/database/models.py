@@ -3,6 +3,7 @@ from config_data.config import settings
 
 from typing import Annotated
 from sqlalchemy.orm import Mapped, mapped_column
+from sqlalchemy import String
 
 
 intpk = Annotated[int, mapped_column(primary_key=True)]
@@ -30,6 +31,7 @@ class BookmarksTable(Base):
     user_id: Mapped[int]
 
     book_title: Mapped[str]
+    book_id: Mapped[String(41)]
     page_number: Mapped[int]
 
 
@@ -41,6 +43,7 @@ class AdminBooksTable(Base):
     admin_username: Mapped[str]
 
     book_title: Mapped[str]
+    book_id: Mapped[String(41)]
     total_page_count: Mapped[int]
 
 
@@ -52,6 +55,7 @@ class UserBooksTable(Base):
     user_id: Mapped[int]
 
     book_title: Mapped[str]
+    book_id: Mapped[String(41)]
     total_page_count: Mapped[int]
     current_page_num: Mapped[int]
 
