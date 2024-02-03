@@ -1,8 +1,19 @@
-from database.models import UserBooksTable, BookmarksTable, AdminBooksTable
+from database.models import UsersTable, UserBooksTable, BookmarksTable, AdminBooksTable
 from database.main import Database
 
 from sqlalchemy import select, and_
 from itertools import chain
+
+
+async def get_user(user_id: int) -> tuple[int]:
+    async with Database().session as session:
+        stmt = (
+            select(UsersTable.user_id)
+            .select_from(UsersTable)
+            .where(UsersTable.user_id == user_id)
+        )
+        result = await session.execute(stmt)
+        return result.fetchone()
 
 
 async def get_user_book_info(user_id: int, book_title: str) -> tuple[int, int]:
