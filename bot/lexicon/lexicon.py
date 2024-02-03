@@ -25,6 +25,9 @@ LEXICON_RU: dict[str, str] = {
     'admin_book_download_end': 'Ура! Загрузка книги в общий доступ завершена',
     'other_format_admin_send_book': 'Отправлен файл не того формата или не добавлена подпись к файлу',
     'admins_book_in_stock_warning': 'Книга уже есть в общем доступе',
+    'choice_book_text': 'Выберите откуда вы будете читать',
+    'choice_user_book': 'Мои книги',
+    'choice_admin_book': 'Книги общего доступа',
     'edit_bookmarks': '<b>Редактировать закладки</b>\n\n'
                       'Нажмите на закладку, чтобы её удалить',
     'edit_bookmarks_button': '❌ РЕДАКТИРОВАТЬ',
