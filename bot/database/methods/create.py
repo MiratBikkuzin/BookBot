@@ -2,7 +2,7 @@ from database.models import UsersTable, BookmarksTable, AdminBooksTable, UserBoo
 from database.main import Database
 
 
-async def add_user_info(user_id: int) -> None:
+async def add_user(user_id: int) -> None:
     async with Database().session as session:
         session.add(UsersTable(user_id=user_id))
         await session.commit()
