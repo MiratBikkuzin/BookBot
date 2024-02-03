@@ -52,20 +52,22 @@ async def get_user_bookmarks(user_id: int, book_id: int) -> tuple[int]:
         return tuple(chain.from_iterable(result.fetchall()))
     
 
-async def get_admin_books() -> list[tuple[int, str, int]]:
+async def get_admin_books() -> list[tuple[str, str, int]]:
     async with Database().session as session:
         stmt = (
-            select(AdminBooksTable.id, AdminBooksTable.book_title, AdminBooksTable.total_page_count)
+            select(AdminBooksTable.book_id, AdminBooksTable.book_title,
+                   AdminBooksTable.total_page_count)
             .select_from(AdminBooksTable)
         )
         result = await session.execute(stmt)
         return result.fetchall()
     
 
-async def get_user_books(user_id: int) -> list[tuple[int, str, int]]:
+async def get_user_books(user_id: int) -> list[tuple[str, str, int]]:
     async with Database().session as session:
         stmt = (
-            select(UserBooksTable.id, UserBooksTable.book_title, UserBooksTable.total_page_count)
+            select(UserBooksTable.book_id, UserBooksTable.book_title,
+                   UserBooksTable.total_page_count)
             .select_from(UserBooksTable)
             .where(UserBooksTable.user_id == user_id)
         )
