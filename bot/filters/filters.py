@@ -1,4 +1,4 @@
-from config_data.config import settings
+from config_data.config import bot_settings
 
 from aiogram.filters import BaseFilter
 from aiogram.types import Message, CallbackQuery
@@ -6,7 +6,7 @@ from aiogram.types import Message, CallbackQuery
 
 class IsAdmin(BaseFilter):
     async def __call__(self, message: Message) -> bool:
-        return message.from_user.id in settings.admin_ids
+        return message.from_user.id in bot_settings.admin_ids
     
 
 class IsCorrectAdminBook(BaseFilter):
