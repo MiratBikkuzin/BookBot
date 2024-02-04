@@ -21,7 +21,7 @@ async def get_admin_book_info(book_id: int) -> tuple[str, int]:
         stmt = (
             select(AdminBooksTable.book_title, AdminBooksTable.total_page_count)
             .select_from(AdminBooksTable)
-            .where(AdminBooksTable.id == book_id)
+            .where(AdminBooksTable.book_id == book_id)
         )
         result = await session.execute(stmt)
         return result.fetchone()
@@ -30,11 +30,11 @@ async def get_admin_book_info(book_id: int) -> tuple[str, int]:
 async def get_user_book_info(user_id: int, book_id: int) -> tuple[str, int, int]:
     async with Database().session as session:
         stmt = (
-            select(UserBooksTable.book_title,
-                   UserBooksTable.total_page_count, UserBooksTable.current_page_num)
+            select(UserBooksTable.book_title, UserBooksTable.total_page_count,
+                   UserBooksTable.current_page_num)
             .select_from(UserBooksTable)
             .where(and_(UserBooksTable.user_id == user_id,
-                        UserBooksTable.id == book_id))
+                        UserBooksTable.book_id == book_id))
         )
         result = await session.execute(stmt)
         return result.fetchone()
@@ -46,7 +46,7 @@ async def get_user_bookmarks(user_id: int, book_id: int) -> tuple[int]:
             select(BookmarksTable.page_number)
             .select_from(BookmarksTable)
             .where(and_(BookmarksTable.user_id == user_id,
-                        BookmarksTable.id == book_id))
+                        BookmarksTable.book_id == book_id))
         )
         result = await session.execute(stmt)
         return tuple(chain.from_iterable(result.fetchall()))
