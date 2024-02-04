@@ -1,5 +1,5 @@
 from database.main import Database, Base
-from config_data.config import settings
+from config_data.config import db_settings
 
 from typing import Annotated
 from sqlalchemy.orm import Mapped, mapped_column
@@ -7,7 +7,7 @@ from sqlalchemy import String
 
 
 intpk = Annotated[int, mapped_column(primary_key=True)]
-table_args: dict[str: str] = {'schema': settings.database_schema}
+table_args: dict[str: str] = {'schema': db_settings.postgres_schema}
 
 
 async def register_models() -> None:
