@@ -1,7 +1,7 @@
 import re
 import json
 
-from config_data.config import settings
+from config_data.config import s3_settings
 from services.book_text_handling import prepare_book
 
 from typing import BinaryIO
@@ -15,7 +15,7 @@ def _get_s3_book_key(book_title: str, user_id: int, is_admin: bool = False) -> s
 
 
 async def upload_book_s3(binary_book: BinaryIO, book_title: str,
-                         user_id: int, is_admin: bool = False) -> dict[int: str]:
+                         user_id: int, is_admin: bool = False) -> bool:
 
     with binary_book:
         book_text: str = binary_book.read().decode('utf-8').replace('\n\n', '\n')
@@ -23,28 +23,28 @@ async def upload_book_s3(binary_book: BinaryIO, book_title: str,
 
     book: dict[int: str] = prepare_book(book_text)
 
-    async with settings.s3_client as s3:
+    async with s3_settings.client as s3:
         s3: S3Client
         key: str = _get_s3_book_key(book_title, user_id, is_admin)
-        await s3.put_object(Bucket=settings.s3_bucket, Key=key, Body=json.dumps(book))
+        await s3.put_object(Bucket=s3_settings.bucket_name, Key=key, Body=json.dumps(book))
 
-    return book
+    return True
 
 
 async def get_book_s3(book_title: str, user_id: int, is_admin: bool = False) -> dict[int: str]:
 
-    async with settings.s3_client as s3:
+    async with s3_settings.client as s3:
         s3: S3Client
 
         key: str = _get_s3_book_key(book_title, user_id, is_admin)
-        book_obj = await s3.get_object(Bucket=settings.s3_bucket, Key=key)
+        book_obj = await s3.get_object(Bucket=s3_settings.bucket_name, Key=key)
 
         async with book_obj['Body'] as stream:
             return json.loads(await stream.read())
         
 
 async def delete_book_s3(book_title: str, user_id: int, is_admin: bool = False) -> bool:
-    async with settings.s3_client as s3:
+    async with s3_settings.client as s3:
         s3: S3Client
         key: str = _get_s3_book_key(book_title, user_id, is_admin)
-        await s3.delete_object(Bucket=settings.s3_bucket, Key=key)
+        await s3.delete_object(Bucket=s3_settings.bucket_name, Key=key)
