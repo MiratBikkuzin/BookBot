@@ -1,8 +1,9 @@
 from database.methods.create import add_admin_book
 from filters.filters import IsAdmin, IsCorrectAdminBook
 from states.states import FSMAdminBook, default_state
-from services.s3_file_handling import upload_book_s3
+from services.s3_file_handling import upload_book_s3, get_book_s3
 from lexicon.lexicon import LEXICON_RU
+from utils.book_utils import get_book_id
 
 from aiogram import Router, Bot
 from aiogram.types import Message
@@ -28,12 +29,22 @@ async def not_update_warning(message: Message):
 async def admin_send_book(message: Message, bot: Bot, book_file_id: str,
                           book_title: str, state: FSMContext):
     
-    book: dict[int: str] = await upload_book_s3(await bot.download(book_file_id), book_title,
-                                                message.from_user.id, is_admin=True)
+    await message.answer(text=LEXICON_RU['wait_admin_book_download'])
+    user_id: int = message.from_user.id
+    book_id: str = get_book_id(book_title)
+
+    try:
+        book: dict[int: str] = await get_book_s3(book_id, user_id, is_admin=True)
+
+    except:
+        book: None = None
     
-    if book:
-        await message.answer(text=LEXICON_RU['wait_admin_book_download'])
-        await add_admin_book(message.from_user.username, book_title, page_count=len(book))
+    if not book:
+        book: dict[int: str] = await upload_book_s3(binary_book=await bot.download(book_file_id),
+                                                    book_id=book_id, user_id=user_id,
+                                                    is_admin=True)
+        await add_admin_book(admin_username=message.from_user.username, book_id=book_id,
+                             book_title=book_title, page_count=len(book))
         await message.answer(text=LEXICON_RU['admin_book_download_end'])
         await state.clear()
 

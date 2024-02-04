@@ -8,8 +8,8 @@ class BotSettings(BaseSettings):
     admin_ids: str
     
     @property
-    def admin_ids(self) -> list[int]:
-        return list(map(int, self.ADMIN_IDS.split(',')))
+    def admin_ids_lst(self) -> list[int]:
+        return list(map(int, self.admin_ids.split(',')))
     
     model_config = SettingsConfigDict(env_file='.env', env_prefix='BOT_', case_sensitive=False)
 
