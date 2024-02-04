@@ -1,6 +1,6 @@
 from lexicon.lexicon import LEXICON_RU
 from database.methods.get import get_admin_books, get_user_books
-from bot.keyboards.kb_utils import AdminBookCallbackFactory, UserBookCallbackFactory
+from keyboards.kb_utils import AdminBookCallbackFactory, UserBookCallbackFactory
 
 from aiogram.types import InlineKeyboardButton, InlineKeyboardMarkup
 from aiogram.utils.keyboard import InlineKeyboardBuilder
