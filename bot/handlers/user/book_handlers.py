@@ -34,7 +34,7 @@ async def process_admin_books_choice(callback: CallbackQuery) -> None:
 async def process_user_books_choice(callback: CallbackQuery) -> None:
     await callback.message.edit_text(
         text=LEXICON_RU['user_books_list'],
-        reply_markup=BooksKeyboard.get_user_books_kb(callback.from_user.id)
+        reply_markup=await BooksKeyboard.get_user_books_kb(callback.from_user.id)
     )
 
 
@@ -44,7 +44,7 @@ async def process_admin_book_choice(callback: CallbackQuery,
     
     user_id, book_id = callback.from_user.id, callback_data.book_id
     book_title, page_count = await get_admin_book_info(book_id)
-    user_book_info: tuple[str, int, int] | None = await get_user_book_info(user_id, book_id)
+    user_book_info: tuple[str, int, int, bool] | None = await get_user_book_info(user_id, book_id)
 
     book: dict[str: str] = await get_book_s3(book_id, user_id, is_admin=True)
 
@@ -54,12 +54,27 @@ async def process_admin_book_choice(callback: CallbackQuery,
                             page_count=page_count, is_admin_book=True)
         
     else:
-        current_page_num: int = user_book_info[-1]
+        current_page_num: int = user_book_info[2]
 
     await callback.message.answer(
         text=book[str(current_page_num)],
         reply_markup=create_pagination_kb(page_count=page_count,
                                           page=current_page_num)
+    )
+
+
+@router.callback_query(UserBookCallbackFactory.filter())
+async def process_user_book_choice(callback: CallbackQuery,
+                                   callback_data: UserBookCallbackFactory) -> None:
+
+    user_id, book_id = callback.from_user.id, callback_data.book_id
+    _, page_count, current_page_num, is_admin = await get_user_book_info(user_id, book_id)
+
+    book: dict[str: str] = await get_book_s3(book_id, user_id, is_admin)
+
+    await callback.message.answer(
+        text=book[str(current_page_num)],
+        reply_markup=create_pagination_kb(page_count, current_page_num)
     )
 
 
