@@ -36,15 +36,20 @@ async def process_admin_book_choice(callback: CallbackQuery,
     
     user_id, book_id = callback.from_user.id, callback_data.book_id
     book_title, page_count = await get_admin_book_info(book_id)
-    *_, current_page_num = await get_user_book_info(user_id, book_id)
+    user_book_info: tuple[str, int, int] | None = await get_user_book_info(user_id, book_id)
 
-    if not current_page_num:
+    book: dict[str: str] = await get_book_s3(book_id, user_id, is_admin=True)
+
+    if not user_book_info:
         current_page_num: int = 1
-        await add_user_book(user_id=user_id, book_title=book_title,
+        await add_user_book(user_id=user_id, book_id=book_id, book_title=book_title,
                             page_count=page_count, is_admin_book=True)
         
+    else:
+        current_page_num: int = user_book_info[-1]
+
     await callback.message.answer(
-        text=await get_book_s3(book_title, user_id, is_admin=True)[current_page_num],
+        text=book[str(current_page_num)],
         reply_markup=create_pagination_kb(page_count=page_count,
                                           page=current_page_num)
     )
