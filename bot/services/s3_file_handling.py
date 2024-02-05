@@ -1,11 +1,10 @@
-import re
-import json
-
 from config_data.config import s3_settings
 from services.book_text_handling import prepare_book
 
 from typing import BinaryIO
 from types_aiobotocore_s3.client import S3Client
+
+import json
 
 
 def _get_s3_book_key(book_id: str, user_id: int, is_admin: bool = False) -> str:
@@ -14,12 +13,8 @@ def _get_s3_book_key(book_id: str, user_id: int, is_admin: bool = False) -> str:
     return f'user/{user_id}/{book_id}.json'
 
 
-async def upload_book_s3(binary_book: BinaryIO, book_id: str,
-                         user_id: int, is_admin: bool = False) -> dict[int: str]:
-
-    with binary_book:
-        book_text: str = binary_book.read().decode('utf-8').replace('\n\n', '\n')
-        book_text: str = re.sub(r'\n(?!    )', ' ', book_text)
+async def upload_book_s3(book_text: str, book_id: str, user_id: int,
+                         is_admin: bool = False) -> dict[int: str]:
 
     book: dict[int: str] = prepare_book(book_text)
 
