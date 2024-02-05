@@ -16,7 +16,7 @@ def _pagination_kb(*buttons: tuple[str]) -> InlineKeyboardMarkup:
     return kb_builder.as_markup()
 
 
-async def create_pagination_kb(page_count: int, page: int = 1) -> InlineKeyboardMarkup:
+def create_pagination_kb(page_count: int, page: int = 1) -> InlineKeyboardMarkup:
     
     middle_button: str = f'{page}/{page_count}'
 
