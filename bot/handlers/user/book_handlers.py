@@ -1,13 +1,13 @@
 from lexicon.lexicon import LEXICON_RU
 from keyboards.books_kb import BooksKeyboard
-from keyboards.kb_utils import AdminBookCallbackFactory 
+from keyboards.kb_utils import AdminBookCallbackFactory, UserBookCallbackFactory
 from keyboards.pagination_kb import create_pagination_kb
 from services.s3_file_handling import get_book_s3
 from database.methods.get import get_admin_book_info, get_user_book_info
 from database.methods.create import add_user_book
 
 from aiogram import Router, F
-from aiogram.filters import Command
+from aiogram.filters import Command, or_f
 from aiogram.types import Message, CallbackQuery
 
 
@@ -27,6 +27,14 @@ async def process_admin_books_choice(callback: CallbackQuery) -> None:
     await callback.message.edit_text(
         text=LEXICON_RU['admin_books_list'],
         reply_markup=await BooksKeyboard.get_admin_books_kb()
+    )
+
+
+@router.callback_query(F.data == 'user-books')
+async def process_user_books_choice(callback: CallbackQuery) -> None:
+    await callback.message.edit_text(
+        text=LEXICON_RU['user_books_list'],
+        reply_markup=BooksKeyboard.get_user_books_kb(callback.from_user.id)
     )
 
 
@@ -55,15 +63,13 @@ async def process_admin_book_choice(callback: CallbackQuery,
     )
 
 
-# @router.message(Command(commands='continue'))
-# async def process_continue_command(message: Message) -> None:
-    
-#     _, user_book_page = await get_user_info(user_id=message.from_user.id)
+@router.message(Command(commands='continue'))
+async def process_continue_command(message: Message) -> None:
+    await message.answer(
+        text=LEXICON_RU['user_books_list'],
+        reply_markup=await BooksKeyboard.get_user_books_kb(message.from_user.id)
+    )
 
-#     await message.answer(
-#         text=book[user_book_page],
-#         reply_markup=create_pagination_kb(user_book_page)
-#     )
 
 
 # @router.callback_query(F.data.in_(('forward', 'backward')))
