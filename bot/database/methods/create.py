@@ -1,6 +1,5 @@
 from database.models import UsersTable, BookmarksTable, AdminBooksTable, UserBooksTable
 from database.main import Database
-from utils.book_utils import get_book_id
 
 
 async def add_user(user_id: int) -> None:
@@ -30,5 +29,5 @@ async def add_user_book(user_id: int, book_id: str, book_title: str,
     async with Database().session as session:
         session.add(UserBooksTable(user_id=user_id, book_title=book_title,
                                    book_id=book_id, total_page_count=page_count,
-                                   current_page_num=0, is_admin_book=is_admin_book))
+                                   current_page_num=1, is_admin_book=is_admin_book))
         await session.commit()

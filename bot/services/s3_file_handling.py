@@ -31,7 +31,7 @@ async def upload_book_s3(binary_book: BinaryIO, book_id: str,
     return book
 
 
-async def get_book_s3(book_id: str, user_id: int, is_admin: bool = False) -> dict[int: str]:
+async def get_book_s3(book_id: str, user_id: int, is_admin: bool = False) -> dict[str: str]:
 
     async with s3_settings.client as s3:
         s3: S3Client
@@ -40,11 +40,16 @@ async def get_book_s3(book_id: str, user_id: int, is_admin: bool = False) -> dic
         book_obj = await s3.get_object(Bucket=s3_settings.bucket_name, Key=key)
 
         async with book_obj['Body'] as stream:
-            return json.loads(await stream.read())
+            byte_book_obj = await stream.read()
+
+        return json.loads(byte_book_obj)
         
 
 async def delete_book_s3(book_id: str, user_id: int, is_admin: bool = False) -> bool:
+
     async with s3_settings.client as s3:
         s3: S3Client
         key: str = _get_s3_book_key(book_id, user_id, is_admin)
         await s3.delete_object(Bucket=s3_settings.bucket_name, Key=key)
+    
+    return True
