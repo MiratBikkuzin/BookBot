@@ -27,11 +27,11 @@ async def get_admin_book_info(book_id: int) -> tuple[str, int]:
         return result.fetchone()
 
 
-async def get_user_book_info(user_id: int, book_id: int) -> tuple[str, int, int]:
+async def get_user_book_info(user_id: int, book_id: int) -> tuple[str, int, int, bool] | None:
     async with Database().session as session:
         stmt = (
             select(UserBooksTable.book_title, UserBooksTable.total_page_count,
-                   UserBooksTable.current_page_num)
+                   UserBooksTable.current_page_num, UserBooksTable.is_admin_book)
             .select_from(UserBooksTable)
             .where(and_(UserBooksTable.user_id == user_id,
                         UserBooksTable.book_id == book_id))
