@@ -16,6 +16,24 @@ from aiogram.types import Message, CallbackQuery
 router: Router = Router(name=__name__)
 
 
+@router.callback_query(PageTurningCallbackFactory.filter())
+async def process_page_turning(callback: CallbackQuery,
+                               callback_data: PageTurningCallbackFactory) -> None:
+
+    user_id, book_id = callback.from_user.id, callback_data.book_id
+    page_count, page_num, is_admin = await get_user_book_info(user_id, book_id)
+    page_num += -1 if callback_data.turn_type == 'backward' else 1
+
+    book: dict[str: str] = await get_book_s3(book_id, user_id, is_admin=is_admin)
+    
+    await callback.message.edit_text(
+        text=book[str(page_num)],
+        reply_markup=create_pagination_kb(book_id, page_count, page_num)
+    )
+
+    await update_book_page(user_id, book_id, new_page=page_num)
+
+
 @router.message(Command(commands='beginning'))
 async def process_beginning_command(message: Message) -> None:
     await message.answer(
@@ -46,21 +64,21 @@ async def process_admin_book_choice(callback: CallbackQuery,
     
     user_id, book_id = callback.from_user.id, callback_data.book_id
     book_title, page_count = await get_admin_book_info(book_id)
-    user_book_info: tuple[str, int, int, bool] | None = await get_user_book_info(user_id, book_id)
-
-    book: dict[str: str] = await get_book_s3(book_id, user_id, is_admin=True)
+    user_book_info: tuple[int, int, bool] | None = await get_user_book_info(user_id, book_id)
 
     if not user_book_info:
-        current_page_num: int = 1
+        page_num: int = 1
         await add_user_book(user_id=user_id, book_id=book_id, book_title=book_title,
                             page_count=page_count, is_admin_book=True)
         
     else:
-        current_page_num: int = user_book_info[2]
+        page_num: int = user_book_info[2]
+
+    book: dict[str: str] = await get_book_s3(book_id, user_id, is_admin=True)
 
     await callback.message.answer(
-        text=book[str(current_page_num)],
-        reply_markup=create_pagination_kb(book_id, page_count, current_page_num)
+        text=book[str(page_num)],
+        reply_markup=create_pagination_kb(book_id, page_count, page_num)
     )
 
 
@@ -69,13 +87,13 @@ async def process_user_book_choice(callback: CallbackQuery,
                                    callback_data: UserBookCallbackFactory) -> None:
 
     user_id, book_id = callback.from_user.id, callback_data.book_id
-    _, page_count, current_page_num, is_admin = await get_user_book_info(user_id, book_id)
+    page_count, page_num, is_admin = await get_user_book_info(user_id, book_id)
 
     book: dict[str: str] = await get_book_s3(book_id, user_id, is_admin)
 
     await callback.message.answer(
-        text=book[str(current_page_num)],
-        reply_markup=create_pagination_kb(book_id, page_count, current_page_num)
+        text=book[str(page_num)],
+        reply_markup=create_pagination_kb(book_id, page_count, page_num)
     )
 
 
@@ -85,18 +103,3 @@ async def process_continue_command(message: Message) -> None:
         text=LEXICON_RU['user_books_list'],
         reply_markup=await BooksKeyboard.get_user_books_kb(message.from_user.id)
     )
-
-
-
-# @router.callback_query(F.data.in_(('forward', 'backward')))
-# async def process_page_turning(callback: CallbackQuery) -> None:
-
-#     user_id, user_book_page = await
-#     user_book_page += -1 if callback.data == 'backward' else 1
-
-#     await update_user_page(new_page=user_book_page, user_id=user_id)
-    
-#     await callback.message.edit_text(
-#         text=book[user_book_page],
-#         reply_markup=create_pagination_kb(user_book_page)
-#     )
