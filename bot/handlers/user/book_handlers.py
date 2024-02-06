@@ -1,13 +1,15 @@
 from lexicon.lexicon import LEXICON_RU
 from keyboards.books_kb import BooksKeyboard
-from keyboards.kb_utils import AdminBookCallbackFactory, UserBookCallbackFactory
+from keyboards.kb_utils import (AdminBookCallbackFactory, UserBookCallbackFactory,
+                                PageTurningCallbackFactory)
 from keyboards.pagination_kb import create_pagination_kb
 from services.s3_file_handling import get_book_s3
-from database.methods.get import get_admin_book_info, get_user_book_info
 from database.methods.create import add_user_book
+from database.methods.get import get_admin_book_info, get_user_book_info
+from database.methods.update import update_book_page
 
 from aiogram import Router, F
-from aiogram.filters import Command, or_f
+from aiogram.filters import Command
 from aiogram.types import Message, CallbackQuery
 
 
@@ -58,8 +60,7 @@ async def process_admin_book_choice(callback: CallbackQuery,
 
     await callback.message.answer(
         text=book[str(current_page_num)],
-        reply_markup=create_pagination_kb(page_count=page_count,
-                                          page=current_page_num)
+        reply_markup=create_pagination_kb(book_id, page_count, current_page_num)
     )
 
 
@@ -74,7 +75,7 @@ async def process_user_book_choice(callback: CallbackQuery,
 
     await callback.message.answer(
         text=book[str(current_page_num)],
-        reply_markup=create_pagination_kb(page_count, current_page_num)
+        reply_markup=create_pagination_kb(book_id, page_count, current_page_num)
     )
 
 
@@ -90,7 +91,7 @@ async def process_continue_command(message: Message) -> None:
 # @router.callback_query(F.data.in_(('forward', 'backward')))
 # async def process_page_turning(callback: CallbackQuery) -> None:
 
-#     user_id, user_book_page = await get_user_info(user_id=callback.from_user.id)
+#     user_id, user_book_page = await
 #     user_book_page += -1 if callback.data == 'backward' else 1
 
 #     await update_user_page(new_page=user_book_page, user_id=user_id)
