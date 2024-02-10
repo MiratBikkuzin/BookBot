@@ -1,6 +1,4 @@
 from pydantic_settings import BaseSettings, SettingsConfigDict
-from aiobotocore.session import get_session
-from types_aiobotocore_s3.client import S3Client
 
 
 class BotSettings(BaseSettings):
@@ -27,19 +25,3 @@ class DatabaseSettings(BaseSettings):
         return f"postgresql+asyncpg://{self.user}:{self.password}@{self.host}:{self.port}/{self.name}"
     
     model_config = SettingsConfigDict(env_file='.env', env_prefix='DB_', case_sensitive=False)
-
-
-class S3Settings(BaseSettings):
-    endpoint: str
-    bucket_name: str
-
-    @property
-    def client(self) -> S3Client:
-        return get_session().create_client('s3', endpoint_url=self.endpoint)
-    
-    model_config = SettingsConfigDict(env_file='.env', env_prefix='S3_', case_sensitive=False)
-
-
-bot_settings: BotSettings = BotSettings()
-db_settings: DatabaseSettings = DatabaseSettings()
-s3_settings: S3Settings = S3Settings()
