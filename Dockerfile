@@ -6,8 +6,6 @@ WORKDIR /bot
 
 COPY requirements.txt requirements.txt
 RUN pip install -r requirements.txt
-RUN sudo apt install awscli -y
-RUN aws configure
 COPY . .
 
 
