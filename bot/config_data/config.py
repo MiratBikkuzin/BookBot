@@ -25,3 +25,14 @@ class DatabaseSettings(BaseSettings):
         return f"postgresql+asyncpg://{self.user}:{self.password}@{self.host}:{self.port}/{self.name}"
     
     model_config = SettingsConfigDict(env_file='.env', env_prefix='DB_', case_sensitive=False)
+
+
+class NatsSettings(BaseSettings):
+    bucket: str
+
+    model_config = SettingsConfigDict(env_file='.env', env_prefix='NATS_', case_sensitive=False)
+
+
+bot_settings: BotSettings = BotSettings()
+db_settings: DatabaseSettings = DatabaseSettings()
+nats_settings: NatsSettings = NatsSettings()
