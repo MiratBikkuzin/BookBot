@@ -22,3 +22,6 @@ class Database:
 
 class Base(DeclarativeBase):
     pass
+
+
+database: Database = Database()
