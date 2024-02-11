@@ -1,12 +1,12 @@
 from database.models import BookmarksTable, AdminBooksTable, UserBooksTable
-from database.main import Database
-from services.s3_file_handling import delete_book_s3
+from database.main import database
+from services.s3_file_handling import s3_manager
 
 from sqlalchemy import delete, and_
 
 
 async def del_user_bookmark(user_id: int, book_id: str, page_number: int) -> None:
-    async with Database().session as session:
+    async with database.session as session:
         stmt = (
             delete(BookmarksTable)
             .where(and_(BookmarksTable.user_id == user_id, BookmarksTable.book_id == book_id,
@@ -19,7 +19,7 @@ async def del_user_bookmark(user_id: int, book_id: str, page_number: int) -> Non
 async def del_admin_book(admin_username: str, admin_tg_id: int,
                          book_title: str, book_id: str) -> None:
     
-    async with Database().session as session:
+    async with database.session as session:
         first_stmt = (
             delete(AdminBooksTable)
             .where(and_(AdminBooksTable.admin_username == admin_username,
@@ -33,12 +33,12 @@ async def del_admin_book(admin_username: str, admin_tg_id: int,
         await session.execute(second_stmt)
         await session.commit()
 
-    await delete_book_s3(book_title, admin_tg_id, is_admin=True)
+    await s3_manager.delete_book_s3(book_title, admin_tg_id, is_admin=True)
 
 
 async def del_user_book(user_id: int, book_title: str, book_id: str) -> None:
     
-    async with Database().session as session:
+    async with database.session as session:
         stmt = (
             delete(UserBooksTable)
             .where(and_(UserBooksTable.user_id == user_id, UserBooksTable.book_id == book_id))
@@ -46,4 +46,4 @@ async def del_user_book(user_id: int, book_title: str, book_id: str) -> None:
         await session.execute(stmt)
         await session.commit()
 
-    await delete_book_s3(book_title, user_id)
+    await s3_manager.delete_book_s3(book_title, user_id)
