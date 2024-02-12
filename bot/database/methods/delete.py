@@ -1,6 +1,5 @@
 from database.models import BookmarksTable, AdminBooksTable, UserBooksTable
 from database.main import database
-from services.s3_file_handling import s3_manager
 
 from sqlalchemy import delete, and_
 
@@ -33,8 +32,6 @@ async def del_admin_book(admin_username: str, admin_tg_id: int,
         await session.execute(second_stmt)
         await session.commit()
 
-    await s3_manager.delete_book_s3(book_title, admin_tg_id, is_admin=True)
-
 
 async def del_user_book(user_id: int, book_title: str, book_id: str) -> None:
     
@@ -45,5 +42,3 @@ async def del_user_book(user_id: int, book_title: str, book_id: str) -> None:
         )
         await session.execute(stmt)
         await session.commit()
-
-    await s3_manager.delete_book_s3(book_title, user_id)
