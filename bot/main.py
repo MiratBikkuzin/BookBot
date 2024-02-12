@@ -1,11 +1,12 @@
 import asyncio
 import logging
 
-from config_data.config import settings
+from config_data.config import bot_settings
 from database.models import register_models
-from handlers import (start_handlers, book_handlers, bookmark_handlers,
+from handlers import (start_handlers, book_handlers, # bookmark_handlers,
                       admin_book_handlers, other_handlers)
 from keyboards.main_menu import set_main_menu
+from services.object_store.main import register_object_store
 
 from aiogram import Bot, Dispatcher
 from aiogram.fsm.storage.memory import MemoryStorage
@@ -24,20 +25,21 @@ async def start_bot() -> None:
 
     logger.info('Starting bot')
 
-    bot: Bot = Bot(token=settings.bot_token,
+    bot: Bot = Bot(token=bot_settings.token,
                    parse_mode='HTML')
     dp: Dispatcher = Dispatcher(storage=MemoryStorage())
 
     dp.include_routers(
         start_handlers.router,
         book_handlers.router,
-        bookmark_handlers.router,
+        # bookmark_handlers.router,
         admin_book_handlers.router,
         other_handlers.router
     )
 
     await set_main_menu(bot)
     await register_models()
+    await register_object_store()
     
     await bot.delete_webhook(drop_pending_updates=True)
     await dp.start_polling(bot)

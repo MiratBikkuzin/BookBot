@@ -8,7 +8,7 @@ from nats.js.object_store import ObjectStore
 import nats
 
 
-async def get_object_store() -> None:
+async def register_object_store() -> None:
     global object_store
 
     nc: Client = await nats.connect()
