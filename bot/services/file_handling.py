@@ -1,8 +1,8 @@
-from typing import BinaryIO
+from io import BytesIO
 from bs4 import BeautifulSoup as BS
 
 
-def get_book_text(binary_book: BinaryIO) -> str:
+def get_book_text(binary_book: BytesIO) -> str:
     with binary_book:
         return binary_book.read().decode('utf-8').replace('\n\n', '\n')
 
