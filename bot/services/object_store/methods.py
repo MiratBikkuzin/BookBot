@@ -10,6 +10,11 @@ class BookObjectStore:
             return 'admin/' + general_key
         return 'user/' + general_key
     
+    async def check_book_in_stock(self, book_id: str, is_admin: bool = False) -> bool:
+        key: str = self.__get_book_page_key(book_id, 1, is_admin)
+        if key in (obj.name for obj in await object_store.list()):
+            return True
+        return False
 
     async def upload_book(self, book_text: str, book_id: str,
                           is_admin: bool = False) -> dict[int: str] | None:
