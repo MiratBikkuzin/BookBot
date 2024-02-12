@@ -29,3 +29,8 @@ class BookObjectStore:
         key: str = self.__get_book_page_key(book_id, page_num, is_admin)
         obr = await object_store.get(key)
         return obr.data.decode()
+    
+    async def del_book(self, book_id: str, book_page_count: int, is_admin: bool = False) -> None:
+        for page_num in range(1, book_page_count + 1):
+            key: str = self.__get_book_page_key(book_id, page_num, is_admin)
+            await object_store.delete(key)
