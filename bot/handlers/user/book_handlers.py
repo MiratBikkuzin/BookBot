@@ -3,7 +3,7 @@ from keyboards.books_kb import BooksKeyboard
 from keyboards.kb_utils import (AdminBookCallbackFactory, UserBookCallbackFactory,
                                 PageTurningCallbackFactory)
 from keyboards.pagination_kb import create_pagination_kb
-from services.object_store.main import BookObjectStore
+from services.object_store import BookObjectStore
 from database.methods.create import add_user_book
 from database.methods.get import get_admin_book_info, get_user_book_info
 from database.methods.update import update_book_page
