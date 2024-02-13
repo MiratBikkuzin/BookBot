@@ -3,7 +3,7 @@ from keyboards.books_kb import BooksKeyboard
 from keyboards.kb_utils import (AdminBookCallbackFactory, UserBookCallbackFactory,
                                 PageTurningCallbackFactory)
 from keyboards.pagination_kb import create_pagination_kb
-from services.s3_file_handling import get_book_s3
+from services.object_store.main import BookObjectStore
 from database.methods.create import add_user_book
 from database.methods.get import get_admin_book_info, get_user_book_info
 from database.methods.update import update_book_page
@@ -24,10 +24,10 @@ async def process_page_turning(callback: CallbackQuery,
     page_count, page_num, is_admin = await get_user_book_info(user_id, book_id)
     page_num += -1 if callback_data.turn_type == 'backward' else 1
 
-    book: dict[str: str] = await get_book_s3(book_id, user_id, is_admin=is_admin)
+    page_content: str = await BookObjectStore.get_book_page_content(book_id, page_num, is_admin)
     
     await callback.message.edit_text(
-        text=book[str(page_num)],
+        text=page_content,
         reply_markup=create_pagination_kb(book_id, page_count, page_num)
     )
 
@@ -72,12 +72,12 @@ async def process_admin_book_choice(callback: CallbackQuery,
                             page_count=page_count, is_admin_book=True)
         
     else:
-        page_num: int = user_book_info[2]
+        page_num: int = user_book_info[1]
 
-    book: dict[str: str] = await get_book_s3(book_id, user_id, is_admin=True)
+    page_content: str = await BookObjectStore.get_book_page_content(book_id, page_num, is_admin=True)
 
     await callback.message.answer(
-        text=book[str(page_num)],
+        text=page_content,
         reply_markup=create_pagination_kb(book_id, page_count, page_num)
     )
 
@@ -89,10 +89,10 @@ async def process_user_book_choice(callback: CallbackQuery,
     user_id, book_id = callback.from_user.id, callback_data.book_id
     page_count, page_num, is_admin = await get_user_book_info(user_id, book_id)
 
-    book: dict[str: str] = await get_book_s3(book_id, user_id, is_admin)
+    page_content: str = await BookObjectStore.get_book_page_content(book_id, page_num, is_admin)
 
     await callback.message.answer(
-        text=book[str(page_num)],
+        text=page_content,
         reply_markup=create_pagination_kb(book_id, page_count, page_num)
     )
 

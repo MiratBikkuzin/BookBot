@@ -1,7 +1,7 @@
 from database.methods.create import add_admin_book
 from filters.filters import IsAdmin, IsCorrectAdminBook
 from states.states import FSMAdminBook, default_state
-from services.s3_file_handling import upload_book_s3, get_book_s3
+from services.object_store.main import BookObjectStore
 from services.file_handling import parse_fb2, get_book_text
 from lexicon.lexicon import LEXICON_RU
 from utils.book_utils import get_book_id
@@ -30,32 +30,25 @@ async def not_update_warning(message: Message):
 async def admin_send_book(message: Message, bot: Bot, book_file_id: str, book_title: str,
                           file_format: str, state: FSMContext):
     
-    user_id: int = message.from_user.id
     book_id: str = get_book_id(book_title.lower())
 
-    try:
-        book: dict[int: str] = await get_book_s3(book_id, user_id, is_admin=True)
+    if await BookObjectStore.check_book_in_stock(book_id, is_admin=True):
+        await message.answer(text=LEXICON_RU['admins_book_in_stock_warning'])
 
-    except Exception:
-        book: None = None
+    else:
 
-    await message.answer(text=LEXICON_RU['wait_admin_book_download'])
-    
-    if not book:
+        await message.answer(text=LEXICON_RU['wait_admin_book_download'])
 
         book_text: str = get_book_text(await bot.download(book_file_id))
 
         if file_format == 'fb2':
             book_text: str = parse_fb2(book_text)
 
-        book: dict[int: str] = await upload_book_s3(book_text, book_id, user_id, is_admin=True)
+        book: dict[int: str] = await BookObjectStore.upload_book(book_text, book_id, is_admin=True)
         await add_admin_book(admin_username=message.from_user.username, book_id=book_id,
                              book_title=book_title, page_count=len(book))
         await message.answer(text=LEXICON_RU['admin_book_download_end'])
         await state.clear()
-
-    else:
-        await message.answer(text=LEXICON_RU['admins_book_in_stock_warning'])
 
 
 @router.message(StateFilter(FSMAdminBook.admin_book_send), ~IsCorrectAdminBook())
