@@ -16,7 +16,7 @@ class BookmarksCallbackFactory(CallbackData, prefix='bookmark', sep='@'):
     book_id: str
 
 
-class DelBookmarksCallbackFacotry(CallbackData, prefix='del-bkmark', sep='@'):
+class DelBookmarksCallbackFactory(CallbackData, prefix='del-bkmark', sep='@'):
     page_number: int
     book_id: str
 

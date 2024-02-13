@@ -40,10 +40,10 @@ async def get_user_book_info(user_id: int, book_id: int) -> tuple[int, int, bool
         return result.fetchone()
     
 
-async def get_user_bookmarks(user_id: int) -> tuple[int]:
+async def get_user_books_with_bookmarks(user_id: int) -> tuple[int]:
     async with database.session as session:
         stmt = (
-            select(BookmarksTable.page_number)
+            select(BookmarksTable.book_title)
             .select_from(BookmarksTable)
             .where(BookmarksTable.user_id == user_id)
         )
