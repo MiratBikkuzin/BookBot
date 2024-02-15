@@ -51,6 +51,17 @@ async def get_user_books_with_bookmarks(user_id: int) -> list[tuple[str, str]]:
         return result.fetchall()
     
 
+async def get_user_book_bookmarks(user_id: int, book_id: str) -> tuple[int]:
+    async with database.session as session:
+        stmt = (
+            select(BookmarksTable.page_number)
+            .select_from(BookmarksTable)
+            .where(BookmarksTable.user_id == user_id, BookmarksTable.book_id == book_id)
+        )
+        result = await session.execute(stmt)
+        return tuple(chain.from_iterable(result.fetchall()))
+    
+
 async def get_admin_books() -> list[tuple[str, str, int]]:
     async with database.session as session:
         stmt = (
