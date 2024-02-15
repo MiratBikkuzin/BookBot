@@ -40,15 +40,15 @@ async def get_user_book_info(user_id: int, book_id: int) -> tuple[int, int, bool
         return result.fetchone()
     
 
-async def get_user_books_with_bookmarks(user_id: int) -> tuple[int]:
+async def get_user_books_with_bookmarks(user_id: int) -> list[tuple[str, str]]:
     async with database.session as session:
         stmt = (
-            select(BookmarksTable.book_title)
+            select(BookmarksTable.book_id, BookmarksTable.book_title)
             .select_from(BookmarksTable)
             .where(BookmarksTable.user_id == user_id)
         )
         result = await session.execute(stmt)
-        return tuple(chain.from_iterable(result.fetchall()))
+        return result.fetchall()
     
 
 async def get_admin_books() -> list[tuple[str, str, int]]:
