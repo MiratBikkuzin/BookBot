@@ -1,4 +1,5 @@
 from database.methods.create import add_admin_book
+from database.methods.get import get_admin_book_info
 from filters.filters import IsAdmin, IsCorrectAdminBook
 from states.states import FSMAdminBook, default_state
 from services.object_store import BookObjectStore
@@ -32,7 +33,7 @@ async def admin_send_book(message: Message, bot: Bot, book_file_id: str, book_ti
     
     book_id: str = get_book_id(book_title.lower())
 
-    if await BookObjectStore.check_book_in_stock(book_id, is_admin=True):
+    if await get_admin_book_info(book_id):
         await message.answer(text=LEXICON_RU['admins_book_in_stock_warning'])
 
     else:
