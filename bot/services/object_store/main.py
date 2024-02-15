@@ -27,42 +27,31 @@ async def register_object_store() -> ObjectStore:
     return object_store
 
 
-def _get_book_page_key(book_id: str, page_num: int, is_admin: bool = False) -> str:
-    general_key: str = book_id + '/' + str(page_num)
-    if is_admin:
-        return 'admin/' + general_key
-    return 'user/' + general_key
+def _get_book_page_key(book_id: str, page_num: int) -> str:
+    return book_id + '/' + str(page_num)
 
 
 class BookObjectStore:
-    
-    @staticmethod
-    async def check_book_in_stock(book_id: str, is_admin: bool = False) -> bool:
-        key: str = _get_book_page_key(book_id, 1, is_admin)
-        if key in (obj.name for obj in await object_store.list(ignore_deletes=True)):
-            return True
-        return False
 
     @staticmethod
-    async def upload_book(book_text: str, book_id: str,
-                          is_admin: bool = False) -> dict[int: str] | None:
+    async def upload_book(book_text: str, book_id: str) -> dict[int: str] | None:
 
         book: dict[int: str] = prepare_book(book_text)
 
         for page_num, content in book.items():
-            key: str = _get_book_page_key(book_id, page_num, is_admin)
+            key: str = _get_book_page_key(book_id, page_num)
             await object_store.put(name=key, data=content)
 
         return book
     
     @staticmethod   
-    async def get_book_page_content(book_id: str, page_num: int, is_admin: bool = False) -> str:
-        key: str = _get_book_page_key(book_id, page_num, is_admin)
+    async def get_book_page_content(book_id: str, page_num: int) -> str:
+        key: str = _get_book_page_key(book_id, page_num)
         obr = await object_store.get(key)
         return obr.data.decode()
     
     @staticmethod
-    async def del_book(book_id: str, book_page_count: int, is_admin: bool = False) -> None:
+    async def del_book(book_id: str, book_page_count: int) -> None:
         for page_num in range(1, book_page_count + 1):
-            key: str = _get_book_page_key(book_id, page_num, is_admin)
+            key: str = _get_book_page_key(book_id, page_num)
             await object_store.delete(key)
