@@ -35,25 +35,24 @@ class BookmarksKeyboard:
 
         return kb_builder.as_markup()
     
-    # @staticmethod
-    # async def create_edit_kb(user_id: int, book_title: str) -> InlineKeyboardMarkup:
+    @staticmethod
+    async def create_edit_kb(user_id: int) -> InlineKeyboardMarkup:
 
-    #     kb_builder: InlineKeyboardBuilder = InlineKeyboardBuilder()
-    #     book: dict[int: str] = await s3_manager.get_book_s3(book_title, user_id)
+        kb_builder: InlineKeyboardBuilder = InlineKeyboardBuilder()
+        books: list[tuple[str, str]] = await get_user_books_with_bookmarks(user_id)
 
-    #     for button in sorted(await get_user_bookmarks(user_id, book_title)):
-    #         kb_builder.row(InlineKeyboardButton(
-    #             text=f"{LEXICON_RU['del']} {button} - {book[button][:85]}",
-    #             callback_data=DelBookmarksCallbackFactory(page_number=button,
-    #                                                       book_title=book_title).pack()
-    #         ))
+        for book_id, book_title in books:
+            kb_builder.row(InlineKeyboardButton(
+                text=f"{LEXICON_RU['del']} {book_title}",
+                callback_data=EditBookMarkCallbackFactory(book_id)
+            ))
 
-    #     kb_builder.row(InlineKeyboardButton(
-    #         text=LEXICON_RU['cancel'],
-    #         callback_data='cancel'
-    #         ))
+        kb_builder.row(InlineKeyboardButton(
+            text=LEXICON_RU['cancel'],
+            callback_data='cancel'
+            ))
 
-    #     return kb_builder.as_markup()
+        return kb_builder.as_markup()
     
     # @staticmethod
     # def back_from_bookmark_kb() -> InlineKeyboardMarkup:
