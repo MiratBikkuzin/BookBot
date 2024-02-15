@@ -1,32 +1,40 @@
 from aiogram.filters.callback_data import CallbackData
 
 
-class AdminBookCallbackFactory(CallbackData, prefix='admin-book', sep='@'):
+class AdminBookCallbackFactory(CallbackData, prefix='adminb', sep='@'):
     total_page_count: int
     book_id: str
 
 
-class UserBookCallbackFactory(CallbackData, prefix='user-book', sep='@'):
+class UserBookCallbackFactory(CallbackData, prefix='userb', sep='@'):
     total_page_count: int
     book_id: str
 
 
-class BookmarksCallbackFactory(CallbackData, prefix='bookmark', sep='@'):
-    page_number: int
+class BookMarkCallbackFactory(CallbackData, prefix='bmark', sep='@'):
     book_id: str
 
 
-class DelBookmarksCallbackFactory(CallbackData, prefix='del-bkmark', sep='@'):
-    page_number: int
+class EditBookMarkCallbackFactory(CallbackData, prefix='ebmark', sep='@'):
     book_id: str
 
 
-class PageTurningCallbackFactory(CallbackData, prefix='page-turn', sep='@'):
+class BookPageMarkCallbackFactory(CallbackData, prefix='bpmark', sep='@'):
+    book_id: str
+    page_number: int
+
+
+class EditBookPageMarkCallbackFactory(CallbackData, prefix='ebpmark', sep='@'):
+    book_id: str
+    page_number: int
+
+
+class PageTurningCallbackFactory(CallbackData, prefix='pturn', sep='@'):
     turn_type: str
     book_id: str
 
 
-class PageCallbackFactory(CallbackData, prefix='page', sep='@'):
+class PageCallbackFactory(CallbackData, prefix='p', sep='@'):
     page_num: int
     page_count: int
     book_id: str
