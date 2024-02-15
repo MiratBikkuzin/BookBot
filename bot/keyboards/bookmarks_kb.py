@@ -54,12 +54,12 @@ class BookmarksKeyboard:
 
         return kb_builder.as_markup()
     
-    # @staticmethod
-    # def back_from_bookmark_kb() -> InlineKeyboardMarkup:
+    @staticmethod
+    def back_from_bookmark_kb() -> InlineKeyboardMarkup:
         
-    #     back_button: InlineKeyboardButton = InlineKeyboardButton(
-    #         text=LEXICON_RU['back_bookmark_button'],
-    #         callback_data='back_bookmark'
-    #     )
+        back_button: InlineKeyboardButton = InlineKeyboardButton(
+            text=LEXICON_RU['back_bookmark_button'],
+            callback_data='back_bookmark'
+        )
 
-    #     return InlineKeyboardMarkup(inline_keyboard=[[back_button]])
+        return InlineKeyboardMarkup(inline_keyboard=[[back_button]])
