@@ -76,3 +76,20 @@ class BookmarksKeyboard:
                 text=f"{page_num} - {book_page_content[:85]}",
                 callback_data=BookPageMarkCallbackFactory(book_id=book_id, page_number=page_num)
             ))
+
+        return kb_builder.as_markup()
+
+    @staticmethod
+    async def create_edit_book_page_mark_kb(user_id: int, book_id: str) -> InlineKeyboardMarkup:
+
+        kb_builder: InlineKeyboardBuilder = InlineKeyboardBuilder()
+        book_bookmarks: tuple[int] = await get_user_book_bookmarks(user_id, book_id)
+
+        for page_num in sorted(book_bookmarks):
+            book_page_content: str = await BookObjectStore.get_book_page_content(book_id, page_num)
+            kb_builder.row(InlineKeyboardButton(
+                text=f"{page_num} - {book_page_content[:85]}",
+                callback_data=EditBookPageMarkCallbackFactory(book_id=book_id, page_number=page_num)
+            ))
+
+        return kb_builder.as_markup()
