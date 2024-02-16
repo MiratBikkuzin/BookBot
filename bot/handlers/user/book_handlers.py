@@ -21,10 +21,10 @@ async def process_page_turning(callback: CallbackQuery,
                                callback_data: PageTurningCallbackFactory) -> None:
 
     user_id, book_id = callback.from_user.id, callback_data.book_id
-    page_count, page_num, is_admin = await get_user_book_info(user_id, book_id)
+    _, page_count, page_num, _ = await get_user_book_info(user_id, book_id)
     page_num += -1 if callback_data.turn_type == 'backward' else 1
 
-    page_content: str = await BookObjectStore.get_book_page_content(book_id, page_num, is_admin)
+    page_content: str = await BookObjectStore.get_book_page_content(book_id, page_num)
     
     await callback.message.edit_text(
         text=page_content,
@@ -64,7 +64,7 @@ async def process_admin_book_choice(callback: CallbackQuery,
     
     user_id, book_id = callback.from_user.id, callback_data.book_id
     book_title, page_count = await get_admin_book_info(book_id)
-    user_book_info: tuple[int, int, bool] | None = await get_user_book_info(user_id, book_id)
+    user_book_info: tuple[str, int, int, bool] | None = await get_user_book_info(user_id, book_id)
 
     if not user_book_info:
         page_num: int = 1
@@ -72,9 +72,9 @@ async def process_admin_book_choice(callback: CallbackQuery,
                             page_count=page_count, is_admin_book=True)
         
     else:
-        page_num: int = user_book_info[1]
+        page_num: int = user_book_info[2]
 
-    page_content: str = await BookObjectStore.get_book_page_content(book_id, page_num, is_admin=True)
+    page_content: str = await BookObjectStore.get_book_page_content(book_id, page_num)
 
     await callback.message.answer(
         text=page_content,
@@ -87,9 +87,9 @@ async def process_user_book_choice(callback: CallbackQuery,
                                    callback_data: UserBookCallbackFactory) -> None:
 
     user_id, book_id = callback.from_user.id, callback_data.book_id
-    page_count, page_num, is_admin = await get_user_book_info(user_id, book_id)
+    _, page_count, page_num, _ = await get_user_book_info(user_id, book_id)
 
-    page_content: str = await BookObjectStore.get_book_page_content(book_id, page_num, is_admin)
+    page_content: str = await BookObjectStore.get_book_page_content(book_id, page_num)
 
     await callback.message.answer(
         text=page_content,

@@ -45,7 +45,7 @@ async def admin_send_book(message: Message, bot: Bot, book_file_id: str, book_ti
         if file_format == 'fb2':
             book_text: str = parse_fb2(book_text)
 
-        book: dict[int: str] = await BookObjectStore.upload_book(book_text, book_id, is_admin=True)
+        book: dict[int: str] = await BookObjectStore.upload_book(book_text, book_id)
         await add_admin_book(admin_username=message.from_user.username, book_id=book_id,
                              book_title=book_title, page_count=len(book))
         await message.answer(text=LEXICON_RU['admin_book_download_end'])
