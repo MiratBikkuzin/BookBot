@@ -46,6 +46,7 @@ async def get_user_books_with_bookmarks(user_id: int) -> list[tuple[str, str]]:
             select(BookmarksTable.book_id, BookmarksTable.book_title)
             .select_from(BookmarksTable)
             .where(BookmarksTable.user_id == user_id)
+            .distinct()
         )
         result = await session.execute(stmt)
         return result.fetchall()
