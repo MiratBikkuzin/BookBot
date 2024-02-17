@@ -50,8 +50,8 @@ class BookmarksKeyboard:
     def back_from_bookmark_content_kb() -> InlineKeyboardMarkup:
         
         back_button: InlineKeyboardButton = InlineKeyboardButton(
-            text=LEXICON_RU['back_bookmark_button'],
-            callback_data='back_bookmark'
+            text=LEXICON_RU['back_button'],
+            callback_data='back_from_bookmark_content'
         )
 
         return InlineKeyboardMarkup(inline_keyboard=[[back_button]])
@@ -69,6 +69,11 @@ class BookmarksKeyboard:
                 callback_data=BookPageMarkCallbackFactory(book_id=book_id,
                                                           page_number=page_num).pack()
             ))
+
+        kb_builder.row(InlineKeyboardButton(
+            text=LEXICON_RU['back_from_bookmarks_list'],
+            callback_data='back_from_bookmarks'
+        ))
 
         return kb_builder.as_markup()
 
