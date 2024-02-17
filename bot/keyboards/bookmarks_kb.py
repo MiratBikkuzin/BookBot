@@ -1,4 +1,3 @@
-from database.methods.get import get_user_books_with_bookmarks, get_user_book_bookmarks
 from services.object_store import BookObjectStore
 from keyboards.kb_utils import (BookMarkCallbackFactory, EditBookMarkCallbackFactory,
                                 BookPageMarkCallbackFactory, EditBookPageMarkCallbackFactory)
@@ -25,12 +24,7 @@ class BookmarksKeyboard:
             InlineKeyboardButton(
                 text=LEXICON_RU['edit_bookmarks_button'],
                 callback_data='edit_bookmarks'
-            ),
-            InlineKeyboardButton(
-                text=LEXICON_RU['cancel'],
-                callback_data='cancel'
-            )
-        )
+            ))
 
         return kb_builder.as_markup()
     
@@ -47,13 +41,13 @@ class BookmarksKeyboard:
 
         kb_builder.row(InlineKeyboardButton(
             text=LEXICON_RU['cancel'],
-            callback_data='cancel'
-            ))
+            callback_data='cancel_edit_bookmarks'
+        ))
 
         return kb_builder.as_markup()
     
     @staticmethod
-    def back_from_bookmark_kb() -> InlineKeyboardMarkup:
+    def back_from_bookmark_content_kb() -> InlineKeyboardMarkup:
         
         back_button: InlineKeyboardButton = InlineKeyboardButton(
             text=LEXICON_RU['back_bookmark_button'],
