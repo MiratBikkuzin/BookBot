@@ -51,12 +51,17 @@ async def process_add_bookmark(callback: CallbackQuery, callback_data: PageCallb
         )
 
 
-# @router.callback_query(IsDigitCallbackData())
-# async def process_bookmark_press(callback: CallbackQuery) -> None:
-#     await callback.message.edit_text(
-#         text=book[int(callback.data)],
-#         reply_markup=BookmarkFactory.back_from_bookmark_kb()
-#     )
+@router.callback_query(BookMarkCallbackFactory.filter())
+async def process_book_with_bookmarks_press(callback: CallbackQuery,
+                                            callback_data: BookMarkCallbackFactory) -> None:
+    
+    book_id: str = callback_data.book_id
+    book_bookmarks: tuple[int] = await get_user_book_bookmarks(callback.from_user.id, book_id)
+    
+    await callback.message.edit_text(
+        text='Выберите страницу книги, которую вы добавляли в закладки',
+        reply_markup=await BookmarksKeyboard.create_book_page_mark_kb(book_id, book_bookmarks)
+    )
 
 
 # @router.callback_query(F.data == 'back_bookmark')
