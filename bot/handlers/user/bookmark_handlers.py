@@ -33,22 +33,22 @@ async def process_bookmarks_command(message: Message) -> None:
         await message.answer(LEXICON_RU['no_bookmarks'])
 
 
-# @router.callback_query(PageCallbackFactory.filter())
-# async def process_add_bookmark(callback: CallbackQuery, callback_data: PageCallbackFactory) -> None:
+@router.callback_query(PageCallbackFactory.filter())
+async def process_add_bookmark(callback: CallbackQuery, callback_data: PageCallbackFactory) -> None:
 
-#     user_id: int = callback.from_user.id
-#     book_id, page = callback_data.book_id, callback_data.page_num
-#     book_title, *_ = await get_user_book_info(user_id, book_id)
+    user_id: int = callback.from_user.id
+    book_id, page = callback_data.book_id, callback_data.page_num
+    book_title, *_ = await get_user_book_info(user_id, book_id)
 
-#     if page not in await get_user_book_bookmarks(user_id, book_id):
-#         await add_user_bookmark(user_id, book_id, book_title, page)
-#         await callback.answer('Страница добавлена в закладки!')
+    if page not in await get_user_book_bookmarks(user_id, book_id):
+        await add_user_bookmark(user_id, book_id, book_title, page)
+        await callback.answer('Страница добавлена в закладки!')
 
-#     else:
-#         await callback.answer(
-#             text='Страница уже есть в ваших закладках',
-#             show_alert=True
-#         )
+    else:
+        await callback.answer(
+            text='Страница уже есть в ваших закладках',
+            show_alert=True
+        )
 
 
 # @router.callback_query(IsDigitCallbackData())
