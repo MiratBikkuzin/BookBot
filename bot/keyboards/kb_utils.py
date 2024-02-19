@@ -29,6 +29,10 @@ class EditBookPageMarkCallbackFactory(CallbackData, prefix='ebpmark', sep='@'):
     page_number: int
 
 
+class BackPageMarkCallbackFactory(CallbackData, prefix='bfpmc', sep='@'):
+    book_id: str
+
+
 class PageTurningCallbackFactory(CallbackData, prefix='pturn', sep='@'):
     turn_type: str
     book_id: str
