@@ -64,6 +64,18 @@ async def process_book_with_bookmarks_press(callback: CallbackQuery,
     )
 
 
+@router.callback_query(BookPageMarkCallbackFactory.filter())
+async def process_book_page_mark_press(callback: CallbackQuery,
+                                       callback_data: BookPageMarkCallbackFactory) -> None:
+    
+    book_id, page_num = callback_data.book_id, callback_data.page_number
+
+    await callback.message.edit_text(
+        text=await BookObjectStore.get_book_page_content(book_id, page_num),
+        reply_markup=BookmarksKeyboard.back_from_bookmark_content_kb(book_id)
+    )
+
+
 @router.callback_query(F.data == 'edit_bookmarks')
 async def process_edit_bookmarks_press(callback: CallbackQuery) -> None:
 
