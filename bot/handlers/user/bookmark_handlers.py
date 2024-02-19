@@ -75,7 +75,7 @@ async def process_edit_bookmarks_press(callback: CallbackQuery) -> None:
     )
 
 
-@router.callback_query(F.data == 'cancel_edit_bookmarks')
+@router.callback_query(F.data.in_(('cancel_edit_bookmarks', 'back_from_bookmarks')))
 async def process_cancel_edit_bookmarks_press(callback: CallbackQuery) -> None:
 
     books: list[tuple[str, str]] = await get_user_books_with_bookmarks(callback.from_user.id)
