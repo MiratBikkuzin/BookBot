@@ -64,6 +64,17 @@ async def process_book_with_bookmarks_press(callback: CallbackQuery,
     )
 
 
+@router.callback_query(F.data == 'edit_bookmarks')
+async def process_edit_bookmarks_press(callback: CallbackQuery) -> None:
+
+    books: list[tuple[str, str]] = await get_user_books_with_bookmarks(callback.from_user.id)
+
+    await callback.message.edit_text(
+        text=LEXICON_RU['edit_bookmarks'],
+        reply_markup=await BookmarksKeyboard.create_edit_bookmark_kb(books)
+    )
+
+
 # @router.callback_query(F.data == 'back_bookmark')
 # async def process_back_bookmark_press(callback: CallbackQuery):
 #     await callback.message.edit_text(
