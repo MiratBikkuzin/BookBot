@@ -8,10 +8,10 @@ from lexicon.lexicon import LEXICON_RU
 from keyboards.bookmarks_kb import BookmarksKeyboard
 from keyboards.kb_utils import (PageCallbackFactory, BookMarkCallbackFactory,
                                 EditBookMarkCallbackFactory, BookPageMarkCallbackFactory,
-                                EditBookPageMarkCallbackFactory)
+                                EditBookPageMarkCallbackFactory, BackPageMarkCallbackFactory)
 
 from aiogram import Router, F
-from aiogram.filters import Command
+from aiogram.filters import Command, or_f
 from aiogram.types import Message, CallbackQuery
 
 
@@ -51,7 +51,8 @@ async def process_add_bookmark(callback: CallbackQuery, callback_data: PageCallb
         )
 
 
-@router.callback_query(BookMarkCallbackFactory.filter())
+@router.callback_query(or_f(BookMarkCallbackFactory.filter(),
+                            BackPageMarkCallbackFactory.filter()))
 async def process_book_with_bookmarks_press(callback: CallbackQuery,
                                             callback_data: BookMarkCallbackFactory) -> None:
     
@@ -59,7 +60,7 @@ async def process_book_with_bookmarks_press(callback: CallbackQuery,
     book_bookmarks: tuple[int] = await get_user_book_bookmarks(callback.from_user.id, book_id)
     
     await callback.message.edit_text(
-        text='Выберите страницу книги, которую вы добавляли в закладки',
+        text='Выберите страницу книги',
         reply_markup=await BookmarksKeyboard.create_book_page_mark_kb(book_id, book_bookmarks)
     )
 
