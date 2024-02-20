@@ -92,4 +92,9 @@ class BookmarksKeyboard:
                                                               page_number=page_num).pack()
             ))
 
+        kb_builder.row(InlineKeyboardButton(
+            text=LEXICON_RU['back_from_bookmarks_list'],
+            callback_data='back_from_edit_bookmarks'
+        ))
+
         return kb_builder.as_markup()
