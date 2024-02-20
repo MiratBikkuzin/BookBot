@@ -1,6 +1,7 @@
 from services.object_store import BookObjectStore
 from keyboards.kb_utils import (BookMarkCallbackFactory, EditBookMarkCallbackFactory,
-                                BookPageMarkCallbackFactory, EditBookPageMarkCallbackFactory)
+                                BookPageMarkCallbackFactory, EditBookPageMarkCallbackFactory,
+                                BackPageMarkCallbackFactory)
 from lexicon.lexicon import LEXICON_RU
 
 from aiogram.types import InlineKeyboardMarkup, InlineKeyboardButton
@@ -47,11 +48,11 @@ class BookmarksKeyboard:
         return kb_builder.as_markup()
     
     @staticmethod
-    def back_from_bookmark_content_kb() -> InlineKeyboardMarkup:
+    def back_from_bookmark_content_kb(book_id: str) -> InlineKeyboardMarkup:
         
         back_button: InlineKeyboardButton = InlineKeyboardButton(
             text=LEXICON_RU['back_button'],
-            callback_data='back_from_bookmark_content'
+            callback_data=BackPageMarkCallbackFactory(book_id=book_id).pack()
         )
 
         return InlineKeyboardMarkup(inline_keyboard=[[back_button]])
@@ -86,9 +87,14 @@ class BookmarksKeyboard:
         for page_num in sorted(book_bookmarks):
             book_page_content: str = await BookObjectStore.get_book_page_content(book_id, page_num)
             kb_builder.row(InlineKeyboardButton(
-                text=f"{page_num} - {book_page_content[:85]}",
+                text=f"{LEXICON_RU['del']} {page_num} - {book_page_content[:85]}",
                 callback_data=EditBookPageMarkCallbackFactory(book_id=book_id,
                                                               page_number=page_num).pack()
             ))
+
+        kb_builder.row(InlineKeyboardButton(
+            text=LEXICON_RU['back_from_bookmarks_list'],
+            callback_data='back_from_edit_bookmarks'
+        ))
 
         return kb_builder.as_markup()

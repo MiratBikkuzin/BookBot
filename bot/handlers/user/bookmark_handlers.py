@@ -8,10 +8,10 @@ from lexicon.lexicon import LEXICON_RU
 from keyboards.bookmarks_kb import BookmarksKeyboard
 from keyboards.kb_utils import (PageCallbackFactory, BookMarkCallbackFactory,
                                 EditBookMarkCallbackFactory, BookPageMarkCallbackFactory,
-                                EditBookPageMarkCallbackFactory)
+                                EditBookPageMarkCallbackFactory, BackPageMarkCallbackFactory)
 
 from aiogram import Router, F
-from aiogram.filters import Command
+from aiogram.filters import Command, or_f
 from aiogram.types import Message, CallbackQuery
 
 
@@ -51,7 +51,8 @@ async def process_add_bookmark(callback: CallbackQuery, callback_data: PageCallb
         )
 
 
-@router.callback_query(BookMarkCallbackFactory.filter())
+@router.callback_query(or_f(BookMarkCallbackFactory.filter(),
+                            BackPageMarkCallbackFactory.filter()))
 async def process_book_with_bookmarks_press(callback: CallbackQuery,
                                             callback_data: BookMarkCallbackFactory) -> None:
     
@@ -59,41 +60,87 @@ async def process_book_with_bookmarks_press(callback: CallbackQuery,
     book_bookmarks: tuple[int] = await get_user_book_bookmarks(callback.from_user.id, book_id)
     
     await callback.message.edit_text(
-        text='Выберите страницу книги, которую вы добавляли в закладки',
+        text='Выберите страницу книги',
         reply_markup=await BookmarksKeyboard.create_book_page_mark_kb(book_id, book_bookmarks)
     )
 
 
-# @router.callback_query(F.data == 'back_bookmark')
-# async def process_back_bookmark_press(callback: CallbackQuery):
-#     await callback.message.edit_text(
-#         text=LEXICON_RU['/bookmarks'],
-#         reply_markup=BookmarkFactory.create_bookmarks_kb(await get_user_bookmarks_tuple(user_id=callback.from_user.id))
-#     )
+@router.callback_query(BookPageMarkCallbackFactory.filter())
+async def process_book_page_mark_press(callback: CallbackQuery,
+                                       callback_data: BookPageMarkCallbackFactory) -> None:
     
+    book_id, page_num = callback_data.book_id, callback_data.page_number
 
-# @router.callback_query(F.data == 'edit_bookmarks')
-# async def process_edit_bookmark(callback: CallbackQuery) -> None:
-#     await callback.message.edit_text(
-#         text=LEXICON_RU['edit_bookmarks'],
-#         reply_markup=BookmarkFactory.create_edit_kb(await get_user_bookmarks_tuple(user_id=callback.from_user.id))
-#     )
+    await callback.message.edit_text(
+        text=await BookObjectStore.get_book_page_content(book_id, page_num),
+        reply_markup=BookmarksKeyboard.back_from_bookmark_content_kb(book_id)
+    )
 
 
-# @router.callback_query(IsDelBookmarkCallbackData())
-# async def process_del_bookmark_press(callback: CallbackQuery, del_bookmark_page: int) -> None:
+@router.callback_query(F.data.in_(('edit_bookmarks', 'back_from_edit_bookmarks')))
+async def process_edit_bookmarks_press(callback: CallbackQuery) -> None:
 
-#     user_id: int = callback.from_user.id
+    books: list[tuple[str, str]] = await get_user_books_with_bookmarks(callback.from_user.id)
+
+    await callback.message.edit_text(
+        text=LEXICON_RU['edit_bookmarks'],
+        reply_markup=await BookmarksKeyboard.create_edit_bookmark_kb(books)
+    )
+
+
+@router.callback_query(EditBookMarkCallbackFactory.filter())
+async def process_edit_book_with_bookmarks_press(callback: CallbackQuery,
+                                                 callback_data: EditBookMarkCallbackFactory) -> None:
     
-#     await del_user_bookmark(user_id=user_id, bookmark_page=del_bookmark_page)
+    book_id: str = callback_data.book_id
+    book_bookmarks: tuple[int] = await get_user_book_bookmarks(callback.from_user.id, book_id)
 
-#     user_bookmarks: tuple[int] = await get_user_bookmarks_tuple(user_id=user_id)
+    await callback.message.edit_text(
+        text=LEXICON_RU['edit_book_page_marks'],
+        reply_markup=await BookmarksKeyboard.create_edit_book_page_mark_kb(book_id, book_bookmarks)
+    )
 
-#     if user_bookmarks:
-#         await callback.message.edit_text(
-#             text=LEXICON_RU['/bookmarks'],
-#             reply_markup=BookmarkFactory.create_bookmarks_kb(user_bookmarks)
-#         )
 
-#     else:
-#         await callback.message.edit_text(LEXICON_RU['no_bookmarks'])
+@router.callback_query(EditBookPageMarkCallbackFactory.filter())
+async def process_edit_book_page_mark_press(callback: CallbackQuery,
+                                            callback_data: EditBookPageMarkCallbackFactory) -> None:
+    
+    user_id: int = callback.from_user.id
+    book_id, page_num = callback_data.book_id, callback_data.page_number
+
+    await del_user_bookmark(user_id, book_id, page_num)
+
+    await callback.answer(text='Закладка удалена')
+
+    book_bookmarks: tuple[int] | None = await get_user_book_bookmarks(user_id, book_id)
+
+    if book_bookmarks:
+        await callback.message.edit_text(
+            text=LEXICON_RU['edit_book_page_marks'],
+            reply_markup=await BookmarksKeyboard.create_edit_book_page_mark_kb(book_id,
+                                                                               book_bookmarks)
+        )
+
+    else:
+
+        books: list[tuple[str, str]] = await get_user_books_with_bookmarks(user_id)
+
+        if books:
+            await callback.message.edit_text(
+                text=LEXICON_RU['edit_bookmarks'],
+                reply_markup=await BookmarksKeyboard.create_edit_bookmark_kb(books)
+            )
+
+        else:
+            await callback.message.edit_text(text=LEXICON_RU['no_bookmarks'])
+
+
+@router.callback_query(F.data.in_(('cancel_edit_bookmarks', 'back_from_bookmarks')))
+async def process_cancel_edit_bookmarks_press(callback: CallbackQuery) -> None:
+
+    books: list[tuple[str, str]] = await get_user_books_with_bookmarks(callback.from_user.id)
+
+    await callback.message.edit_text(
+        text=LEXICON_RU['/bookmarks'],
+        reply_markup=await BookmarksKeyboard.create_bookmark_kb(books)
+    )

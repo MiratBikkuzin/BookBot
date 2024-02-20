@@ -81,6 +81,8 @@ async def process_admin_book_choice(callback: CallbackQuery,
         reply_markup=create_pagination_kb(book_id, page_count, page_num)
     )
 
+    await callback.answer()
+
 
 @router.callback_query(UserBookCallbackFactory.filter())
 async def process_user_book_choice(callback: CallbackQuery,
@@ -95,6 +97,8 @@ async def process_user_book_choice(callback: CallbackQuery,
         text=page_content,
         reply_markup=create_pagination_kb(book_id, page_count, page_num)
     )
+
+    await callback.answer()
 
 
 @router.message(Command(commands='continue'))
