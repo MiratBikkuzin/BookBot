@@ -101,6 +101,40 @@ async def process_edit_book_with_bookmarks_press(callback: CallbackQuery,
     )
 
 
+@router.callback_query(EditBookPageMarkCallbackFactory.filter())
+async def process_edit_book_page_mark_press(callback: CallbackQuery,
+                                            callback_data: EditBookPageMarkCallbackFactory) -> None:
+    
+    user_id: int = callback.from_user.id
+    book_id, page_num = callback_data.book_id, callback_data.page_number
+
+    await del_user_bookmark(user_id, book_id, page_num)
+
+    await callback.answer(text='Закладка удалена')
+
+    book_bookmarks: tuple[int] | None = await get_user_book_bookmarks(user_id, book_id)
+
+    if book_bookmarks:
+        await callback.message.edit_text(
+            text=LEXICON_RU['edit_book_page_marks'],
+            reply_markup=await BookmarksKeyboard.create_edit_book_page_mark_kb(book_id,
+                                                                               book_bookmarks)
+        )
+
+    else:
+
+        books: list[tuple[str, str]] = await get_user_books_with_bookmarks(user_id)
+
+        if books:
+            await callback.message.edit_text(
+                text=LEXICON_RU['edit_bookmarks'],
+                reply_markup=await BookmarksKeyboard.create_edit_bookmark_kb(books)
+            )
+
+        else:
+            await callback.message.edit_text(text=LEXICON_RU['no_bookmarks'])
+
+
 @router.callback_query(F.data.in_(('cancel_edit_bookmarks', 'back_from_bookmarks')))
 async def process_cancel_edit_bookmarks_press(callback: CallbackQuery) -> None:
 
