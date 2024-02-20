@@ -88,6 +88,19 @@ async def process_edit_bookmarks_press(callback: CallbackQuery) -> None:
     )
 
 
+@router.callback_query(EditBookMarkCallbackFactory.filter())
+async def process_edit_book_with_bookmarks_press(callback: CallbackQuery,
+                                                 callback_data: EditBookMarkCallbackFactory) -> None:
+    
+    book_id: str = callback_data.book_id
+    book_bookmarks: tuple[int] = await get_user_book_bookmarks(callback.from_user.id, book_id)
+
+    await callback.message.edit_text(
+        text=LEXICON_RU['edit_book_page_marks'],
+        reply_markup=await BookmarksKeyboard.create_edit_book_page_mark_kb(book_id, book_bookmarks)
+    )
+
+
 @router.callback_query(F.data.in_(('cancel_edit_bookmarks', 'back_from_bookmarks')))
 async def process_cancel_edit_bookmarks_press(callback: CallbackQuery) -> None:
 
@@ -97,38 +110,3 @@ async def process_cancel_edit_bookmarks_press(callback: CallbackQuery) -> None:
         text=LEXICON_RU['/bookmarks'],
         reply_markup=await BookmarksKeyboard.create_bookmark_kb(books)
     )
-
-
-# @router.callback_query(F.data == 'back_bookmark')
-# async def process_back_bookmark_press(callback: CallbackQuery):
-#     await callback.message.edit_text(
-#         text=LEXICON_RU['/bookmarks'],
-#         reply_markup=BookmarkFactory.create_bookmarks_kb(await get_user_bookmarks_tuple(user_id=callback.from_user.id))
-#     )
-    
-
-# @router.callback_query(F.data == 'edit_bookmarks')
-# async def process_edit_bookmark(callback: CallbackQuery) -> None:
-#     await callback.message.edit_text(
-#         text=LEXICON_RU['edit_bookmarks'],
-#         reply_markup=BookmarkFactory.create_edit_kb(await get_user_bookmarks_tuple(user_id=callback.from_user.id))
-#     )
-
-
-# @router.callback_query(IsDelBookmarkCallbackData())
-# async def process_del_bookmark_press(callback: CallbackQuery, del_bookmark_page: int) -> None:
-
-#     user_id: int = callback.from_user.id
-    
-#     await del_user_bookmark(user_id=user_id, bookmark_page=del_bookmark_page)
-
-#     user_bookmarks: tuple[int] = await get_user_bookmarks_tuple(user_id=user_id)
-
-#     if user_bookmarks:
-#         await callback.message.edit_text(
-#             text=LEXICON_RU['/bookmarks'],
-#             reply_markup=BookmarkFactory.create_bookmarks_kb(user_bookmarks)
-#         )
-
-#     else:
-#         await callback.message.edit_text(LEXICON_RU['no_bookmarks'])
