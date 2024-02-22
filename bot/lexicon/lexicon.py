@@ -25,6 +25,7 @@ LEXICON_RU: dict[str, str] = {
     'other_update_command': '<b>Вы не администратор.</b>\n'
                             'Данная команда вам недоступна',
     'wait_admin_book_download': 'Подождите пока книга грузиться в общий доступ',
+    'wait_user_book_download': 'Немного подождите. Книга уже добавляется...',
     'admin_book_download_end': 'Ура! Загрузка книги в общий доступ завершена',
     'other_format_admin_send_book': 'Отправлен файл не того формата или не добавлена подпись к файлу',
     'admins_book_in_stock_warning': 'Книга уже есть в общем доступе',
