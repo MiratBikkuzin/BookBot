@@ -28,6 +28,7 @@ LEXICON_RU: dict[str, str] = {
     'admin_book_download_end': 'Ура! Загрузка книги в общий доступ завершена',
     'other_format_admin_send_book': 'Отправлен файл не того формата или не добавлена подпись к файлу',
     'admins_book_in_stock_warning': 'Книга уже есть в общем доступе',
+    'users_book_in_stock_warning': 'Вы уже добавляли эту книгу',
     'choice_books_text': 'Выберите откуда вы будете читать',
     'choice_user_books': 'Мои книги',
     'choice_admin_books': 'Книги общего доступа',
