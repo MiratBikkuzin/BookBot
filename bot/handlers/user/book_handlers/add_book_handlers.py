@@ -45,3 +45,8 @@ async def process_user_send_book(message: Message, bot: Bot, book_file_id: str,
         await add_user_book(user_id, book_id, book_title, page_count=len(book))
         await message.answer(text=LEXICON_RU['user_book_download_end'])
         await state.clear()
+
+
+@router.message(StateFilter(FSMUserBook.user_book_send), ~IsCorrectBook())
+async def not_user_send_book_warning(message: Message):
+    await message.answer(text=LEXICON_RU['other_format_send_book'])
