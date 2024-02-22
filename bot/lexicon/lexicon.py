@@ -27,6 +27,7 @@ LEXICON_RU: dict[str, str] = {
     'wait_admin_book_download': 'Подождите пока книга грузиться в общий доступ',
     'wait_user_book_download': 'Немного подождите. Книга уже добавляется...',
     'admin_book_download_end': 'Ура! Загрузка книги в общий доступ завершена',
+    'user_book_download_end': 'Ура! Книга добавлена и теперь вы в любой момент можете её читать',
     'other_format_admin_send_book': 'Отправлен файл не того формата или не добавлена подпись к файлу',
     'admins_book_in_stock_warning': 'Книга уже есть в общем доступе',
     'users_book_in_stock_warning': 'Вы уже добавляли эту книгу',
