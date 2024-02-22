@@ -15,8 +15,7 @@ async def del_user_bookmark(user_id: int, book_id: str, page_number: int) -> Non
         await session.commit()
 
 
-async def del_admin_book(admin_username: str, admin_tg_id: int,
-                         book_title: str, book_id: str) -> None:
+async def del_admin_book(admin_username: str, book_id: str) -> None:
     
     async with database.session as session:
         first_stmt = (
@@ -33,7 +32,7 @@ async def del_admin_book(admin_username: str, admin_tg_id: int,
         await session.commit()
 
 
-async def del_user_book(user_id: int, book_title: str, book_id: str) -> None:
+async def del_user_book(user_id: int, book_id: str) -> None:
     
     async with database.session as session:
         stmt = (

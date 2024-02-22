@@ -1,6 +1,6 @@
 from database.methods.create import add_admin_book
 from database.methods.get import get_admin_book_info
-from filters.filters import IsAdmin, IsCorrectAdminBook
+from filters.filters import IsAdmin, IsCorrectBook
 from states.states import FSMAdminBook, default_state
 from services.object_store import BookObjectStore
 from services.file_handling import parse_fb2, get_book_text
@@ -27,7 +27,7 @@ async def not_update_warning(message: Message):
     await message.answer(text=LEXICON_RU['other_update_command'])
 
 
-@router.message(StateFilter(FSMAdminBook.admin_book_send), IsCorrectAdminBook())
+@router.message(StateFilter(FSMAdminBook.admin_book_send), IsCorrectBook())
 async def admin_send_book(message: Message, bot: Bot, book_file_id: str, book_title: str,
                           file_format: str, state: FSMContext):
     
@@ -52,6 +52,6 @@ async def admin_send_book(message: Message, bot: Bot, book_file_id: str, book_ti
         await state.clear()
 
 
-@router.message(StateFilter(FSMAdminBook.admin_book_send), ~IsCorrectAdminBook())
+@router.message(StateFilter(FSMAdminBook.admin_book_send), ~IsCorrectBook())
 async def not_admin_send_book_warning(message: Message):
-    await message.answer(text=LEXICON_RU['other_format_admin_send_book'])
+    await message.answer(text=LEXICON_RU['other_format_send_book'])
