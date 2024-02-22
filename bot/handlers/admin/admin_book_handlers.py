@@ -54,4 +54,4 @@ async def admin_send_book(message: Message, bot: Bot, book_file_id: str, book_ti
 
 @router.message(StateFilter(FSMAdminBook.admin_book_send), ~IsCorrectBook())
 async def not_admin_send_book_warning(message: Message):
-    await message.answer(text=LEXICON_RU['other_format_admin_send_book'])
+    await message.answer(text=LEXICON_RU['other_format_send_book'])
