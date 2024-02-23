@@ -45,6 +45,9 @@ LEXICON_RU: dict[str, str] = {
     'edit_bookmarks_button': '❌ РЕДАКТИРОВАТЬ',
     'del': '❌',
     'cancel': 'ОТМЕНИТЬ',
+    'cancel_add_book_end': 'Хорошо, попробуйте добавить книгу в следующий раз.\n\n'
+                           'Если у вас что-то не получилось, то напишите в <b>тех.поддержку '
+                           '@chitalka_support</b>',
     'back_button': 'Вернуться назад',
     'back_from_bookmarks_list': 'Вернуться к списку книг',
     'no_bookmarks': 'У вас пока нет ни одной закладки.\n\nЧтобы '
