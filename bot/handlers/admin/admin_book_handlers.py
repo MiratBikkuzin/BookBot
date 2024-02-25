@@ -2,6 +2,7 @@ from database.methods.create import add_admin_book
 from database.methods.get import get_admin_book_info
 from filters.filters import IsAdmin, IsCorrectBook
 from states.states import FSMAdminBook, default_state
+from keyboards.books_kb import BooksKeyboard
 from services.object_store import BookObjectStore
 from services.file_handling import parse_fb2, get_book_text
 from lexicon.lexicon import LEXICON_RU
@@ -18,7 +19,8 @@ router: Router = Router(name=__name__)
 
 @router.message(Command(commands='update'), IsAdmin(), StateFilter(default_state))
 async def process_update_command(message: Message, state: FSMContext):
-    await message.answer(text=LEXICON_RU[message.text])
+    await message.answer(text=LEXICON_RU[message.text],
+                         reply_markup=BooksKeyboard.get_cancel_add_book_kb())
     await state.set_state(FSMAdminBook.admin_book_send)
 
 
@@ -54,4 +56,7 @@ async def admin_send_book(message: Message, bot: Bot, book_file_id: str, book_ti
 
 @router.message(StateFilter(FSMAdminBook.admin_book_send), ~IsCorrectBook())
 async def not_admin_send_book_warning(message: Message):
-    await message.answer(text=LEXICON_RU['other_format_send_book'])
+    await message.answer(
+        text=LEXICON_RU['other_format_send_book'],
+        reply_markup=BooksKeyboard.get_cancel_add_book_kb()
+    )
