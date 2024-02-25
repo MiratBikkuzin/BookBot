@@ -3,10 +3,11 @@ from config_data.config import db_settings
 
 from typing import Annotated
 from sqlalchemy.orm import Mapped, mapped_column
-from sqlalchemy import String
+from sqlalchemy import String, BigInteger
 
 
 intpk = Annotated[int, mapped_column(primary_key=True)]
+useridk = Annotated[int, mapped_column(BigInteger())]
 table_args: dict[str: str] = {'schema': db_settings.postgres_schema}
 
 
@@ -20,7 +21,7 @@ class UsersTable(Base):
     __table_args__ = table_args
 
     id: Mapped[intpk]
-    user_id: Mapped[int]
+    user_id: Mapped[useridk]
 
 
 class BookmarksTable(Base):
@@ -28,7 +29,7 @@ class BookmarksTable(Base):
     __table_args__ = table_args
 
     id: Mapped[intpk]
-    user_id: Mapped[int]
+    user_id: Mapped[useridk]
 
     book_title: Mapped[str]
     book_id: Mapped[str] = mapped_column(String(41))
@@ -52,7 +53,7 @@ class UserBooksTable(Base):
     __table_args__ = table_args
 
     id: Mapped[intpk]
-    user_id: Mapped[int]
+    user_id: Mapped[useridk]
 
     book_title: Mapped[str]
     book_id: Mapped[str] = mapped_column(String(41))
