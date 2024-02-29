@@ -23,6 +23,9 @@ class UsersTable(Base):
     id: Mapped[intpk]
     user_id: Mapped[useridk]
 
+    num_books_to_add: Mapped[str]  # this column is a string because it can have one of two values
+                                   # (the number of books to add or word "infinity")
+
 
 class BookmarksTable(Base):
     __tablename__ = 'UserBookmarks'
