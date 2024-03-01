@@ -7,6 +7,9 @@ five_books_price = LabeledPrice(label=LEXICON_RU['pay_label'], amount=30 * 100)
 ten_books_price = LabeledPrice(label=LEXICON_RU['pay_label'], amount=55 * 100)
 unlimited_books_price = LabeledPrice(label=LEXICON_RU['pay_label'], amount=500 * 100)
 
+max_tip_amount: int = 40 * 100
+tip_amounts: list[int] = [5 * 100, 10 * 100, 20 * 100, 40 * 100]
+
 
 class PaymentKeyboards:
 
