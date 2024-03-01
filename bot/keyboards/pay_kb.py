@@ -26,7 +26,8 @@ class PaymentKeyboards:
         return InlineKeyboardMarkup(inline_keyboard=inline_keyboard)
 
     @staticmethod
-    def create_back_from_replenish_kb() -> InlineKeyboardMarkup:
+    def create_replenish_kb() -> InlineKeyboardMarkup:
+        pay_button = InlineKeyboardButton(text='Заплатить', pay=True)
         back_button = InlineKeyboardButton(text=LEXICON_RU['back_button'],
                                            callback_data='back_from_replenishment')
-        return InlineKeyboardMarkup(inline_keyboard=[[back_button]])
+        return InlineKeyboardMarkup(inline_keyboard=[[pay_button], [back_button]])
