@@ -60,7 +60,11 @@ LEXICON_RU: dict[str, str] = {
                   'командой <b>/help</b> для получения дополнительной '
                   'информации о доступных командах',
     'pay_label': 'Пополнение количества',
-    'top_up_quantity_text': 'Выберите количество, которое вы хотите добавить:'
+    'top_up_quantity_text': 'Выберите количество, которое вы хотите добавить:',
+    'one_book_invoice_title': 'Пополнение количества на 1 добавление',
+    'five_books_invoice_title': 'Пополнение количества на 5 добавлений',
+    'ten_books_invoice_title': 'Пополнение количества на 10 добавлений',
+    'unlimited_books_invoice_title': 'Пополнение на безлимитное количество добавлений'
 }
 
 LEXICON_COMMANDS_RU: dict[str, str] = {
