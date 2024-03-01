@@ -16,7 +16,12 @@ async def get_user_info(user_id: int) -> tuple[int, int | str]:
         )
 
         result = await session.execute(stmt)
-        user_id, num_books_to_add = result.fetchone()
+        fetchone_result: tuple | None = result.fetchone()
+
+        if fetchone_result is None:
+            return
+        
+        user_id, num_books_to_add = fetchone_result
 
         if num_books_to_add != "infinity":
             num_books_to_add: int = int(num_books_to_add)
