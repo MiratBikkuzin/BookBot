@@ -3,7 +3,7 @@ import logging
 
 from config_data.config import bot_settings
 from database.models import register_models
-from handlers import (read_book_handlers, bookmark_handlers,
+from handlers import (read_book_handlers, bookmark_handlers, main_handlers,
                       add_book_handlers, start_handlers, pay_handlers,
                       admin_book_handlers, other_handlers)
 from keyboards.main_menu import set_main_menu
@@ -33,6 +33,7 @@ async def start_bot() -> None:
     dp.include_routers(
         read_book_handlers.router,
         bookmark_handlers.router,
+        main_handlers.router,
         add_book_handlers.router,
         pay_handlers.router,
         start_handlers.router,
