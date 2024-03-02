@@ -71,3 +71,16 @@ async def process_pre_checkout_query(pre_checkout_query: PreCheckoutQuery):
         await pre_checkout_query.answer(ok=True)
 
 
+@router.message(F.successful_payment)
+async def process_successful_payment(message: Message):
+
+    user_id: int = message.from_user.id
+    num_books_to_add: str = message.successful_payment.invoice_payload
+
+    if num_books_to_add != 'unlimited':
+        current_num_books_to_add: int = await get_user_info(user_id)
+        num_books_to_add: int = int(num_books_to_add)
+        num_books_to_add += current_num_books_to_add
+
+    await update_quantity_to_add_books(user_id, num_books_to_add)
+    await message.answer(text=LEXICON_RU['successful_payment'])
