@@ -5,7 +5,7 @@ from sqlalchemy import select, and_
 from itertools import chain
 
 
-async def get_user_info(user_id: int) -> tuple[int | str]:
+async def get_user_info(user_id: int) -> int | str:
 
     async with database.session as session:
 

@@ -6,7 +6,7 @@ from keyboards.books_kb import BooksKeyboard
 from services.object_store import BookObjectStore
 from services.file_handling import parse_fb2, get_book_text
 from lexicon.lexicon import LEXICON_RU
-from utils.book_utils import get_book_id
+from utils.utils import get_book_id
 
 from aiogram import Router, Bot, F
 from aiogram.types import Message, CallbackQuery
