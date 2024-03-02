@@ -5,12 +5,12 @@ from sqlalchemy import select, and_
 from itertools import chain
 
 
-async def get_user_info(user_id: int) -> tuple[int, int | str]:
+async def get_user_info(user_id: int) -> tuple[int | str]:
 
     async with database.session as session:
 
         stmt = (
-            select(UsersTable.user_id, UsersTable.num_books_to_add)
+            select(UsersTable.num_books_to_add)
             .select_from(UsersTable)
             .where(UsersTable.user_id == user_id)
         )
@@ -21,12 +21,12 @@ async def get_user_info(user_id: int) -> tuple[int, int | str]:
         if fetchone_result is None:
             return
         
-        user_id, num_books_to_add = fetchone_result
+        num_books_to_add = fetchone_result[0]
 
         if num_books_to_add != "unlimited":
             num_books_to_add: int = int(num_books_to_add)
 
-        return user_id, num_books_to_add
+        return num_books_to_add
     
 
 async def get_admin_book_info(book_id: int) -> tuple[str, int]:
