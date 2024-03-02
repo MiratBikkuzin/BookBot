@@ -8,8 +8,6 @@ unlimited_books_price = LabeledPrice(label=LEXICON_RU['pay_label'], amount=500 *
 max_tip_amount: int = 80 * 100
 tip_amounts: list[int] = [10 * 100, 20 * 100, 40 * 100, 80 * 100]
 
-start_parameter: str = 'chitalkabot'
-
 
 def create_payment_kb() -> InlineKeyboardMarkup:
 

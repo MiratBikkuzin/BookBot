@@ -3,7 +3,6 @@ from keyboards.pay_kb import (
     unlimited_books_price,
     max_tip_amount,
     tip_amounts,
-    start_parameter,
     create_payment_kb
 )
 from database.methods.get import get_user_info
@@ -37,8 +36,7 @@ async def process_select_ten_books_to_add(callback: CallbackQuery):
         currency='RUB',
         prices=[ten_books_price],
         max_tip_amount=max_tip_amount,
-        suggested_tip_amounts=tip_amounts,
-        start_parameter=start_parameter
+        suggested_tip_amounts=tip_amounts
     )
     await callback.answer()
 
@@ -53,8 +51,7 @@ async def process_select_unlimited_books_to_add(callback: CallbackQuery):
         currency='RUB',
         prices=[unlimited_books_price],
         max_tip_amount=max_tip_amount,
-        suggested_tip_amounts=tip_amounts,
-        start_parameter=start_parameter
+        suggested_tip_amounts=tip_amounts
     )
     await callback.answer()
 
