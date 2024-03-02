@@ -6,6 +6,7 @@ from keyboards.pay_kb import (
     start_parameter,
     create_payment_kb
 )
+from database.methods.get import get_user_info
 from database.methods.update import update_quantity_to_add_books
 from config_data.config import bot_settings
 from lexicon.lexicon import LEXICON_RU
@@ -47,7 +48,7 @@ async def process_select_unlimited_books_to_add(callback: CallbackQuery):
     await callback.message.answer_invoice(
         title=LEXICON_RU['unlimited_books_invoice_title'],
         description=LEXICON_RU['invoice_description'],
-        payload='infinity',
+        payload='unlimited',
         provider_token=bot_settings.payment_token,
         currency='RUB',
         prices=[unlimited_books_price],
@@ -60,4 +61,13 @@ async def process_select_unlimited_books_to_add(callback: CallbackQuery):
 
 @router.pre_checkout_query()
 async def process_pre_checkout_query(pre_checkout_query: PreCheckoutQuery):
-    await pre_checkout_query.answer(ok=True)
+
+    current_num_books_to_add: int | str = await get_user_info(pre_checkout_query.from_user.id)
+
+    if isinstance(current_num_books_to_add, str):
+        await pre_checkout_query.answer(ok=False, error_message=LEXICON_RU['error_payment_message'])
+
+    else:
+        await pre_checkout_query.answer(ok=True)
+
+
