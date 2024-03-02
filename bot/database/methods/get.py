@@ -76,6 +76,17 @@ async def get_user_book_bookmarks(user_id: int, book_id: str) -> tuple[int]:
         return tuple(chain.from_iterable(result.fetchall()))
     
 
+async def get_total_bookmarks_num(user_id: int) -> int:
+    async with database.session as session:
+        stmt = (
+            select(BookmarksTable.id)
+            .select_from(BookmarksTable)
+            .where(BookmarksTable.user_id == user_id)
+        )
+        result = await session.execute(stmt)
+        return len(result.fetchall())
+    
+
 async def get_admin_books() -> list[tuple[str, str, int]]:
     async with database.session as session:
         stmt = (
