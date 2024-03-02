@@ -9,7 +9,7 @@ async def update_quantity_to_add_books(user_id: int, num_books_to_add: int | str
         stmt = (
             update(UsersTable)
             .values(num_books_to_add=str(num_books_to_add))
-            .where(UsersTable.id == user_id)
+            .where(UsersTable.user_id == user_id)
         )
         await session.execute(stmt)
         await session.commit()
