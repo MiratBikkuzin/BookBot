@@ -16,7 +16,7 @@ from aiogram.types import Message, CallbackQuery, PreCheckoutQuery
 from aiogram.filters import Command
 
 
-router: Router = Router()
+router: Router = Router(name=__name__)
 
 
 @router.message(Command(commands='top_up'))
