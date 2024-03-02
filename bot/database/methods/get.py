@@ -23,7 +23,7 @@ async def get_user_info(user_id: int) -> tuple[int, int | str]:
         
         user_id, num_books_to_add = fetchone_result
 
-        if num_books_to_add != "infinity":
+        if num_books_to_add != "unlimited":
             num_books_to_add: int = int(num_books_to_add)
 
         return user_id, num_books_to_add

@@ -4,7 +4,7 @@ from database.main import database
 from sqlalchemy import update, and_
 
 
-async def update_quantity_to_add_books(user_id: int, num_books_to_add: int | str) -> None:
+async def update_quantity_to_add_books(user_id: int, num_books_to_add: str) -> None:
     async with database.session as session:
         stmt = (
             update(UsersTable)
