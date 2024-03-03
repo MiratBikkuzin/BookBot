@@ -41,3 +41,9 @@ class BooksKeyboard:
             kb_builder.row(InlineKeyboardButton(text=book_title, callback_data=callback_data))
 
         return kb_builder.as_markup()
+    
+    @staticmethod
+    def get_cancel_add_book_kb() -> InlineKeyboardMarkup:
+        cancel_button: InlineKeyboardButton = InlineKeyboardButton(text=LEXICON_RU['cancel'],
+                                                                   callback_data='cancel_add_book')
+        return InlineKeyboardMarkup(inline_keyboard=[[cancel_button]])

@@ -1,7 +1,18 @@
-from database.models import UserBooksTable
+from database.models import UsersTable, UserBooksTable
 from database.main import database
 
 from sqlalchemy import update, and_
+
+
+async def update_quantity_to_add_books(user_id: int, num_books_to_add: int | str) -> None:
+    async with database.session as session:
+        stmt = (
+            update(UsersTable)
+            .values(num_books_to_add=str(num_books_to_add))
+            .where(UsersTable.user_id == user_id)
+        )
+        await session.execute(stmt)
+        await session.commit()
 
 
 async def update_book_page(user_id: int, book_id: str, new_page: int) -> None:

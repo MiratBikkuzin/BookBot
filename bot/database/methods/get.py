@@ -5,15 +5,28 @@ from sqlalchemy import select, and_
 from itertools import chain
 
 
-async def get_user(user_id: int) -> tuple[int]:
+async def get_user_info(user_id: int) -> int | str:
+
     async with database.session as session:
+
         stmt = (
-            select(UsersTable.user_id)
+            select(UsersTable.num_books_to_add)
             .select_from(UsersTable)
             .where(UsersTable.user_id == user_id)
         )
+
         result = await session.execute(stmt)
-        return result.fetchone()
+        fetchone_result: tuple | None = result.fetchone()
+
+        if fetchone_result is None:
+            return
+        
+        num_books_to_add = fetchone_result[0]
+
+        if num_books_to_add != "unlimited":
+            num_books_to_add: int = int(num_books_to_add)
+
+        return num_books_to_add
     
 
 async def get_admin_book_info(book_id: int) -> tuple[str, int]:
@@ -61,6 +74,17 @@ async def get_user_book_bookmarks(user_id: int, book_id: str) -> tuple[int]:
         )
         result = await session.execute(stmt)
         return tuple(chain.from_iterable(result.fetchall()))
+    
+
+async def get_total_bookmarks_num(user_id: int) -> int:
+    async with database.session as session:
+        stmt = (
+            select(BookmarksTable.id)
+            .select_from(BookmarksTable)
+            .where(BookmarksTable.user_id == user_id)
+        )
+        result = await session.execute(stmt)
+        return len(result.fetchall())
     
 
 async def get_admin_books() -> list[tuple[str, str, int]]:

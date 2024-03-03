@@ -3,6 +3,7 @@ from pydantic_settings import BaseSettings, SettingsConfigDict
 
 class BotSettings(BaseSettings):
     token: str
+    payment_token: str
     admin_ids: str
     
     @property
