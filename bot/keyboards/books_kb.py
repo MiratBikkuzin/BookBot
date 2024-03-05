@@ -29,6 +29,11 @@ class BooksKeyboard:
                                                           book_id=book_id).pack()
             kb_builder.row(InlineKeyboardButton(text=book_title, callback_data=callback_data))
 
+        kb_builder.row(InlineKeyboardButton(
+            text=LEXICON_RU['edit_button'],
+            callback_data='edit-admin-books'
+        ))
+
         return kb_builder.as_markup()
     
     @staticmethod
