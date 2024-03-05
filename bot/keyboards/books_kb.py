@@ -1,6 +1,7 @@
 from lexicon.lexicon import LEXICON_RU
 from database.methods.get import get_admin_books, get_user_books
-from keyboards.kb_utils import AdminBookCallbackFactory, UserBookCallbackFactory
+from keyboards.kb_utils import (AdminBookCallbackFactory, EditAdminBookCallbackFactory,
+                                UserBookCallbackFactory, EditUserBookCallbackFactory)
 
 from aiogram.types import InlineKeyboardButton, InlineKeyboardMarkup
 from aiogram.utils.keyboard import InlineKeyboardBuilder
@@ -27,6 +28,20 @@ class BooksKeyboard:
             callback_data: str = AdminBookCallbackFactory(total_page_count=page_count,
                                                           book_id=book_id).pack()
             kb_builder.row(InlineKeyboardButton(text=book_title, callback_data=callback_data))
+
+        return kb_builder.as_markup()
+    
+    @staticmethod
+    async def create_edit_admin_books_kb() -> InlineKeyboardMarkup:
+        
+        kb_builder: InlineKeyboardBuilder = InlineKeyboardBuilder()
+
+        for book_id, book_title, _ in await get_admin_books():
+            callback_data: str = EditAdminBookCallbackFactory(book_id=book_id).pack()
+            kb_builder.row(InlineKeyboardButton(
+                text=f"{LEXICON_RU['del']} {book_title}",
+                callback_data=callback_data
+            ))
 
         return kb_builder.as_markup()
     
