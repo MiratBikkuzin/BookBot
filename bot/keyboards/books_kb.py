@@ -19,7 +19,7 @@ class BooksKeyboard:
         return InlineKeyboardMarkup(inline_keyboard=[[admin_books, user_books]])
     
     @staticmethod
-    async def get_admin_books_kb() -> InlineKeyboardMarkup:
+    async def create_admin_books_kb() -> InlineKeyboardMarkup:
         
         kb_builder: InlineKeyboardBuilder = InlineKeyboardBuilder()
 
@@ -31,7 +31,7 @@ class BooksKeyboard:
         return kb_builder.as_markup()
     
     @staticmethod
-    async def get_user_books_kb(user_id: int) -> InlineKeyboardMarkup:
+    async def create_user_books_kb(user_id: int) -> InlineKeyboardMarkup:
         
         kb_builder: InlineKeyboardBuilder = InlineKeyboardBuilder()
 
@@ -43,7 +43,7 @@ class BooksKeyboard:
         return kb_builder.as_markup()
     
     @staticmethod
-    def get_cancel_add_book_kb() -> InlineKeyboardMarkup:
+    def create_cancel_add_book_kb() -> InlineKeyboardMarkup:
         cancel_button: InlineKeyboardButton = InlineKeyboardButton(text=LEXICON_RU['cancel'],
                                                                    callback_data='cancel_add_book')
         return InlineKeyboardMarkup(inline_keyboard=[[cancel_button]])

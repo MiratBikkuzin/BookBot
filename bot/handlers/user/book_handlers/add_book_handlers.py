@@ -26,7 +26,7 @@ async def process_add_book_command(message: Message, state: FSMContext):
 
     if isinstance(current_num_books_to_add, str) or current_num_books_to_add > 0:
         await message.answer(text=LEXICON_RU[message.text],
-                             reply_markup=BooksKeyboard.get_cancel_add_book_kb())
+                             reply_markup=BooksKeyboard.create_cancel_add_book_kb())
         await state.set_state(FSMUserBook.user_book_send)
 
     else:
@@ -77,5 +77,5 @@ async def process_user_send_book(message: Message, bot: Bot, book_file_id: str,
 async def not_user_send_book_warning(message: Message):
     await message.answer(
         text=LEXICON_RU['other_format_send_book'],
-        reply_markup=BooksKeyboard.get_cancel_add_book_kb()
+        reply_markup=BooksKeyboard.create_cancel_add_book_kb()
     )

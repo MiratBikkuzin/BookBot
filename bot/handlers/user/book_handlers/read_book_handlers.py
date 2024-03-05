@@ -46,7 +46,7 @@ async def process_beginning_command(message: Message) -> None:
 async def process_admin_books_choice(callback: CallbackQuery) -> None:
     await callback.message.edit_text(
         text=LEXICON_RU['admin_books_list'],
-        reply_markup=await BooksKeyboard.get_admin_books_kb()
+        reply_markup=await BooksKeyboard.create_admin_books_kb()
     )
 
 
@@ -54,7 +54,7 @@ async def process_admin_books_choice(callback: CallbackQuery) -> None:
 async def process_user_books_choice(callback: CallbackQuery) -> None:
     await callback.message.edit_text(
         text=LEXICON_RU['user_books_list'],
-        reply_markup=await BooksKeyboard.get_user_books_kb(callback.from_user.id)
+        reply_markup=await BooksKeyboard.create_user_books_kb(callback.from_user.id)
     )
 
 
@@ -105,5 +105,5 @@ async def process_user_book_choice(callback: CallbackQuery,
 async def process_continue_command(message: Message) -> None:
     await message.answer(
         text=LEXICON_RU['user_books_list'],
-        reply_markup=await BooksKeyboard.get_user_books_kb(message.from_user.id)
+        reply_markup=await BooksKeyboard.create_user_books_kb(message.from_user.id)
     )
