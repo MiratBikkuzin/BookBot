@@ -48,6 +48,11 @@ class BooksKeyboard:
                 callback_data=callback_data
             ))
 
+        kb_builder.row(InlineKeyboardButton(
+            text=LEXICON_RU['back_button'],
+            callback_data='back-from-edit-admin-books'
+        ))
+
         return kb_builder.as_markup()
     
     @staticmethod
