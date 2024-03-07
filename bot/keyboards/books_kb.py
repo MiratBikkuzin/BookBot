@@ -29,12 +29,14 @@ class BooksKeyboard:
                                                           book_id=book_id).pack()
             kb_builder.row(InlineKeyboardButton(text=book_title, callback_data=callback_data))
 
-        kb_builder.row(InlineKeyboardButton(
-            text=LEXICON_RU['edit_button'],
-            callback_data='edit-admin-books'
-        ))
-
         return kb_builder.as_markup()
+    
+    def create_selecting_admin_actions_kb() -> InlineKeyboardMarkup:
+        action_add_button = InlineKeyboardButton(text=LEXICON_RU['admin_add_book_button'],
+                                                 callback_data='admin-add-book')
+        action_edit_button = InlineKeyboardButton(text=LEXICON_RU['admin_edit_books_button'],
+                                                  callback_data='admin-edit-books')
+        return InlineKeyboardMarkup(inline_keyboard=[[action_add_button, action_edit_button]])
     
     @staticmethod
     async def create_edit_admin_books_kb() -> InlineKeyboardMarkup:
