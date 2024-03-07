@@ -16,3 +16,13 @@ async def process_edit_admin_books(callback: CallbackQuery):
         text=LEXICON_RU['edit_admin_books'],
         reply_markup=BooksKeyboard.create_edit_admin_books_kb()
     )
+
+
+@router.callback_query(EditAdminBookCallbackFactory.filter())
+async def process_edit_admin_book(callback: CallbackQuery,
+                                  callback_data: EditAdminBookCallbackFactory):
+    
+    admin_username: str = callback.from_user.username
+    book_id: str = callback_data.book_id
+
+    await del_admin_book(callback)

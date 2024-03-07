@@ -1,4 +1,4 @@
-from aiogram.fsm.state import default_state, State, StatesGroup
+from aiogram.fsm.state import State, StatesGroup
 
 
 class FSMAdminBook(StatesGroup):
