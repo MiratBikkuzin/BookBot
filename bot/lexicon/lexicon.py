@@ -32,6 +32,7 @@ LEXICON_RU: dict[str, str] = {
                         'в том числе и её закладки)',
     'admin_add_book_button': 'Добавить книгу',
     'admin_edit_books_button': 'Редактировать книги',
+    'admin_del_book_end': 'Книга удалена у всех пользователей вместе с её закладками',
     'wait_admin_book_download': 'Подождите пока книга грузиться в общий доступ',
     'wait_user_book_download': 'Немного подождите. Книга уже добавляется...',
     'add_book_error': '<b>У вас закончилось количество добавлений</b>\n\n'
