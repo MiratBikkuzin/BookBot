@@ -1,7 +1,7 @@
 from database.methods.create import add_user_book
 from database.methods.get import get_user_info, get_user_book_info
 from database.methods.update import update_quantity_to_add_books
-from states.states import FSMUserBook, default_state
+from states.states import FSMUserBook
 from filters.filters import IsCorrectBook
 from keyboards.pay_kb import create_payment_kb
 from keyboards.books_kb import BooksKeyboard
@@ -13,6 +13,7 @@ from utils.utils import get_book_id
 from aiogram import Router, Bot, F
 from aiogram.types import Message, CallbackQuery
 from aiogram.filters import Command, StateFilter
+from aiogram.fsm.state import default_state
 from aiogram.fsm.context import FSMContext
 
 
