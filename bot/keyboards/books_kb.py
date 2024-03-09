@@ -67,7 +67,29 @@ class BooksKeyboard:
                                                          book_id=book_id).pack()
             kb_builder.row(InlineKeyboardButton(text=book_title, callback_data=callback_data))
 
+        kb_builder.row(InlineKeyboardButton(
+            text=LEXICON_RU['edit_button'],
+            callback_data='edit-user-books'
+        ))
+
         return kb_builder.as_markup()
+    
+    @staticmethod
+    async def create_edit_user_books_kb(user_id: int) -> InlineKeyboardMarkup:
+
+        kb_builder: InlineKeyboardBuilder = InlineKeyboardBuilder()
+
+        for book_id, book_title, _ in await get_user_books(user_id):
+            callback_data: str = EditUserBookCallbackFactory(book_id=book_id).pack()
+            kb_builder.row(InlineKeyboardButton(
+                text=f"{LEXICON_RU['del']} {book_title}",
+                callback_data=callback_data
+            ))
+
+        kb_builder.row(InlineKeyboardButton(
+            text=LEXICON_RU['back_button'],
+            callback_data='back-from-edit-user-books'
+        ))
     
     @staticmethod
     def create_cancel_add_book_kb() -> InlineKeyboardMarkup:
