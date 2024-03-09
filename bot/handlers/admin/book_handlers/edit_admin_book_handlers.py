@@ -37,3 +37,11 @@ async def process_delete_admin_book(callback: CallbackQuery,
         text=LEXICON_RU['/update'],
         reply_markup=BooksKeyboard.create_selecting_admin_actions_kb()
     )
+
+
+@router.callback_query(F.data == 'back-from-edit-admin-books', IsAdmin())
+async def process_back_from_edit_admin_books_list(callback: CallbackQuery):
+    await callback.message.edit_text(
+        text=LEXICON_RU['/update'],
+        reply_markup=BooksKeyboard.create_selecting_admin_actions_kb()
+    )
