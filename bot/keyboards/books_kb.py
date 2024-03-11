@@ -94,6 +94,8 @@ class BooksKeyboard:
             text=LEXICON_RU['back_button'],
             callback_data='back-from-edit-user-books'
         ))
+
+        return kb_builder.as_markup()
     
     @staticmethod
     def create_cancel_add_book_kb() -> InlineKeyboardMarkup:
