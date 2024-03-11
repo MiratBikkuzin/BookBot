@@ -59,7 +59,7 @@ async def process_user_books_choice(callback: CallbackQuery) -> None:
     if user_books:
         await callback.message.edit_text(
             text=LEXICON_RU['user_books_list'],
-            reply_markup=await BooksKeyboard.create_user_books_kb(user_id)
+            reply_markup=await BooksKeyboard.create_user_books_kb(user_id, user_books=user_books)
         )
 
     else:

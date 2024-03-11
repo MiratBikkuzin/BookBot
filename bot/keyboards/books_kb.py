@@ -58,11 +58,15 @@ class BooksKeyboard:
         return kb_builder.as_markup()
     
     @staticmethod
-    async def create_user_books_kb(user_id: int) -> InlineKeyboardMarkup:
+    async def create_user_books_kb(user_id: int,
+                    user_books: list[tuple[str, str, int]] | None = None) -> InlineKeyboardMarkup:
         
         kb_builder: InlineKeyboardBuilder = InlineKeyboardBuilder()
 
-        for book_id, book_title, page_count in await get_user_books(user_id):
+        if not user_books:
+            user_books = await get_user_books(user_id)
+
+        for book_id, book_title, page_count in user_books:
             callback_data: str = UserBookCallbackFactory(total_page_count=page_count,
                                                          book_id=book_id).pack()
             kb_builder.row(InlineKeyboardButton(text=book_title, callback_data=callback_data))
