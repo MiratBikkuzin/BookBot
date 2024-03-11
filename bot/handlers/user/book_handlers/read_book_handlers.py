@@ -5,7 +5,7 @@ from keyboards.kb_utils import (AdminBookCallbackFactory, UserBookCallbackFactor
 from keyboards.pagination_kb import create_pagination_kb
 from services.object_store import BookObjectStore
 from database.methods.create import add_user_book
-from database.methods.get import get_admin_book_info, get_user_book_info
+from database.methods.get import get_admin_book_info, get_user_book_info, get_user_books
 from database.methods.update import update_book_page
 
 from aiogram import Router, F
@@ -52,10 +52,21 @@ async def process_admin_books_choice(callback: CallbackQuery) -> None:
 
 @router.callback_query(F.data == 'user-books')
 async def process_user_books_choice(callback: CallbackQuery) -> None:
-    await callback.message.edit_text(
-        text=LEXICON_RU['user_books_list'],
-        reply_markup=await BooksKeyboard.create_user_books_kb(callback.from_user.id)
-    )
+
+    user_id: int = callback.from_user.id
+    user_books: list[tuple[str, str, int]] | None = await get_user_books(user_id)
+
+    if user_books:
+        await callback.message.edit_text(
+            text=LEXICON_RU['user_books_list'],
+            reply_markup=await BooksKeyboard.create_user_books_kb(user_id)
+        )
+
+    else:
+        await callback.answer(
+            text=LEXICON_RU['no_books_warning'],
+            show_alert=True
+        )
 
 
 @router.callback_query(AdminBookCallbackFactory.filter())
