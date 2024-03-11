@@ -50,7 +50,7 @@ async def process_admin_books_choice(callback: CallbackQuery) -> None:
     )
 
 
-@router.callback_query(F.data == 'user-books')
+@router.callback_query(F.data.in_(('user-books', 'back-from-edit-user-books')))
 async def process_user_books_choice(callback: CallbackQuery) -> None:
 
     user_id: int = callback.from_user.id
