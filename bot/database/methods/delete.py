@@ -27,17 +27,27 @@ async def del_admin_book(admin_username: str, book_id: str) -> None:
             delete(UserBooksTable)
             .where(and_(UserBooksTable.is_admin_book, UserBooksTable.book_id == book_id))
         )
+        third_stmt = (
+            delete(BookmarksTable)
+            .where(BookmarksTable.book_id == book_id)
+        )
         await session.execute(first_stmt)
         await session.execute(second_stmt)
+        await session.execute(third_stmt)
         await session.commit()
 
 
 async def del_user_book(user_id: int, book_id: str) -> None:
     
     async with database.session as session:
-        stmt = (
+        first_stmt = (
             delete(UserBooksTable)
             .where(and_(UserBooksTable.user_id == user_id, UserBooksTable.book_id == book_id))
         )
-        await session.execute(stmt)
+        second_stmt = (
+            delete(BookmarksTable)
+            .where(and_(BookmarksTable.user_id == user_id, BookmarksTable.book_id == book_id))
+        )
+        await session.execute(first_stmt)
+        await session.execute(second_stmt)
         await session.commit()

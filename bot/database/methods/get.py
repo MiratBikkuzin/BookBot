@@ -108,3 +108,14 @@ async def get_user_books(user_id: int) -> list[tuple[str, str, int]]:
         )
         result = await session.execute(stmt)
         return result.fetchall()
+    
+
+async def get_num_readers_book(book_id: str) -> int:
+    async with database.session as session:
+        stmt = (
+            select(UserBooksTable.user_id)
+            .select_from(UserBooksTable)
+            .where(UserBooksTable.book_id == book_id)
+        )
+        result = await session.execute(stmt)
+        return len(result.fetchall())

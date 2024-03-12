@@ -23,7 +23,7 @@ class BookmarksKeyboard:
 
         kb_builder.row(
             InlineKeyboardButton(
-                text=LEXICON_RU['edit_bookmarks_button'],
+                text=LEXICON_RU['edit_button'],
                 callback_data='edit_bookmarks'
             ))
 

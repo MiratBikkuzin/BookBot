@@ -6,8 +6,16 @@ class AdminBookCallbackFactory(CallbackData, prefix='adminb', sep='@'):
     book_id: str
 
 
+class EditAdminBookCallbackFactory(CallbackData, prefix='editab', sep='@'):
+    book_id: str
+
+
 class UserBookCallbackFactory(CallbackData, prefix='userb', sep='@'):
     total_page_count: int
+    book_id: str
+
+
+class EditUserBookCallbackFactory(CallbackData, prefix='editub', sep='@'):
     book_id: str
 
 

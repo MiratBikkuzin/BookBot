@@ -1,32 +1,27 @@
 from database.methods.create import add_admin_book
 from database.methods.get import get_admin_book_info
-from filters.filters import IsAdmin, IsCorrectBook
-from states.states import FSMAdminBook, default_state
+from filters.filters import IsCorrectBook
+from states.states import FSMAdminBook
 from keyboards.books_kb import BooksKeyboard
 from services.object_store import BookObjectStore
 from services.file_handling import parse_fb2, get_book_text
 from lexicon.lexicon import LEXICON_RU
 from utils.utils import get_book_id
 
-from aiogram import Router, Bot
-from aiogram.types import Message
-from aiogram.filters import Command, StateFilter
+from aiogram import Router, F, Bot
+from aiogram.types import Message, CallbackQuery
+from aiogram.filters import StateFilter
+from aiogram.fsm.state import default_state
 from aiogram.fsm.context import FSMContext
 
 
 router: Router = Router(name=__name__)
 
 
-@router.message(Command(commands='update'), IsAdmin(), StateFilter(default_state))
-async def process_update_command(message: Message, state: FSMContext):
-    await message.answer(text=LEXICON_RU[message.text],
-                         reply_markup=BooksKeyboard.get_cancel_add_book_kb())
+@router.callback_query(F.data == 'admin-add-book', StateFilter(default_state))
+async def admin_selecting_add_book_action(callback: CallbackQuery, state: FSMContext):
+    await callback.message.edit_text(text=LEXICON_RU['admin_add_book'])
     await state.set_state(FSMAdminBook.admin_book_send)
-
-
-@router.message(Command(commands='update'), ~IsAdmin())
-async def not_update_warning(message: Message):
-    await message.answer(text=LEXICON_RU['other_update_command'])
 
 
 @router.message(StateFilter(FSMAdminBook.admin_book_send), IsCorrectBook())
@@ -58,5 +53,5 @@ async def admin_send_book(message: Message, bot: Bot, book_file_id: str, book_ti
 async def not_admin_send_book_warning(message: Message):
     await message.answer(
         text=LEXICON_RU['other_format_send_book'],
-        reply_markup=BooksKeyboard.get_cancel_add_book_kb()
+        reply_markup=BooksKeyboard.create_cancel_add_book_kb()
     )
