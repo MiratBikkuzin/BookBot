@@ -46,6 +46,13 @@ async def cancel_add_book_process(callback: CallbackQuery, state: FSMContext):
     )
 
 
+@router.message(StateFilter(FSMUserBook.send_book_author))
+async def process_user_send_book_author(message: Message, state: FSMContext):
+    await message.answer(text=LEXICON_RU['book_name_send'])
+    await state.update_data(book_author=message.text)
+    await state.set_state(FSMUserBook.send_book_name)
+
+
 # @router.message(StateFilter(FSMUserBook.user_book_send), IsCorrectBook())
 # async def process_user_send_book(message: Message, bot: Bot, book_file_id: str,
 #                                  book_title: str, file_format: str, state: FSMContext):
