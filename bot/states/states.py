@@ -6,5 +6,6 @@ class FSMAdminBook(StatesGroup):
 
 
 class FSMUserBook(StatesGroup):
-    book_author_send = State()
-    book_file_send = State()
+    send_book_author = State()
+    send_book_name = State()
+    send_book_file = State()
