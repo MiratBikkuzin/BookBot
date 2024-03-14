@@ -26,10 +26,9 @@ async def process_del_user_book(callback: CallbackQuery,
     
     user_id: int = callback.from_user.id
     book_id: str = callback_data.book_id
-    book_title, page_count, _, is_admin_book = await get_user_book_info(user_id, book_id)
+    book_author, book_title, page_count, _, is_admin_book = await get_user_book_info(user_id, book_id)
 
     if not is_admin_book and await get_num_readers_book(book_id) <= 1:
-        await get_user_book_info(user_id, book_id)
         await BookObjectStore.del_book(book_id, page_count)
 
     await del_user_book(user_id, book_id)
