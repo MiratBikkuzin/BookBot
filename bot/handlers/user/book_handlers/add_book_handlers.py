@@ -1,6 +1,3 @@
-'''ПЕРЕДЕЛАТЬ СИСТЕМУ ДОБАВЛЕНИЯ КНИГ,
-ДОБАВИВ БОЛЬШЕ СОСТОЯНИЙ
-И СПРАШИВАЯ ТАКЖЕ ИНИЦИАЛЫ АВТОРА КНИГИ'''
 from database.methods.create import add_user_book
 from database.methods.get import get_user_info, get_user_book_info
 from database.methods.update import update_quantity_to_add_books
@@ -94,9 +91,9 @@ async def process_user_send_book_file(message: Message, bot: Bot, book_file_id: 
         await state.clear()
 
 
-# @router.message(StateFilter(FSMUserBook.user_book_send), ~IsCorrectBookFormat())
-# async def not_user_send_book_warning(message: Message):
-#     await message.answer(
-#         text=LEXICON_RU['other_format_send_book'],
-#         reply_markup=BooksKeyboard.create_cancel_add_book_kb()
-#     )
+@router.message(~StateFilter(default_state), ~IsCorrectBookFormat())
+async def not_user_send_book_warning(message: Message):
+    await message.answer(
+        text=LEXICON_RU['other_format_send_book'],
+        reply_markup=BooksKeyboard.create_cancel_add_book_kb()
+    )
