@@ -58,6 +58,7 @@ class UserBooksTable(Base):
     id: Mapped[intpk]
     user_id: Mapped[useridk]
 
+    book_author: Mapped[str]
     book_title: Mapped[str]
     book_id: Mapped[str] = mapped_column(String(41))
     total_page_count: Mapped[int]
