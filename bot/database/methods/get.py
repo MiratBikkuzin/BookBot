@@ -99,11 +99,11 @@ async def get_admin_books() -> list[tuple[str, str, int]]:
         return result.fetchall()
     
 
-async def get_user_books(user_id: int) -> list[tuple[str, str, int]]:
+async def get_user_books(user_id: int) -> list[tuple[str, str, str, int]]:
     async with database.session as session:
         stmt = (
-            select(UserBooksTable.book_id, UserBooksTable.book_title,
-                   UserBooksTable.total_page_count)
+            select(UserBooksTable.book_id, UserBooksTable.book_author,
+                   UserBooksTable.book_title, UserBooksTable.total_page_count)
             .select_from(UserBooksTable)
             .where(UserBooksTable.user_id == user_id)
         )

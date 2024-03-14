@@ -54,7 +54,7 @@ async def process_admin_books_choice(callback: CallbackQuery) -> None:
 async def process_user_books_choice(callback: CallbackQuery) -> None:
 
     user_id: int = callback.from_user.id
-    user_books: list[tuple[str, str, int]] | None = await get_user_books(user_id)
+    user_books: list[tuple[str, str, str, int]] | None = await get_user_books(user_id)
 
     if user_books:
         await callback.message.edit_text(
