@@ -2,8 +2,8 @@ import hashlib
 from lexicon.lexicon import LEXICON_RU, PROFILE_LEXICON_RU
 
 
-def get_book_id(book_title: str) -> str:
-    hash_obj = hashlib.sha1(bytes(book_title, 'utf-8'))
+def get_book_id(book_author: str, book_name: str) -> str:
+    hash_obj = hashlib.sha1(bytes(f'{book_name} ({book_author})', 'utf-8'))
     return hash_obj.hexdigest()
 
 
