@@ -38,7 +38,7 @@ async def process_add_bookmark(callback: CallbackQuery, callback_data: PageCallb
 
     user_id: int = callback.from_user.id
     book_id, page = callback_data.book_id, callback_data.page_num
-    book_title, *_ = await get_user_book_info(user_id, book_id)
+    book_author, book_title, *_ = await get_user_book_info(user_id, book_id)
 
     if page not in await get_user_book_bookmarks(user_id, book_id):
         await add_user_bookmark(user_id, book_id, book_title, page)

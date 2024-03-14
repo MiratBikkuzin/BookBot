@@ -21,7 +21,7 @@ async def process_page_turning(callback: CallbackQuery,
                                callback_data: PageTurningCallbackFactory) -> None:
 
     user_id, book_id = callback.from_user.id, callback_data.book_id
-    _, page_count, page_num, _ = await get_user_book_info(user_id, book_id)
+    _, _, page_count, page_num, _ = await get_user_book_info(user_id, book_id)
     page_num += -1 if callback_data.turn_type == 'backward' else 1
 
     page_content: str = await BookObjectStore.get_book_page_content(book_id, page_num)
@@ -75,15 +75,16 @@ async def process_admin_book_choice(callback: CallbackQuery,
     
     user_id, book_id = callback.from_user.id, callback_data.book_id
     book_title, page_count = await get_admin_book_info(book_id)
-    user_book_info: tuple[str, int, int, bool] | None = await get_user_book_info(user_id, book_id)
+    user_book_info: tuple[str, str, int, int, bool] | None = await get_user_book_info(user_id, book_id)
 
     if not user_book_info:
         page_num: int = 1
-        await add_user_book(user_id=user_id, book_id=book_id, book_title=book_title,
+        await add_user_book(user_id=user_id, book_author=user_book_info[0],
+                            book_id=book_id, book_title=book_title,
                             page_count=page_count, is_admin_book=True)
         
     else:
-        page_num: int = user_book_info[2]
+        page_num: int = user_book_info[3]
 
     page_content: str = await BookObjectStore.get_book_page_content(book_id, page_num)
 
