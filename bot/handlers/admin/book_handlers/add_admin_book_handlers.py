@@ -31,6 +31,12 @@ async def process_admin_send_book_author(message: Message, state: FSMContext):
     await state.set_state(FSMAdminBook.send_book_name)
 
 
+@router.message(StateFilter(FSMAdminBook.send_book_name))
+async def process_admin_send_book_name(message: Message, state: FSMContext):
+    await message.answer(text=LEXICON_RU['book_file_send'])
+    await state.update_data(book_name=message.text)
+    await state.set_state(FSMAdminBook.send_book_file)
+
 # @router.message(StateFilter(FSMAdminBook.admin_book_send), IsCorrectBook())
 # async def admin_send_book(message: Message, bot: Bot, book_file_id: str, book_title: str,
 #                           file_format: str, state: FSMContext):
