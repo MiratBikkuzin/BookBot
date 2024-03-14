@@ -101,7 +101,7 @@ async def process_user_book_choice(callback: CallbackQuery,
                                    callback_data: UserBookCallbackFactory) -> None:
 
     user_id, book_id = callback.from_user.id, callback_data.book_id
-    _, page_count, page_num, _ = await get_user_book_info(user_id, book_id)
+    _, _, page_count, page_num, _ = await get_user_book_info(user_id, book_id)
 
     page_content: str = await BookObjectStore.get_book_page_content(book_id, page_num)
 

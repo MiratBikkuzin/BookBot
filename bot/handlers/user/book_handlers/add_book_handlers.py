@@ -5,7 +5,7 @@ from database.methods.create import add_user_book
 from database.methods.get import get_user_info, get_user_book_info
 from database.methods.update import update_quantity_to_add_books
 from states.states import FSMUserBook
-from filters.filters import IsCorrectBook
+from filters.filters import IsCorrectBookFormat
 from keyboards.pay_kb import create_payment_kb
 from keyboards.books_kb import BooksKeyboard
 from services.object_store import BookObjectStore
@@ -60,38 +60,41 @@ async def process_user_send_book_name(message: Message, state: FSMContext):
     await state.set_state(FSMUserBook.send_book_file)
 
 
-# @router.message(StateFilter(FSMUserBook.send_book_file), IsCorrectBook())
-# async def process_user_send_book(message: Message, bot: Bot, book_file_id: str,
-#                                  book_title: str, file_format: str, state: FSMContext):
+@router.message(StateFilter(FSMUserBook.send_book_file), IsCorrectBookFormat())
+async def process_user_send_book_file(message: Message, bot: Bot, book_file_id: str,
+                                      file_format: str, state: FSMContext):
     
-#     user_id: int = message.from_user.id
-#     book_id: str = get_book_id(book_title.lower())
+    user_id: int = message.from_user.id
+    data: dict[str: str, str: str] = await state.get_data()
+    book_author, book_name = data['book_author'], data['book_name']
 
-#     if await get_user_book_info(user_id, book_id):
-#         await message.answer(text=LEXICON_RU['users_book_in_stock_warning'])
+    book_id: str = get_book_id(book_author, book_name)
 
-#     else:
+    if await get_user_book_info(user_id, book_id):
+        await message.answer(text=LEXICON_RU['users_book_in_stock_warning'])
 
-#         await message.answer(text=LEXICON_RU['wait_user_book_download'])
+    else:
 
-#         book_text: str = get_book_text(await bot.download(book_file_id))
+        await message.answer(text=LEXICON_RU['wait_user_book_download'])
 
-#         if file_format == 'fb2':
-#             book_text: str = parse_fb2(book_text)
+        book_text: str = get_book_text(await bot.download(book_file_id))
 
-#         book: dict[int: str] = await BookObjectStore.upload_book(book_text, book_id)
-#         await add_user_book(user_id, book_id, book_title, page_count=len(book))
+        if file_format == 'fb2':
+            book_text: str = parse_fb2(book_text)
 
-#         num_books_to_add: int | str = await get_user_info(user_id)
+        book: dict[int: str] = await BookObjectStore.upload_book(book_text, book_id)
+        await add_user_book(user_id, book_id, book_name, page_count=len(book))
 
-#         if isinstance(num_books_to_add, int):
-#             await update_quantity_to_add_books(user_id, num_books_to_add - 1)
+        num_books_to_add: int | str = await get_user_info(user_id)
 
-#         await message.answer(text=LEXICON_RU['user_book_download_end'])
-#         await state.clear()
+        if isinstance(num_books_to_add, int):
+            await update_quantity_to_add_books(user_id, num_books_to_add - 1)
+
+        await message.answer(text=LEXICON_RU['user_book_download_end'])
+        await state.clear()
 
 
-# @router.message(StateFilter(FSMUserBook.user_book_send), ~IsCorrectBook())
+# @router.message(StateFilter(FSMUserBook.user_book_send), ~IsCorrectBookFormat())
 # async def not_user_send_book_warning(message: Message):
 #     await message.answer(
 #         text=LEXICON_RU['other_format_send_book'],
