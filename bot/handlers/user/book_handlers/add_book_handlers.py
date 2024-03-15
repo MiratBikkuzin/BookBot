@@ -47,13 +47,13 @@ async def cancel_add_book_process(callback: CallbackQuery, state: FSMContext):
 async def process_user_send_book_author(message: Message, state: FSMContext):
     await message.answer(text=LEXICON_RU['book_name_send'])
     await state.update_data(book_author=message.text)
-    await state.set_state(FSMUserBook.send_book_name)
+    await state.set_state(FSMUserBook.send_book_title)
 
 
-@router.message(StateFilter(FSMUserBook.send_book_name))
+@router.message(StateFilter(FSMUserBook.send_book_title))
 async def process_user_send_book_name(message: Message, state: FSMContext):
     await message.answer(text=LEXICON_RU['book_file_send'])
-    await state.update_data(book_name=message.text)
+    await state.update_data(book_title=message.text)
     await state.set_state(FSMUserBook.send_book_file)
 
 
@@ -63,9 +63,9 @@ async def process_user_send_book_file(message: Message, bot: Bot, book_file_id: 
     
     user_id: int = message.from_user.id
     data: dict[str: str, str: str] = await state.get_data()
-    book_author, book_name = data['book_author'], data['book_name']
+    book_author, book_title = data['book_author'], data['book_title']
 
-    book_id: str = get_book_id(book_author, book_name)
+    book_id: str = get_book_id(book_author, book_title)
 
     if await get_user_book_info(user_id, book_id):
         await message.answer(text=LEXICON_RU['users_book_in_stock_warning'])
@@ -80,7 +80,7 @@ async def process_user_send_book_file(message: Message, bot: Bot, book_file_id: 
             book_text: str = parse_fb2(book_text)
 
         book: dict[int: str] = await BookObjectStore.upload_book(book_text, book_id)
-        await add_user_book(user_id, book_id, book_name, page_count=len(book))
+        await add_user_book(user_id, book_id, book_author, book_title, page_count=len(book))
 
         num_books_to_add: int | str = await get_user_info(user_id)
 

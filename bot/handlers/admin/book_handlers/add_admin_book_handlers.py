@@ -28,38 +28,41 @@ async def admin_selecting_add_book_action(callback: CallbackQuery, state: FSMCon
 async def process_admin_send_book_author(message: Message, state: FSMContext):
     await message.answer(text=LEXICON_RU['book_name_send'])
     await state.update_data(book_author=message.text)
-    await state.set_state(FSMAdminBook.send_book_name)
+    await state.set_state(FSMAdminBook.send_book_title)
 
 
-@router.message(StateFilter(FSMAdminBook.send_book_name))
+@router.message(StateFilter(FSMAdminBook.send_book_title))
 async def process_admin_send_book_name(message: Message, state: FSMContext):
     await message.answer(text=LEXICON_RU['book_file_send'])
-    await state.update_data(book_name=message.text)
+    await state.update_data(book_title=message.text)
     await state.set_state(FSMAdminBook.send_book_file)
 
-# @router.message(StateFilter(FSMAdminBook.admin_book_send), IsCorrectBook())
-# async def admin_send_book(message: Message, bot: Bot, book_file_id: str, book_title: str,
-#                           file_format: str, state: FSMContext):
+
+@router.message(StateFilter(FSMAdminBook.send_book_file), IsCorrectBookFormat())
+async def process_admin_send_book_file(message: Message, bot: Bot, book_file_id: str,
+                                       file_format: str, state: FSMContext):
     
-#     book_id: str = get_book_id(book_title.lower())
+    data: dict[str: str, str: str] = await state.get_data()
+    book_author, book_title = data['book_author'], data['book_title']
+    book_id: str = get_book_id(book_author, book_title)
 
-#     if await get_admin_book_info(book_id):
-#         await message.answer(text=LEXICON_RU['admins_book_in_stock_warning'])
+    if await get_admin_book_info(book_id):
+        await message.answer(text=LEXICON_RU['admins_book_in_stock_warning'])
 
-#     else:
+    else:
 
-#         await message.answer(text=LEXICON_RU['wait_admin_book_download'])
+        await message.answer(text=LEXICON_RU['wait_admin_book_download'])
 
-#         book_text: str = get_book_text(await bot.download(book_file_id))
+        book_text: str = get_book_text(await bot.download(book_file_id))
 
-#         if file_format == 'fb2':
-#             book_text: str = parse_fb2(book_text)
+        if file_format == 'fb2':
+            book_text: str = parse_fb2(book_text)
 
-#         book: dict[int: str] = await BookObjectStore.upload_book(book_text, book_id)
-#         await add_admin_book(admin_username=message.from_user.username, book_id=book_id,
-#                              book_title=book_title, page_count=len(book))
-#         await message.answer(text=LEXICON_RU['admin_book_download_end'])
-#         await state.clear()
+        book: dict[int: str] = await BookObjectStore.upload_book(book_text, book_id)
+        await add_admin_book(admin_username=message.from_user.username, book_id=book_id,
+                             book_title=book_title, page_count=len(book))
+        await message.answer(text=LEXICON_RU['admin_book_download_end'])
+        await state.clear()
 
 
 # @router.message(StateFilter(FSMAdminBook.admin_book_send), ~IsCorrectBook())
