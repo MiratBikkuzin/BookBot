@@ -91,8 +91,8 @@ async def process_user_send_book_file(message: Message, bot: Bot, book_file_id: 
         await state.clear()
 
 
-@router.message(~StateFilter(default_state), ~IsCorrectBookFormat())
-async def not_user_send_book_warning(message: Message):
+@router.message(StateFilter(FSMUserBook.send_book_file), ~IsCorrectBookFormat())
+async def not_user_send_book_file_warning(message: Message):
     await message.answer(
         text=LEXICON_RU['other_format_send_book'],
         reply_markup=BooksKeyboard.create_cancel_add_book_kb()
