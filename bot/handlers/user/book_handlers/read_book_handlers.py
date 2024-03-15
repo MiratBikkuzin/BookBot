@@ -74,12 +74,12 @@ async def process_admin_book_choice(callback: CallbackQuery,
                                     callback_data: AdminBookCallbackFactory) -> None:
     
     user_id, book_id = callback.from_user.id, callback_data.book_id
-    book_title, page_count = await get_admin_book_info(book_id)
+    book_author, book_title, page_count = await get_admin_book_info(book_id)
     user_book_info: tuple[str, str, int, int, bool] | None = await get_user_book_info(user_id, book_id)
 
     if not user_book_info:
         page_num: int = 1
-        await add_user_book(user_id=user_id, book_author=user_book_info[0],
+        await add_user_book(user_id=user_id, book_author=book_author,
                             book_id=book_id, book_title=book_title,
                             page_count=page_count, is_admin_book=True)
         

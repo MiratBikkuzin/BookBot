@@ -16,11 +16,12 @@ async def add_user_bookmark(user_id: int, book_id: str,
         await session.commit()
 
 
-async def add_admin_book(admin_username: str, book_id: str,
+async def add_admin_book(admin_username: str, book_id: str, book_author: str,
                          book_title: str, page_count: int) -> None:
     async with database.session as session:
-        session.add(AdminBooksTable(admin_username=admin_username, book_title=book_title,
-                                    book_id=book_id, total_page_count=page_count)) 
+        session.add(AdminBooksTable(admin_username=admin_username, book_author=book_author,
+                                    book_title=book_title, book_id=book_id,
+                                    total_page_count=page_count))
         await session.commit()
 
 

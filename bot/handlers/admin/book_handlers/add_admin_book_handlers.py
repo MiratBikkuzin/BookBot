@@ -60,7 +60,7 @@ async def process_admin_send_book_file(message: Message, bot: Bot, book_file_id:
 
         book: dict[int: str] = await BookObjectStore.upload_book(book_text, book_id)
         await add_admin_book(admin_username=message.from_user.username, book_id=book_id,
-                             book_title=book_title, page_count=len(book))
+                             book_author=book_author, book_title=book_title, page_count=len(book))
         await message.answer(text=LEXICON_RU['admin_book_download_end'])
         await state.clear()
 
