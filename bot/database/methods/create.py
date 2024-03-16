@@ -8,10 +8,10 @@ async def add_user(user_id: int, num_books_to_add: int | str) -> None:
         await session.commit()
 
 
-async def add_user_bookmark(user_id: int, book_id: str,
+async def add_user_bookmark(user_id: int, book_id: str, book_author: str,
                             book_title: str, page_number: int) -> None:
     async with database.session as session:
-        session.add(BookmarksTable(user_id=user_id, book_title=book_title,
+        session.add(BookmarksTable(user_id=user_id, book_author=book_author, book_title=book_title,
                                    book_id=book_id, page_number=page_number))
         await session.commit()
 

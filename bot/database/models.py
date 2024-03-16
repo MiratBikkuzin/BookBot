@@ -34,6 +34,7 @@ class BookmarksTable(Base):
     id: Mapped[intpk]
     user_id: Mapped[useridk]
 
+    book_author: Mapped[str]
     book_title: Mapped[str]
     book_id: Mapped[str] = mapped_column(String(41))
     page_number: Mapped[int]

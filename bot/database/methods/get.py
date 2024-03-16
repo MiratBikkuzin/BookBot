@@ -55,10 +55,10 @@ async def get_user_book_info(user_id: int, book_id: int) -> tuple[str, str, int,
         return result.fetchone()
     
 
-async def get_user_books_with_bookmarks(user_id: int) -> list[tuple[str, str]]:
+async def get_user_books_with_bookmarks(user_id: int) -> list[tuple[str, str, str]]:
     async with database.session as session:
         stmt = (
-            select(BookmarksTable.book_id, BookmarksTable.book_title)
+            select(BookmarksTable.book_id, BookmarksTable.book_author, BookmarksTable.book_title)
             .select_from(BookmarksTable)
             .where(BookmarksTable.user_id == user_id)
             .distinct()

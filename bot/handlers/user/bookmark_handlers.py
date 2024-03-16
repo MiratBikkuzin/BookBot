@@ -21,7 +21,7 @@ router: Router = Router(name=__name__)
 @router.message(Command(commands='bookmarks'))
 async def process_bookmarks_command(message: Message) -> None:
 
-    books: list[tuple[str, str]] = await get_user_books_with_bookmarks(message.from_user.id)
+    books: list[tuple[str, str, str]] = await get_user_books_with_bookmarks(message.from_user.id)
 
     if books:
         await message.answer(
@@ -41,7 +41,7 @@ async def process_add_bookmark(callback: CallbackQuery, callback_data: PageCallb
     book_author, book_title, *_ = await get_user_book_info(user_id, book_id)
 
     if page not in await get_user_book_bookmarks(user_id, book_id):
-        await add_user_bookmark(user_id, book_id, book_title, page)
+        await add_user_bookmark(user_id, book_id, book_author, book_title, page)
         await callback.answer('Страница добавлена в закладки!')
 
     else:
@@ -80,7 +80,7 @@ async def process_book_page_mark_press(callback: CallbackQuery,
 @router.callback_query(F.data.in_(('edit_bookmarks', 'back_from_edit_bookmarks')))
 async def process_edit_bookmarks_press(callback: CallbackQuery) -> None:
 
-    books: list[tuple[str, str]] = await get_user_books_with_bookmarks(callback.from_user.id)
+    books: list[tuple[str, str, str]] = await get_user_books_with_bookmarks(callback.from_user.id)
 
     await callback.message.edit_text(
         text=LEXICON_RU['edit_bookmarks'],
@@ -123,7 +123,7 @@ async def process_edit_book_page_mark_press(callback: CallbackQuery,
 
     else:
 
-        books: list[tuple[str, str]] = await get_user_books_with_bookmarks(user_id)
+        books: list[tuple[str, str, str]] = await get_user_books_with_bookmarks(user_id)
 
         if books:
             await callback.message.edit_text(
@@ -138,7 +138,7 @@ async def process_edit_book_page_mark_press(callback: CallbackQuery,
 @router.callback_query(F.data.in_(('cancel_edit_bookmarks', 'back_from_bookmarks')))
 async def process_cancel_edit_bookmarks_press(callback: CallbackQuery) -> None:
 
-    books: list[tuple[str, str]] = await get_user_books_with_bookmarks(callback.from_user.id)
+    books: list[tuple[str, str, str]] = await get_user_books_with_bookmarks(callback.from_user.id)
 
     await callback.message.edit_text(
         text=LEXICON_RU['/bookmarks'],
