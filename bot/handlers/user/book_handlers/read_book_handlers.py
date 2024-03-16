@@ -82,7 +82,7 @@ async def process_admin_book_choice(callback: CallbackQuery,
         await add_user_book(user_id=user_id, book_author=book_author,
                             book_id=book_id, book_title=book_title,
                             page_count=page_count, is_admin_book=True)
-        
+
     else:
         page_num: int = user_book_info[3]
 
@@ -115,7 +115,15 @@ async def process_user_book_choice(callback: CallbackQuery,
 
 @router.message(Command(commands='continue'))
 async def process_continue_command(message: Message) -> None:
-    await message.answer(
-        text=LEXICON_RU['user_books_list'],
-        reply_markup=await BooksKeyboard.create_user_books_kb(message.from_user.id)
-    )
+
+    user_id: int = message.from_user.id
+    user_books: list[tuple[str, str, str, int]] | None = await get_user_books(user_id)
+
+    if user_books:
+        await message.answer(
+            text=LEXICON_RU['user_books_list'],
+            reply_markup=await BooksKeyboard.create_user_books_kb(user_id)
+        )
+
+    else:
+        await message.answer(text=LEXICON_RU['no_books_warning'])
