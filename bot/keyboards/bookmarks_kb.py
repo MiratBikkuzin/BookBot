@@ -11,13 +11,13 @@ from aiogram.utils.keyboard import InlineKeyboardBuilder
 class BookmarksKeyboard:
 
     @staticmethod
-    async def create_bookmark_kb(books: list[tuple[str, str]]) -> InlineKeyboardMarkup:
+    async def create_bookmark_kb(books: list[tuple[str, str, str]]) -> InlineKeyboardMarkup:
 
         kb_builder: InlineKeyboardBuilder = InlineKeyboardBuilder()
 
-        for book_id, book_title in books:
+        for book_id, book_author, book_title in books:
             kb_builder.row(InlineKeyboardButton(
-                text=book_title,
+                text=f'{book_title} ({book_author})',
                 callback_data=BookMarkCallbackFactory(book_id=book_id).pack()
             ))
 
@@ -30,13 +30,13 @@ class BookmarksKeyboard:
         return kb_builder.as_markup()
     
     @staticmethod
-    async def create_edit_bookmark_kb(books: list[tuple[str, str]]) -> InlineKeyboardMarkup:
+    async def create_edit_bookmark_kb(books: list[tuple[str, str, str]]) -> InlineKeyboardMarkup:
 
         kb_builder: InlineKeyboardBuilder = InlineKeyboardBuilder()
 
-        for book_id, book_title in books:
+        for book_id, book_author, book_title in books:
             kb_builder.row(InlineKeyboardButton(
-                text=f"{LEXICON_RU['del']} {book_title}",
+                text=f"{LEXICON_RU['del']} {book_title} ({book_author})",
                 callback_data=EditBookMarkCallbackFactory(book_id=book_id).pack()
             ))
 

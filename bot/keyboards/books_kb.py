@@ -24,10 +24,13 @@ class BooksKeyboard:
         
         kb_builder: InlineKeyboardBuilder = InlineKeyboardBuilder()
 
-        for book_id, book_title, page_count in await get_admin_books():
+        for book_id, book_author, book_title, page_count in await get_admin_books():
             callback_data: str = AdminBookCallbackFactory(total_page_count=page_count,
                                                           book_id=book_id).pack()
-            kb_builder.row(InlineKeyboardButton(text=book_title, callback_data=callback_data))
+            kb_builder.row(InlineKeyboardButton(
+                text=f'{book_title} ({book_author})',
+                callback_data=callback_data
+            ))
 
         return kb_builder.as_markup()
     
@@ -43,10 +46,10 @@ class BooksKeyboard:
         
         kb_builder: InlineKeyboardBuilder = InlineKeyboardBuilder()
 
-        for book_id, book_title, _ in await get_admin_books():
+        for book_id, book_author, book_title, _ in await get_admin_books():
             callback_data: str = EditAdminBookCallbackFactory(book_id=book_id).pack()
             kb_builder.row(InlineKeyboardButton(
-                text=f"{LEXICON_RU['del']} {book_title}",
+                text=f"{LEXICON_RU['del']} {book_title} ({book_author})",
                 callback_data=callback_data
             ))
 
@@ -66,10 +69,13 @@ class BooksKeyboard:
         if not user_books:
             user_books = await get_user_books(user_id)
 
-        for book_id, book_title, page_count in user_books:
+        for book_id, book_author, book_title, page_count in user_books:
             callback_data: str = UserBookCallbackFactory(total_page_count=page_count,
                                                          book_id=book_id).pack()
-            kb_builder.row(InlineKeyboardButton(text=book_title, callback_data=callback_data))
+            kb_builder.row(InlineKeyboardButton(
+                text=f'{book_title} ({book_author})',
+                callback_data=callback_data
+            ))
 
         kb_builder.row(InlineKeyboardButton(
             text=LEXICON_RU['edit_button'],
@@ -83,10 +89,10 @@ class BooksKeyboard:
 
         kb_builder: InlineKeyboardBuilder = InlineKeyboardBuilder()
 
-        for book_id, book_title, _ in await get_user_books(user_id):
+        for book_id, book_author, book_title, _ in await get_user_books(user_id):
             callback_data: str = EditUserBookCallbackFactory(book_id=book_id).pack()
             kb_builder.row(InlineKeyboardButton(
-                text=f"{LEXICON_RU['del']} {book_title}",
+                text=f"{LEXICON_RU['del']} {book_title} ({book_author})",
                 callback_data=callback_data
             ))
 

@@ -11,7 +11,7 @@ router: Router = Router(name=__name__)
 
 
 @router.message(CommandStart())
-async def process_start_command(message: Message) -> None:
+async def process_start_command(message: Message):
 
     user_id: int = message.from_user.id
     firstname: str = message.from_user.first_name
@@ -22,8 +22,3 @@ async def process_start_command(message: Message) -> None:
 
     else:
         await message.answer(LEXICON_RU['reset_start'] % firstname)
-
-
-@router.message(Command(commands='help'))
-async def process_help_command(message: Message) -> None:
-    await message.answer(LEXICON_RU[message.text])

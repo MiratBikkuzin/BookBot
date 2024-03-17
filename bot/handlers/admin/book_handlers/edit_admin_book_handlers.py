@@ -27,7 +27,7 @@ async def process_delete_admin_book(callback: CallbackQuery,
     
     admin_username: str = callback.from_user.username
     book_id: str = callback_data.book_id
-    _, book_page_count = await get_admin_book_info(book_id)
+    *_, book_page_count = await get_admin_book_info(book_id)
 
     await del_admin_book(admin_username, book_id)
     await BookObjectStore.del_book(book_id, book_page_count)

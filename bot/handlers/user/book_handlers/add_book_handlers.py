@@ -2,7 +2,7 @@ from database.methods.create import add_user_book
 from database.methods.get import get_user_info, get_user_book_info
 from database.methods.update import update_quantity_to_add_books
 from states.states import FSMUserBook
-from filters.filters import IsCorrectBook
+from filters.filters import IsCorrectBookFormat
 from keyboards.pay_kb import create_payment_kb
 from keyboards.books_kb import BooksKeyboard
 from services.object_store import BookObjectStore
@@ -28,7 +28,7 @@ async def process_add_book_command(message: Message, state: FSMContext):
     if isinstance(current_num_books_to_add, str) or current_num_books_to_add > 0:
         await message.answer(text=LEXICON_RU[message.text],
                              reply_markup=BooksKeyboard.create_cancel_add_book_kb())
-        await state.set_state(FSMUserBook.user_book_send)
+        await state.set_state(FSMUserBook.send_book_author)
 
     else:
         await message.answer(text=LEXICON_RU['add_book_error'], reply_markup=create_payment_kb())
@@ -43,12 +43,29 @@ async def cancel_add_book_process(callback: CallbackQuery, state: FSMContext):
     )
 
 
-@router.message(StateFilter(FSMUserBook.user_book_send), IsCorrectBook())
-async def process_user_send_book(message: Message, bot: Bot, book_file_id: str,
-                                 book_title: str, file_format: str, state: FSMContext):
+@router.message(StateFilter(FSMUserBook.send_book_author))
+async def process_user_send_book_author(message: Message, state: FSMContext):
+    await message.answer(text=LEXICON_RU['book_name_send'])
+    await state.update_data(book_author=message.text)
+    await state.set_state(FSMUserBook.send_book_title)
+
+
+@router.message(StateFilter(FSMUserBook.send_book_title))
+async def process_user_send_book_name(message: Message, state: FSMContext):
+    await message.answer(text=LEXICON_RU['book_file_send'])
+    await state.update_data(book_title=message.text)
+    await state.set_state(FSMUserBook.send_book_file)
+
+
+@router.message(StateFilter(FSMUserBook.send_book_file), IsCorrectBookFormat())
+async def process_user_send_book_file(message: Message, bot: Bot, book_file_id: str,
+                                      file_format: str, state: FSMContext):
     
     user_id: int = message.from_user.id
-    book_id: str = get_book_id(book_title.lower())
+    data: dict[str: str, str: str] = await state.get_data()
+    book_author, book_title = data['book_author'], data['book_title']
+
+    book_id: str = get_book_id(book_author, book_title)
 
     if await get_user_book_info(user_id, book_id):
         await message.answer(text=LEXICON_RU['users_book_in_stock_warning'])
@@ -63,7 +80,7 @@ async def process_user_send_book(message: Message, bot: Bot, book_file_id: str,
             book_text: str = parse_fb2(book_text)
 
         book: dict[int: str] = await BookObjectStore.upload_book(book_text, book_id)
-        await add_user_book(user_id, book_id, book_title, page_count=len(book))
+        await add_user_book(user_id, book_id, book_author, book_title, page_count=len(book))
 
         num_books_to_add: int | str = await get_user_info(user_id)
 
@@ -74,8 +91,8 @@ async def process_user_send_book(message: Message, bot: Bot, book_file_id: str,
         await state.clear()
 
 
-@router.message(StateFilter(FSMUserBook.user_book_send), ~IsCorrectBook())
-async def not_user_send_book_warning(message: Message):
+@router.message(StateFilter(FSMUserBook.send_book_file), ~IsCorrectBookFormat())
+async def not_user_send_book_file_warning(message: Message):
     await message.answer(
         text=LEXICON_RU['other_format_send_book'],
         reply_markup=BooksKeyboard.create_cancel_add_book_kb()

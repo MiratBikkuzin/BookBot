@@ -32,7 +32,8 @@ async def get_user_info(user_id: int) -> int | str:
 async def get_admin_book_info(book_id: int) -> tuple[str, int]:
     async with database.session as session:
         stmt = (
-            select(AdminBooksTable.book_title, AdminBooksTable.total_page_count)
+            select(AdminBooksTable.book_author, AdminBooksTable.book_title,
+                   AdminBooksTable.total_page_count)
             .select_from(AdminBooksTable)
             .where(AdminBooksTable.book_id == book_id)
         )
@@ -40,11 +41,12 @@ async def get_admin_book_info(book_id: int) -> tuple[str, int]:
         return result.fetchone()
 
 
-async def get_user_book_info(user_id: int, book_id: int) -> tuple[str, int, int, bool] | None:
+async def get_user_book_info(user_id: int, book_id: int) -> tuple[str, str, int, int, bool] | None:
     async with database.session as session:
         stmt = (
-            select(UserBooksTable.book_title, UserBooksTable.total_page_count,
-                   UserBooksTable.current_page_num, UserBooksTable.is_admin_book)
+            select(UserBooksTable.book_author, UserBooksTable.book_title,
+                   UserBooksTable.total_page_count, UserBooksTable.current_page_num,
+                   UserBooksTable.is_admin_book)
             .select_from(UserBooksTable)
             .where(and_(UserBooksTable.user_id == user_id,
                         UserBooksTable.book_id == book_id))
@@ -53,10 +55,10 @@ async def get_user_book_info(user_id: int, book_id: int) -> tuple[str, int, int,
         return result.fetchone()
     
 
-async def get_user_books_with_bookmarks(user_id: int) -> list[tuple[str, str]]:
+async def get_user_books_with_bookmarks(user_id: int) -> list[tuple[str, str, str]]:
     async with database.session as session:
         stmt = (
-            select(BookmarksTable.book_id, BookmarksTable.book_title)
+            select(BookmarksTable.book_id, BookmarksTable.book_author, BookmarksTable.book_title)
             .select_from(BookmarksTable)
             .where(BookmarksTable.user_id == user_id)
             .distinct()
@@ -87,22 +89,22 @@ async def get_total_bookmarks_num(user_id: int) -> int:
         return len(result.fetchall())
     
 
-async def get_admin_books() -> list[tuple[str, str, int]]:
+async def get_admin_books() -> list[tuple[str, str, str, int]]:
     async with database.session as session:
         stmt = (
-            select(AdminBooksTable.book_id, AdminBooksTable.book_title,
-                   AdminBooksTable.total_page_count)
+            select(AdminBooksTable.book_id, AdminBooksTable.book_author,
+                   AdminBooksTable.book_title, AdminBooksTable.total_page_count)
             .select_from(AdminBooksTable)
         )
         result = await session.execute(stmt)
         return result.fetchall()
     
 
-async def get_user_books(user_id: int) -> list[tuple[str, str, int]]:
+async def get_user_books(user_id: int) -> list[tuple[str, str, str, int]]:
     async with database.session as session:
         stmt = (
-            select(UserBooksTable.book_id, UserBooksTable.book_title,
-                   UserBooksTable.total_page_count)
+            select(UserBooksTable.book_id, UserBooksTable.book_author,
+                   UserBooksTable.book_title, UserBooksTable.total_page_count)
             .select_from(UserBooksTable)
             .where(UserBooksTable.user_id == user_id)
         )

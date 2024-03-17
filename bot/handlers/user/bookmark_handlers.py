@@ -19,9 +19,9 @@ router: Router = Router(name=__name__)
 
 
 @router.message(Command(commands='bookmarks'))
-async def process_bookmarks_command(message: Message) -> None:
+async def process_bookmarks_command(message: Message):
 
-    books: list[tuple[str, str]] = await get_user_books_with_bookmarks(message.from_user.id)
+    books: list[tuple[str, str, str]] = await get_user_books_with_bookmarks(message.from_user.id)
 
     if books:
         await message.answer(
@@ -34,14 +34,14 @@ async def process_bookmarks_command(message: Message) -> None:
 
 
 @router.callback_query(PageCallbackFactory.filter())
-async def process_add_bookmark(callback: CallbackQuery, callback_data: PageCallbackFactory) -> None:
+async def process_add_bookmark(callback: CallbackQuery, callback_data: PageCallbackFactory):
 
     user_id: int = callback.from_user.id
     book_id, page = callback_data.book_id, callback_data.page_num
-    book_title, *_ = await get_user_book_info(user_id, book_id)
+    book_author, book_title, *_ = await get_user_book_info(user_id, book_id)
 
     if page not in await get_user_book_bookmarks(user_id, book_id):
-        await add_user_bookmark(user_id, book_id, book_title, page)
+        await add_user_bookmark(user_id, book_id, book_author, book_title, page)
         await callback.answer('Страница добавлена в закладки!')
 
     else:
@@ -54,7 +54,7 @@ async def process_add_bookmark(callback: CallbackQuery, callback_data: PageCallb
 @router.callback_query(or_f(BookMarkCallbackFactory.filter(),
                             BackPageMarkCallbackFactory.filter()))
 async def process_book_with_bookmarks_press(callback: CallbackQuery,
-                                            callback_data: BookMarkCallbackFactory) -> None:
+                                            callback_data: BookMarkCallbackFactory):
     
     book_id: str = callback_data.book_id
     book_bookmarks: tuple[int] = await get_user_book_bookmarks(callback.from_user.id, book_id)
@@ -67,7 +67,7 @@ async def process_book_with_bookmarks_press(callback: CallbackQuery,
 
 @router.callback_query(BookPageMarkCallbackFactory.filter())
 async def process_book_page_mark_press(callback: CallbackQuery,
-                                       callback_data: BookPageMarkCallbackFactory) -> None:
+                                       callback_data: BookPageMarkCallbackFactory):
     
     book_id, page_num = callback_data.book_id, callback_data.page_number
 
@@ -78,9 +78,9 @@ async def process_book_page_mark_press(callback: CallbackQuery,
 
 
 @router.callback_query(F.data.in_(('edit_bookmarks', 'back_from_edit_bookmarks')))
-async def process_edit_bookmarks_press(callback: CallbackQuery) -> None:
+async def process_edit_bookmarks_press(callback: CallbackQuery):
 
-    books: list[tuple[str, str]] = await get_user_books_with_bookmarks(callback.from_user.id)
+    books: list[tuple[str, str, str]] = await get_user_books_with_bookmarks(callback.from_user.id)
 
     await callback.message.edit_text(
         text=LEXICON_RU['edit_bookmarks'],
@@ -90,7 +90,7 @@ async def process_edit_bookmarks_press(callback: CallbackQuery) -> None:
 
 @router.callback_query(EditBookMarkCallbackFactory.filter())
 async def process_edit_book_with_bookmarks_press(callback: CallbackQuery,
-                                                 callback_data: EditBookMarkCallbackFactory) -> None:
+                                                 callback_data: EditBookMarkCallbackFactory):
     
     book_id: str = callback_data.book_id
     book_bookmarks: tuple[int] = await get_user_book_bookmarks(callback.from_user.id, book_id)
@@ -103,7 +103,7 @@ async def process_edit_book_with_bookmarks_press(callback: CallbackQuery,
 
 @router.callback_query(EditBookPageMarkCallbackFactory.filter())
 async def process_edit_book_page_mark_press(callback: CallbackQuery,
-                                            callback_data: EditBookPageMarkCallbackFactory) -> None:
+                                            callback_data: EditBookPageMarkCallbackFactory):
     
     user_id: int = callback.from_user.id
     book_id, page_num = callback_data.book_id, callback_data.page_number
@@ -123,7 +123,7 @@ async def process_edit_book_page_mark_press(callback: CallbackQuery,
 
     else:
 
-        books: list[tuple[str, str]] = await get_user_books_with_bookmarks(user_id)
+        books: list[tuple[str, str, str]] = await get_user_books_with_bookmarks(user_id)
 
         if books:
             await callback.message.edit_text(
@@ -136,9 +136,9 @@ async def process_edit_book_page_mark_press(callback: CallbackQuery,
 
 
 @router.callback_query(F.data.in_(('cancel_edit_bookmarks', 'back_from_bookmarks')))
-async def process_cancel_edit_bookmarks_press(callback: CallbackQuery) -> None:
+async def process_cancel_edit_bookmarks_press(callback: CallbackQuery):
 
-    books: list[tuple[str, str]] = await get_user_books_with_bookmarks(callback.from_user.id)
+    books: list[tuple[str, str, str]] = await get_user_books_with_bookmarks(callback.from_user.id)
 
     await callback.message.edit_text(
         text=LEXICON_RU['/bookmarks'],
