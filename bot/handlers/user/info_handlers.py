@@ -1,5 +1,6 @@
 from database.methods.get import get_user_books, get_user_info, get_total_bookmarks_num
 from utils.utils import get_profile_command_text
+from lexicon.lexicon import LEXICON_RU
 
 from aiogram import Router
 from aiogram.filters import Command
@@ -22,3 +23,8 @@ async def process_profile_command(message: Message):
     result: str = get_profile_command_text(name, user_id, books_num, num_books_to_add, bookmarks_num)
     
     await message.answer(text=result)
+
+
+@router.message(Command(commands='help'))
+async def process_help_command(message: Message):
+    await message.answer(LEXICON_RU[message.text])
