@@ -8,7 +8,7 @@ router: Router = Router(name=__name__)
 
 
 @router.callback_query(F.data == 'cancel')
-async def process_cancel_press(callback: CallbackQuery) -> None:
+async def process_cancel_press(callback: CallbackQuery):
     await callback.message.edit_text(LEXICON_RU['cancel_text'])
 
 

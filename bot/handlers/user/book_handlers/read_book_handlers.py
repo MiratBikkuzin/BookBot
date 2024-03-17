@@ -17,8 +17,7 @@ router: Router = Router(name=__name__)
 
 
 @router.callback_query(PageTurningCallbackFactory.filter())
-async def process_page_turning(callback: CallbackQuery,
-                               callback_data: PageTurningCallbackFactory) -> None:
+async def process_page_turning(callback: CallbackQuery, callback_data: PageTurningCallbackFactory):
 
     user_id, book_id = callback.from_user.id, callback_data.book_id
     _, _, page_count, page_num, _ = await get_user_book_info(user_id, book_id)
@@ -35,7 +34,7 @@ async def process_page_turning(callback: CallbackQuery,
 
 
 @router.message(Command(commands='beginning'))
-async def process_beginning_command(message: Message) -> None:
+async def process_beginning_command(message: Message):
     await message.answer(
         text=LEXICON_RU['choice_books_text'],
         reply_markup=BooksKeyboard.create_choice_books_kb()
@@ -43,7 +42,7 @@ async def process_beginning_command(message: Message) -> None:
 
 
 @router.callback_query(F.data == 'admin-books')
-async def process_admin_books_choice(callback: CallbackQuery) -> None:
+async def process_admin_books_choice(callback: CallbackQuery):
     await callback.message.edit_text(
         text=LEXICON_RU['admin_books_list'],
         reply_markup=await BooksKeyboard.create_admin_books_kb()
@@ -51,7 +50,7 @@ async def process_admin_books_choice(callback: CallbackQuery) -> None:
 
 
 @router.callback_query(F.data.in_(('user-books', 'back-from-edit-user-books')))
-async def process_user_books_choice(callback: CallbackQuery) -> None:
+async def process_user_books_choice(callback: CallbackQuery):
 
     user_id: int = callback.from_user.id
     user_books: list[tuple[str, str, str, int]] | None = await get_user_books(user_id)
@@ -70,8 +69,7 @@ async def process_user_books_choice(callback: CallbackQuery) -> None:
 
 
 @router.callback_query(AdminBookCallbackFactory.filter())
-async def process_admin_book_choice(callback: CallbackQuery,
-                                    callback_data: AdminBookCallbackFactory) -> None:
+async def process_admin_book_choice(callback: CallbackQuery, callback_data: AdminBookCallbackFactory):
     
     user_id, book_id = callback.from_user.id, callback_data.book_id
     book_author, book_title, page_count = await get_admin_book_info(book_id)
@@ -97,8 +95,7 @@ async def process_admin_book_choice(callback: CallbackQuery,
 
 
 @router.callback_query(UserBookCallbackFactory.filter())
-async def process_user_book_choice(callback: CallbackQuery,
-                                   callback_data: UserBookCallbackFactory) -> None:
+async def process_user_book_choice(callback: CallbackQuery, callback_data: UserBookCallbackFactory):
 
     user_id, book_id = callback.from_user.id, callback_data.book_id
     _, _, page_count, page_num, _ = await get_user_book_info(user_id, book_id)
@@ -114,7 +111,7 @@ async def process_user_book_choice(callback: CallbackQuery,
 
 
 @router.message(Command(commands='continue'))
-async def process_continue_command(message: Message) -> None:
+async def process_continue_command(message: Message):
 
     user_id: int = message.from_user.id
     user_books: list[tuple[str, str, str, int]] | None = await get_user_books(user_id)
