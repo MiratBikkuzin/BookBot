@@ -15,6 +15,8 @@ def _get_part_text(text: str, start: int, size: int) -> tuple[str, int] | tuple[
 
 def prepare_book(book_text: str) -> dict[int: str]:
 
+    book_text: str = book_text.replace('\n\n', '\n')
+
     book: dict[int: str] = {}
 
     start, page_num = 0, 1

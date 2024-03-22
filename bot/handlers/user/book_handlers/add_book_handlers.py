@@ -6,7 +6,7 @@ from filters.filters import IsCorrectBookFormat
 from keyboards.pay_kb import create_payment_kb
 from keyboards.books_kb import BooksKeyboard
 from services.object_store import BookObjectStore
-from services.file_handling import parse_fb2, get_book_text
+from services.file_handling import parse_fb2, parse_pdf, get_book_text
 from lexicon.lexicon import LEXICON_RU
 from utils.utils import get_book_id
 
@@ -15,6 +15,7 @@ from aiogram.types import Message, CallbackQuery
 from aiogram.filters import Command, StateFilter
 from aiogram.fsm.state import default_state
 from aiogram.fsm.context import FSMContext
+from io import BytesIO
 
 
 router: Router = Router(name=__name__)
@@ -74,10 +75,17 @@ async def process_user_send_book_file(message: Message, bot: Bot, book_file_id: 
 
         await message.answer(text=LEXICON_RU['wait_user_book_download'])
 
-        book_text: str = get_book_text(await bot.download(book_file_id))
+        binary_book: BytesIO = await bot.download(book_file_id)
 
-        if file_format == 'fb2':
-            book_text: str = parse_fb2(book_text)
+        if file_format == 'pdf':
+            book_text: str = parse_pdf(binary_book)
+
+        else:
+
+            book_text: str = get_book_text(binary_book)
+
+            if file_format == 'fb2':
+                book_text: str = parse_fb2(book_text)
 
         book: dict[int: str] = await BookObjectStore.upload_book(book_text, book_id)
         await add_user_book(user_id, book_id, book_author, book_title, page_count=len(book))
