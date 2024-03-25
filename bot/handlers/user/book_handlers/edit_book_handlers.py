@@ -1,7 +1,7 @@
 from keyboards.books_kb import BooksKeyboard
 from keyboards.kb_utils import EditUserBookCallbackFactory
 from database.methods.delete import del_user_book
-from database.methods.get import get_user_book_info, get_num_readers_book
+from database.methods.get import get_user_book_info, get_num_readers_book, get_user_books
 from services.object_store.main import BookObjectStore
 from lexicon.lexicon import LEXICON_RU
 
@@ -33,5 +33,15 @@ async def process_del_user_book(callback: CallbackQuery,
 
     await del_user_book(user_id, book_id)
 
+    user_books: list[tuple[str, str, str, int]] = await get_user_books(user_id)
+
     await callback.answer(text=LEXICON_RU['del_user_book_end'] % book_title)
-    await callback.message.delete()
+
+    if user_books:
+        await callback.message.edit_text(
+            text=LEXICON_RU['edit_user_books'],
+            reply_markup=await BooksKeyboard.create_edit_user_books_kb(user_id, user_books)
+        )
+
+    else:
+        await callback.message.edit_text(text=LEXICON_RU['no_books_warning'])
