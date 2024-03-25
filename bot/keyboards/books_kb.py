@@ -85,11 +85,15 @@ class BooksKeyboard:
         return kb_builder.as_markup()
     
     @staticmethod
-    async def create_edit_user_books_kb(user_id: int) -> InlineKeyboardMarkup:
+    async def create_edit_user_books_kb(user_id: int,
+                                        user_books: list | None = None) -> InlineKeyboardMarkup:
 
         kb_builder: InlineKeyboardBuilder = InlineKeyboardBuilder()
 
-        for book_id, book_author, book_title, _ in await get_user_books(user_id):
+        if not user_books:
+            user_books: list[tuple[str, str, str, int]] = await get_user_books(user_id)
+
+        for book_id, book_author, book_title, _ in user_books:
             callback_data: str = EditUserBookCallbackFactory(book_id=book_id).pack()
             kb_builder.row(InlineKeyboardButton(
                 text=f"{LEXICON_RU['del']} {book_title} ({book_author})",
