@@ -62,10 +62,8 @@ async def process_user_books_choice(callback: CallbackQuery):
         )
 
     else:
-        await callback.answer(
-            text=LEXICON_RU['no_books_warning'],
-            show_alert=True
-        )
+        await callback.message.answer(text=LEXICON_RU['no_books_warning'])
+        await callback.answer()
 
 
 @router.callback_query(AdminBookCallbackFactory.filter())
