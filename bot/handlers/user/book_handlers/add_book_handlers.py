@@ -46,16 +46,22 @@ async def cancel_add_book_process(callback: CallbackQuery, state: FSMContext):
 
 @router.message(StateFilter(FSMUserBook.send_book_author))
 async def process_user_send_book_author(message: Message, state: FSMContext):
-    await message.answer(text=LEXICON_RU['book_name_send'])
     await state.update_data(book_author=message.text)
     await state.set_state(FSMUserBook.send_book_title)
+    await message.answer(
+        text=LEXICON_RU['book_name_send'],
+        reply_markup=BooksKeyboard.create_cancel_add_book_kb()
+    )
 
 
 @router.message(StateFilter(FSMUserBook.send_book_title))
 async def process_user_send_book_name(message: Message, state: FSMContext):
-    await message.answer(text=LEXICON_RU['book_file_send'])
     await state.update_data(book_title=message.text)
     await state.set_state(FSMUserBook.send_book_file)
+    await message.answer(
+        text=LEXICON_RU['book_file_send'],
+        reply_markup=BooksKeyboard.create_cancel_add_book_kb()
+    )
 
 
 @router.message(StateFilter(FSMUserBook.send_book_file), IsCorrectBookFormat())
