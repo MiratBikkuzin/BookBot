@@ -44,6 +44,11 @@ async def cancel_add_book_process(callback: CallbackQuery, state: FSMContext):
     )
 
 
+@router.callback_query(F.data == 'cancel_add_book', StateFilter(default_state))
+async def process_cancel_add_book_warning(callback: CallbackQuery):
+    await callback.answer(text=LEXICON_RU['cancel_add_book_warning'], show_alert=True)
+
+
 @router.message(StateFilter(FSMUserBook.send_book_author))
 async def process_user_send_book_author(message: Message, state: FSMContext):
     await state.update_data(book_author=message.text)
