@@ -66,8 +66,8 @@ class BooksKeyboard:
         return kb_builder.as_markup()
     
     @staticmethod
-    async def create_user_books_kb(user_id: int,
-                    user_books: list[tuple[str, str, int]] | None = None) -> InlineKeyboardMarkup:
+    async def create_user_books_kb(user_id: int, user_books: list | None = None,
+                                   *, is_back_button: bool) -> InlineKeyboardMarkup:
         
         kb_builder: InlineKeyboardBuilder = InlineKeyboardBuilder()
 
@@ -82,10 +82,18 @@ class BooksKeyboard:
                 callback_data=callback_data
             ))
 
-        kb_builder.row(
-            InlineKeyboardButton(text=LEXICON_RU['edit_button'], callback_data='edit-user-books'),
-            InlineKeyboardButton(text=LEXICON_RU['back_button'], callback_data='back-from-books')
+        edit_button = InlineKeyboardButton(
+            text=LEXICON_RU['edit_button'], callback_data='edit-user-books'
         )
+        last_buttons: list[InlineKeyboardButton] = [edit_button]
+
+        if is_back_button:
+            back_button = InlineKeyboardButton(
+                text=LEXICON_RU['back_button'], callback_data='back-from-books'
+            )
+            last_buttons.append(back_button)
+
+        kb_builder.row(*last_buttons)
 
         return kb_builder.as_markup()
     

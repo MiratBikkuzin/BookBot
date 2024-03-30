@@ -66,7 +66,8 @@ async def process_user_books_choice(callback: CallbackQuery):
     if user_books:
         await callback.message.edit_text(
             text=LEXICON_RU['user_books_list'],
-            reply_markup=await BooksKeyboard.create_user_books_kb(user_id, user_books=user_books)
+            reply_markup=await BooksKeyboard.create_user_books_kb(user_id, user_books=user_books,
+                                                                  is_back_button=True)
         )
 
     else:
@@ -125,7 +126,7 @@ async def process_continue_command(message: Message):
     if user_books:
         await message.answer(
             text=LEXICON_RU['user_books_list'],
-            reply_markup=await BooksKeyboard.create_user_books_kb(user_id)
+            reply_markup=await BooksKeyboard.create_user_books_kb(user_id, is_back_button=False)
         )
 
     else:
