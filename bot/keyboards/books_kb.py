@@ -32,6 +32,11 @@ class BooksKeyboard:
                 callback_data=callback_data
             ))
 
+        kb_builder.row(InlineKeyboardButton(
+            text=LEXICON_RU['back_button'],
+            callback_data='back-from-books'
+        ))
+
         return kb_builder.as_markup()
     
     def create_selecting_admin_actions_kb() -> InlineKeyboardMarkup:
@@ -77,10 +82,10 @@ class BooksKeyboard:
                 callback_data=callback_data
             ))
 
-        kb_builder.row(InlineKeyboardButton(
-            text=LEXICON_RU['edit_button'],
-            callback_data='edit-user-books'
-        ))
+        kb_builder.row(
+            InlineKeyboardButton(text=LEXICON_RU['edit_button'], callback_data='edit-user-books'),
+            InlineKeyboardButton(text=LEXICON_RU['back_button'], callback_data='back-from-books')
+        )
 
         return kb_builder.as_markup()
     

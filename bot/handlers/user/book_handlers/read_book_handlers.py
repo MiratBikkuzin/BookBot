@@ -41,6 +41,14 @@ async def process_beginning_command(message: Message):
     )
 
 
+@router.callback_query(F.data == 'back-from-books')
+async def process_back_from_books_list(callback: CallbackQuery):
+    await callback.message.edit_text(
+        text=LEXICON_RU['choice_books_text'],
+        reply_markup=BooksKeyboard.create_choice_books_kb()
+    )
+
+
 @router.callback_query(F.data == 'admin-books')
 async def process_admin_books_choice(callback: CallbackQuery):
     await callback.message.edit_text(
