@@ -64,9 +64,10 @@ class BookmarksKeyboard:
         kb_builder: InlineKeyboardBuilder = InlineKeyboardBuilder()
 
         for page_num in sorted(book_bookmarks):
-            book_page_content: str = await BookObjectStore.get_book_page_content(book_id, page_num)
+            page_content: str = await BookObjectStore.get_book_page_content(book_id, page_num)
+            page_content: str = page_content[:85].replace('\n', ' ')
             kb_builder.row(InlineKeyboardButton(
-                text=f"{page_num} - {book_page_content[:85]}",
+                text=f"{page_num} - {page_content}",
                 callback_data=BookPageMarkCallbackFactory(book_id=book_id,
                                                           page_number=page_num).pack()
             ))
@@ -85,9 +86,10 @@ class BookmarksKeyboard:
         kb_builder: InlineKeyboardBuilder = InlineKeyboardBuilder()
 
         for page_num in sorted(book_bookmarks):
-            book_page_content: str = await BookObjectStore.get_book_page_content(book_id, page_num)
+            page_content: str = await BookObjectStore.get_book_page_content(book_id, page_num)
+            page_content: str = page_content[:85].replace('\n', ' ')
             kb_builder.row(InlineKeyboardButton(
-                text=f"{LEXICON_RU['del']} {page_num} - {book_page_content[:85]}",
+                text=f"{LEXICON_RU['del']} {page_num} - {page_content}",
                 callback_data=EditBookPageMarkCallbackFactory(book_id=book_id,
                                                               page_number=page_num).pack()
             ))
