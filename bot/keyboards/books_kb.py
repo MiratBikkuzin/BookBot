@@ -59,7 +59,7 @@ class BooksKeyboard:
             ))
 
         kb_builder.row(InlineKeyboardButton(
-            text=LEXICON_RU['back_button'],
+            text=LEXICON_RU['cancel'],
             callback_data='back-from-edit-admin-books'
         ))
 
@@ -106,7 +106,7 @@ class BooksKeyboard:
             ))
 
         kb_builder.row(InlineKeyboardButton(
-            text=LEXICON_RU['back_button'],
+            text=LEXICON_RU['cancel'],
             callback_data='back-from-edit-user-books'
         ))
 

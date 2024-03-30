@@ -20,22 +20,32 @@ router: Router = Router(name=__name__)
 
 @router.callback_query(F.data == 'admin-add-book', StateFilter(default_state))
 async def admin_selecting_add_book_action(callback: CallbackQuery, state: FSMContext):
-    await callback.message.edit_text(text=LEXICON_RU['admin_add_book'])
     await state.set_state(FSMAdminBook.send_book_author)
+    await callback.message.answer(
+        text=LEXICON_RU['admin_add_book'],
+        reply_markup=BooksKeyboard.create_cancel_add_book_kb()
+    )
+    await callback.answer()
 
 
 @router.message(StateFilter(FSMAdminBook.send_book_author))
 async def process_admin_send_book_author(message: Message, state: FSMContext):
-    await message.answer(text=LEXICON_RU['book_name_send'])
     await state.update_data(book_author=message.text)
     await state.set_state(FSMAdminBook.send_book_title)
+    await message.answer(
+        text=LEXICON_RU['book_name_send'],
+        reply_markup=BooksKeyboard.create_cancel_add_book_kb()
+    )
 
 
 @router.message(StateFilter(FSMAdminBook.send_book_title))
 async def process_admin_send_book_name(message: Message, state: FSMContext):
-    await message.answer(text=LEXICON_RU['book_file_send'])
     await state.update_data(book_title=message.text)
     await state.set_state(FSMAdminBook.send_book_file)
+    await message.answer(
+        text=LEXICON_RU['book_file_send'],
+        reply_markup=BooksKeyboard.create_cancel_add_book_kb()
+    )
 
 
 @router.message(StateFilter(FSMAdminBook.send_book_file), IsCorrectBookFormat())
