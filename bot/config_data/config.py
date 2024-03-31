@@ -3,7 +3,6 @@ from pydantic_settings import BaseSettings, SettingsConfigDict
 
 class BotSettings(BaseSettings):
     token: str
-    payment_token: str
     admin_ids: str
     
     @property
@@ -34,6 +33,14 @@ class NatsSettings(BaseSettings):
     model_config = SettingsConfigDict(env_file='.env', env_prefix='NATS_', case_sensitive=False)
 
 
+class MerchantSettings(BaseSettings):
+    login: str
+    password_1: str
+
+    model_config = SettingsConfigDict(env_file='.env', env_prefix='MERCHANT_', case_sensitive=False)
+
+
 bot_settings: BotSettings = BotSettings()
 db_settings: DatabaseSettings = DatabaseSettings()
 nats_settings: NatsSettings = NatsSettings()
+merchant_settings: MerchantSettings = MerchantSettings()
