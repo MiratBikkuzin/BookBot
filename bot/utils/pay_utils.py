@@ -1,5 +1,6 @@
 from config_data.config import merchant_settings
 from urllib import parse
+from random import randint
 import hashlib
 
 
@@ -8,12 +9,16 @@ def _calculate_signature(*args) -> str:
     return hashlib.md5(':'.join(str(arg) for arg in args).encode()).hexdigest()
 
 
+def get_random_inv_id() -> int:
+    return randint(1, 2147483646)
+
+
 def generate_payment_link(
         user_id: int,
         num_books_to_add: int | str,
         price: int, # Cost of goods, RU
         description: str, # Description of the purchase
-        inv_id: int = 0,
+        inv_id: int,
         price_curr: str = 'RUB',
         is_test: int = 0,
         robokassa_payment_url: str = 'https://auth.robokassa.ru/Merchant/Index.aspx'
