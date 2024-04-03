@@ -1,4 +1,10 @@
-from database.models import UsersTable, UserBooksTable, BookmarksTable, AdminBooksTable
+from database.models import (
+    UsersTable,
+    UserBooksTable,
+    BookmarksTable,
+    AdminBooksTable,
+    PaymentsInfoTable
+)
 from database.main import database
 
 from sqlalchemy import select, and_
@@ -121,3 +127,26 @@ async def get_num_readers_book(book_id: str) -> int:
         )
         result = await session.execute(stmt)
         return len(result.fetchall())
+    
+
+async def get_user_invoice_id(user_id: int) -> int:
+    async with database.session as session:
+        stmt = (
+            select(PaymentsInfoTable.invoice_id)
+            .select_from(PaymentsInfoTable)
+            .where(PaymentsInfoTable.user_id == user_id)
+        )
+        result = await session.execute(stmt)
+        return result.fetchone()[0]
+    
+
+async def check_is_user_invoice_id_unique(inv_id: int) -> bool:
+    async with database.session as session:
+        stmt = (
+            select(PaymentsInfoTable.id)
+            .select_from(PaymentsInfoTable)
+            .where(PaymentsInfoTable.invoice_id == inv_id)
+        )
+        result = await session.execute(stmt)
+        rows_count: int = len(result.fetchall())
+        return (False, True)[rows_count == 1]
