@@ -36,6 +36,7 @@ class NatsSettings(BaseSettings):
 class MerchantSettings(BaseSettings):
     login: str
     password_1: str
+    password_2: str
 
     model_config = SettingsConfigDict(env_file='.env', env_prefix='MERCHANT_', case_sensitive=False)
 
