@@ -26,7 +26,6 @@ class UsersTable(Base):
     num_books_to_add: Mapped[str]  # this column is a string because it can have one of two values
                                    # (the number of books to add or word "unlimited")
 
-
 class BookmarksTable(Base):
     __tablename__ = 'UserBookmarks'
     __table_args__ = table_args
@@ -67,3 +66,13 @@ class UserBooksTable(Base):
     current_page_num: Mapped[int]
 
     is_admin_book: Mapped[bool]
+
+
+class PaymentsInfoTable(Base):
+    __tablename__ = 'PaymentsInfo'
+    __table_args__ = table_args
+    
+    id: Mapped[intpk]
+    user_id: Mapped[useridk]
+
+    invoice_id: Mapped[int]
