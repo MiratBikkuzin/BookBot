@@ -1,4 +1,5 @@
 from config_data.config import merchant_settings
+from database.methods.get import check_is_user_invoice_id_unique
 from urllib import parse
 from random import randint
 import hashlib
@@ -7,10 +8,6 @@ import hashlib
 def _calculate_signature(*args) -> str:
     '''Create MD5 signature'''
     return hashlib.md5(':'.join(str(arg) for arg in args).encode()).hexdigest()
-
-
-def get_random_inv_id() -> int:
-    return randint(1, 2147483646)
 
 
 def generate_payment_link(
@@ -49,3 +46,15 @@ def generate_payment_link(
 
     data['SignatureValue'] = signature
     return f'{robokassa_payment_url}?{parse.urlencode(data)}'
+
+
+async def create_unique_invoice_id() -> int:
+
+    is_unique = False
+
+    while is_unique is False:
+        inv_id = randint(1, 2147483646)
+        if await check_is_user_invoice_id_unique(inv_id):
+            is_unique = True
+            
+    return inv_id
