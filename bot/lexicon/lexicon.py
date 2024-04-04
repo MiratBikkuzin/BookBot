@@ -90,7 +90,8 @@ LEXICON_RU: dict[str, str] = {
                                    'вам нужно будет оплатить счёт',
     'unlimited_books_button': 'Безлимитное количество',
     'unlimited': 'Безлимитное',
-    'books_price_button': 'Заплатить "%s" RUB',
+    'books_price_button': 'Заплатить %s RUB',
+    'check_payment_button': 'Проверить платёж',
     'successful_payment': '<b>Отлично!</b> Вам начислено желаемое количество.\n'
                           'Если возникли какие-то вопросы то смело пишите в тех.поддержку '
                           '<b>@chitalka_support</b>. Также если вы хотите чтобы в читалке '
