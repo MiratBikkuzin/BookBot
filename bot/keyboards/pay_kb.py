@@ -1,19 +1,12 @@
 from lexicon.lexicon import LEXICON_RU
-from aiogram.types import LabeledPrice, InlineKeyboardMarkup, InlineKeyboardButton
-
-
-ten_books_price = LabeledPrice(label=LEXICON_RU['pay_label'], amount=99 * 100)
-unlimited_books_price = LabeledPrice(label=LEXICON_RU['pay_label'], amount=500 * 100)
-
-max_tip_amount: int = 80 * 100
-tip_amounts: list[int] = [10 * 100, 20 * 100, 40 * 100, 80 * 100]
+from aiogram.types import InlineKeyboardMarkup, InlineKeyboardButton
 
 
 def create_payment_kb() -> InlineKeyboardMarkup:
 
     ten_books_add_button = InlineKeyboardButton(text='10', callback_data='ten_books_add')
     unlimited_books_add_button = InlineKeyboardButton(
-        text='Бесконечное количество',
+        text=LEXICON_RU['unlimited_books_button'],
         callback_data='unlimited_books_add'
     )
         
