@@ -149,4 +149,4 @@ async def check_is_user_invoice_id_unique(inv_id: int) -> bool:
         )
         result = await session.execute(stmt)
         rows_count: int = len(result.fetchall())
-        return (False, True)[rows_count == 1]
+        return (False, True)[rows_count <= 1]
