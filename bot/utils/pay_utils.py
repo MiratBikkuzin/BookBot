@@ -59,10 +59,10 @@ async def create_unique_invoice_id(user_id: int) -> int:
         if await check_is_user_invoice_id_unique(inv_id):
             is_unique = True
 
-    if get_user_invoice_id(user_id):
-        update_payment_info(user_id, inv_id)
+    if await get_user_invoice_id(user_id):
+        await update_payment_info(user_id, inv_id)
 
     else:
-        add_user_payment_info(user_id, inv_id)
+        await add_user_payment_info(user_id, inv_id)
             
     return inv_id
