@@ -1,5 +1,7 @@
 from config_data.config import merchant_settings
-from database.methods.get import check_is_user_invoice_id_unique
+from database.methods.create import add_user_payment_info
+from database.methods.get import check_is_user_invoice_id_unique, get_user_invoice_id
+from database.methods.update import update_payment_info
 from urllib import parse
 from random import randint
 import hashlib
@@ -48,7 +50,7 @@ def generate_payment_link(
     return f'{robokassa_payment_url}?{parse.urlencode(data)}'
 
 
-async def create_unique_invoice_id() -> int:
+async def create_unique_invoice_id(user_id: int) -> int:
 
     is_unique = False
 
@@ -56,5 +58,11 @@ async def create_unique_invoice_id() -> int:
         inv_id = randint(1, 2147483646)
         if await check_is_user_invoice_id_unique(inv_id):
             is_unique = True
+
+    if get_user_invoice_id(user_id):
+        update_payment_info(user_id, inv_id)
+
+    else:
+        add_user_payment_info(user_id, inv_id)
             
     return inv_id

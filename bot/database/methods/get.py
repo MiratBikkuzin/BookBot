@@ -137,7 +137,7 @@ async def get_user_invoice_id(user_id: int) -> int:
             .where(PaymentsInfoTable.user_id == user_id)
         )
         result = await session.execute(stmt)
-        return result.fetchone()[0]
+        return result.fetchone()
     
 
 async def check_is_user_invoice_id_unique(inv_id: int) -> bool:
