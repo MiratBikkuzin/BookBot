@@ -50,3 +50,7 @@ class PageCallbackFactory(CallbackData, prefix='p', sep='@'):
     page_num: int
     page_count: int
     book_id: str
+
+
+class PaymentVerifCallbackFactory(CallbackData, prefix='paymentv', sep='@'):
+    invoice_id: int
