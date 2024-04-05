@@ -26,18 +26,19 @@ async def process_send_selection_quantity_for_top_up(message: Message):
 async def process_select_ten_books_to_add(callback: CallbackQuery):
 
     user_id: int = callback.from_user.id
+    inv_id: int = await create_unique_invoice_id(user_id)
 
     payment_link: str = generate_payment_link(
         user_id,
         num_books_to_add=10,
         price=ten_books_price,
         description='buy 10 books for additions',
-        inv_id=await create_unique_invoice_id(user_id)
+        inv_id=inv_id
     )
 
     await callback.message.answer(
         text=LEXICON_RU['ten_books_description'],
-        reply_markup=create_payment_kb(payment_link, ten_books_price)
+        reply_markup=create_payment_kb(payment_link, inv_id, ten_books_price)
     )
 
     await callback.answer()
@@ -47,18 +48,19 @@ async def process_select_ten_books_to_add(callback: CallbackQuery):
 async def process_select_unlimited_books_to_add(callback: CallbackQuery):
     
     user_id: int = callback.from_user.id
+    inv_id: int = await create_unique_invoice_id(user_id)
 
     payment_link: str = generate_payment_link(
         user_id,
         num_books_to_add='unlimited',
         price=unlimited_books_price,
         description='buy unlimited quantity of books for adding',
-        inv_id=await create_unique_invoice_id(user_id)
+        inv_id=inv_id
     )
 
     await callback.message.answer(
         text=LEXICON_RU['unlimited_books_description'],
-        reply_markup=create_payment_kb(payment_link, unlimited_books_price)
+        reply_markup=create_payment_kb(payment_link, inv_id, unlimited_books_price)
     )
 
     await callback.answer()

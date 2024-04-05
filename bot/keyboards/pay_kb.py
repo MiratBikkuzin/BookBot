@@ -1,4 +1,6 @@
+from keyboards.kb_utils import PaymentVerifCallbackFactory
 from lexicon.lexicon import LEXICON_RU
+
 from aiogram.types import InlineKeyboardMarkup, InlineKeyboardButton
 
 
@@ -16,7 +18,7 @@ def create_choice_books_payment_kb() -> InlineKeyboardMarkup:
     return InlineKeyboardMarkup(inline_keyboard=inline_keyboard)
 
 
-def create_payment_kb(payment_link: str, price: int) -> InlineKeyboardMarkup:
+def create_payment_kb(payment_link: str, inv_id: int, price: int) -> InlineKeyboardMarkup:
     
     link_button = InlineKeyboardButton(
         text=LEXICON_RU['books_price_button'] % price,
@@ -24,7 +26,7 @@ def create_payment_kb(payment_link: str, price: int) -> InlineKeyboardMarkup:
     )
     check_payment_button = InlineKeyboardButton(
         text=LEXICON_RU['check_payment_button'],
-        callback_data='check-payment-process'
+        callback_data=PaymentVerifCallbackFactory(invoice_id=inv_id).pack()
     )
 
     return InlineKeyboardMarkup(inline_keyboard=[[link_button], [check_payment_button]])
