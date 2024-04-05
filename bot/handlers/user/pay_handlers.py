@@ -31,7 +31,7 @@ async def process_select_ten_books_to_add(callback: CallbackQuery):
         user_id,
         num_books_to_add=10,
         price=ten_books_price,
-        description='buy 10 books',
+        description='buy 10 books for additions',
         inv_id=await create_unique_invoice_id(user_id)
     )
 
@@ -39,23 +39,29 @@ async def process_select_ten_books_to_add(callback: CallbackQuery):
         text=LEXICON_RU['ten_books_description'],
         reply_markup=create_payment_kb(payment_link, ten_books_price)
     )
-    
+
     await callback.answer()
 
 
-# @router.callback_query(F.data == 'unlimited_books_add')
-# async def process_select_unlimited_books_to_add(callback: CallbackQuery):
-#     await callback.message.answer_invoice(
-#         title=LEXICON_RU['unlimited_books_invoice_title'],
-#         description=LEXICON_RU['invoice_description'],
-#         payload='unlimited',
-#         provider_token=bot_settings.payment_token,
-#         currency='RUB',
-#         prices=[unlimited_books_price],
-#         max_tip_amount=max_tip_amount,
-#         suggested_tip_amounts=tip_amounts
-#     )
-#     await callback.answer()
+@router.callback_query(F.data == 'unlimited_books_add')
+async def process_select_unlimited_books_to_add(callback: CallbackQuery):
+    
+    user_id: int = callback.from_user.id
+
+    payment_link: str = generate_payment_link(
+        user_id,
+        num_books_to_add='unlimited',
+        price=unlimited_books_price,
+        description='buy unlimited quantity of books for adding',
+        inv_id=await create_unique_invoice_id(user_id)
+    )
+
+    await callback.message.answer(
+        text=LEXICON_RU['unlimited_books_description'],
+        reply_markup=create_payment_kb(payment_link, unlimited_books_price)
+    )
+
+    await callback.answer()
 
 
 # @router.pre_checkout_query()
