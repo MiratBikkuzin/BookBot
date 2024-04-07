@@ -2,8 +2,10 @@ from config_data.config import merchant_settings
 from database.methods.create import add_user_payment_info
 from database.methods.get import check_is_user_invoice_id_unique, get_user_invoice_id
 from database.methods.update import update_payment_info
+
 from urllib import parse
 from random import randint
+from aiohttp import ClientSession
 import hashlib
 
 
@@ -66,3 +68,20 @@ async def create_unique_invoice_id(user_id: int) -> int:
         await add_user_payment_info(user_id, inv_id)
             
     return inv_id
+
+
+def generate_payment_verification_link(
+        inv_id: int,
+        check_payment_url = 'https://auth.robokassa.ru/Merchant/WebService/Service.asmx/OpStateExt'
+) -> str:
+    
+    login: str = merchant_settings.login
+    password_2: str = merchant_settings.password_2
+
+    data = {
+        'MerchantLogin': login,
+        'InvoiceID': inv_id,
+        'Signature': _calculate_signature(login, inv_id, password_2)
+    }
+
+    return f'{check_payment_url}?{parse.urlencode(data)}'
