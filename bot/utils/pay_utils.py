@@ -6,12 +6,30 @@ from database.methods.update import update_payment_info
 from urllib import parse
 from random import randint
 from aiohttp import ClientSession
+from bs4 import BeautifulSoup as BS
 import hashlib
 
 
 def _calculate_signature(*args) -> str:
     '''Create MD5 signature'''
     return hashlib.md5(':'.join(str(arg) for arg in args).encode()).hexdigest()
+
+
+def _generate_payment_verification_link(
+        inv_id: int,
+        check_payment_url = 'https://auth.robokassa.ru/Merchant/WebService/Service.asmx/OpStateExt'
+) -> str:
+    
+    login: str = merchant_settings.login
+    password_2: str = merchant_settings.password_2
+
+    data = {
+        'MerchantLogin': login,
+        'InvoiceID': inv_id,
+        'Signature': _calculate_signature(login, inv_id, password_2)
+    }
+
+    return f'{check_payment_url}?{parse.urlencode(data)}'
 
 
 def generate_payment_link(
@@ -29,7 +47,7 @@ def generate_payment_link(
     password_1: str = merchant_settings.password_1
     shp_numbooks: str = f'Shp_numbooks={num_books_to_add}'
     shp_userid: str = f'Shp_userid={user_id}'
-    shp_params: list[str, str] = sorted((shp_numbooks, shp_userid))
+    shp_params: list[str, str] = shp_numbooks, shp_userid
 
     data = {
         'MerchantLogin': login,
@@ -70,18 +88,24 @@ async def create_unique_invoice_id(user_id: int) -> int:
     return inv_id
 
 
-def generate_payment_verification_link(
+async def is_payment_success(
         inv_id: int,
-        check_payment_url = 'https://auth.robokassa.ru/Merchant/WebService/Service.asmx/OpStateExt'
-) -> str:
+        aiohttp_session: ClientSession
+) -> tuple[int | str, int] | None:
+
+    payment_verification_link: str = _generate_payment_verification_link(inv_id)
+    response = await aiohttp_session.get(payment_verification_link)
+    soup: BS = BS(await response.text(), 'xml')
+    result_code: int = int(soup.find('Result').find('Code').text)
+
+    if result_code == 0 and int(soup.find('State').find('Code').text) == 100:
     
-    login: str = merchant_settings.login
-    password_2: str = merchant_settings.password_2
+        user_fields = soup.find('UserFields')
+        num_books_to_add, user_id = (x.text for x in user_fields.find_all('Value'))
 
-    data = {
-        'MerchantLogin': login,
-        'InvoiceID': inv_id,
-        'Signature': _calculate_signature(login, inv_id, password_2)
-    }
+        if num_books_to_add != 'unlimited':
+            num_books_to_add = int(num_books_to_add)
 
-    return f'{check_payment_url}?{parse.urlencode(data)}'
+        user_id = int(user_id)
+
+        return num_books_to_add, user_id
