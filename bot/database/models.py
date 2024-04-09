@@ -76,3 +76,11 @@ class PaymentsInfoTable(Base):
     user_id: Mapped[useridk]
 
     invoice_id: Mapped[int]
+
+
+class SuccessfulPaymentsTable(Base):
+    __tablename__ = 'SuccessfulPayments'
+    __table_args__ = table_args
+
+    id: Mapped[intpk]
+    invoice_id: Mapped[int]
