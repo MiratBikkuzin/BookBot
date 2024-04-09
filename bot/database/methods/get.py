@@ -3,7 +3,8 @@ from database.models import (
     UserBooksTable,
     BookmarksTable,
     AdminBooksTable,
-    PaymentsInfoTable
+    PaymentsInfoTable,
+    SuccessfulPaymentsTable
 )
 from database.main import database
 
@@ -142,11 +143,21 @@ async def get_user_invoice_id(user_id: int) -> int:
 
 async def check_is_user_invoice_id_unique(inv_id: int) -> bool:
     async with database.session as session:
-        stmt = (
+        stmt1 = (
             select(PaymentsInfoTable.id)
             .select_from(PaymentsInfoTable)
             .where(PaymentsInfoTable.invoice_id == inv_id)
         )
-        result = await session.execute(stmt)
-        rows_count: int = len(result.fetchall())
-        return (False, True)[rows_count <= 1]
+        stmt2 = (
+            select(SuccessfulPaymentsTable.id)
+            .select_from(SuccessfulPaymentsTable)
+            .where(SuccessfulPaymentsTable.invoice_id == inv_id)
+        )
+        
+        result1 = await session.execute(stmt1)
+        result2 = await session.execute(stmt2)
+
+        rows_count1: int = len(result1.fetchall())
+        rows_count2: int = len(result2.fetchall())
+
+        return (False, True)[rows_count1 <= 1 and rows_count2 == 0]
