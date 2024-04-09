@@ -3,7 +3,8 @@ from database.models import (
     BookmarksTable,
     AdminBooksTable,
     UserBooksTable,
-    PaymentsInfoTable
+    PaymentsInfoTable,
+    SuccessfulPaymentsTable
 )
 from database.main import database
 
@@ -43,4 +44,10 @@ async def add_user_book(user_id: int, book_id: str, book_author: str, book_title
 async def add_user_payment_info(user_id: int, inv_id: int) -> None:
     async with database.session as session:
         session.add(PaymentsInfoTable(user_id=user_id, invoice_id=inv_id))
+        await session.commit()
+
+
+async def add_successful_payment_id(inv_id: int) -> None:
+    async with database.session as session:
+        session.add(SuccessfulPaymentsTable(invoice_id=inv_id))
         await session.commit()
