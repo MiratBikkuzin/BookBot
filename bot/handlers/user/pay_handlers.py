@@ -1,7 +1,9 @@
 from keyboards.pay_kb import create_choice_books_payment_kb, create_payment_kb
 from database.methods.get import get_user_info
 from database.methods.update import update_quantity_to_add_books
-from utils.pay_utils import generate_payment_link, create_unique_invoice_id
+from utils.pay_utils import generate_payment_link, create_unique_invoice_id, is_payment_success
+from keyboards.kb_utils import PaymentVerifCallbackFactory
+from utils.aiohttp_utils import AiohttpSingleton
 from lexicon.lexicon import LEXICON_RU
 
 from aiogram import Router, F
@@ -66,6 +68,27 @@ async def process_select_unlimited_books_to_add(callback: CallbackQuery):
     await callback.answer()
 
 
+@router.callback_query(PaymentVerifCallbackFactory.filter())
+async def process_payment_verification(callback: CallbackQuery,
+                                       callback_data: PaymentVerifCallbackFactory):
+    
+    inv_id: int = callback_data.invoice_id
+    payment_info: tuple | None = await is_payment_success(inv_id, AiohttpSingleton.session)
+
+    if payment_info:
+
+        num_books_to_add, user_id = payment_info
+
+        if isinstance(num_books_to_add, int):
+            current_num_books_to_add: int = await get_user_info(user_id)
+            num_books_to_add += current_num_books_to_add
+
+        await update_quantity_to_add_books(user_id, num_books_to_add)
+        await callback.message.answer(text=LEXICON_RU['successful_payment'])
+        await callback.answer()
+
+    else:
+        await callback.answer(text=LEXICON_RU['error_payment_message'], show_alert=True)
 # @router.pre_checkout_query()
 # async def process_pre_checkout_query(pre_checkout_query: PreCheckoutQuery):
 
