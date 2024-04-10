@@ -35,6 +35,11 @@ async def process_add_book_command(message: Message, state: FSMContext):
         await message.answer(text=LEXICON_RU['add_book_error'], reply_markup=create_payment_kb())
 
 
+@router.callback_query(F.data == 'cancel_add_book', StateFilter(default_state))
+async def cancel_add_book_process_warning(callback: CallbackQuery):
+    await callback.answer()
+
+
 @router.callback_query(F.data == 'cancel_add_book', ~StateFilter(default_state))
 async def cancel_add_book_process(callback: CallbackQuery, state: FSMContext):
     await state.clear()
