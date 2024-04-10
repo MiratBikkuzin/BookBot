@@ -24,9 +24,9 @@ router: Router = Router(name=__name__)
 @router.message(Command(commands='add_book'), StateFilter(default_state))
 async def process_add_book_command(message: Message, state: FSMContext):
 
-    current_num_books_to_add: int | str = await get_user_info(message.from_user.id)
+    current_num_books_to_add: int = await get_user_info(message.from_user.id)
 
-    if isinstance(current_num_books_to_add, str) or current_num_books_to_add > 0:
+    if current_num_books_to_add > 0:
         await message.answer(text=LEXICON_RU[message.text],
                              reply_markup=BooksKeyboard.create_cancel_add_book_kb())
         await state.set_state(FSMUserBook.send_book_author)
@@ -95,10 +95,9 @@ async def process_user_send_book_file(message: Message, bot: Bot, book_file_id: 
         book: dict[int: str] = await BookObjectStore.upload_book(book_text, book_id)
         await add_user_book(user_id, book_id, book_author, book_title, page_count=len(book))
 
-        num_books_to_add: int | str = await get_user_info(user_id)
+        num_books_to_add: int = await get_user_info(user_id)
 
-        if isinstance(num_books_to_add, int):
-            await update_quantity_to_add_books(user_id, num_books_to_add - 1)
+        await update_quantity_to_add_books(user_id, num_books_to_add - 1)
 
         await message.answer(text=LEXICON_RU['user_book_download_end'])
         await state.clear()

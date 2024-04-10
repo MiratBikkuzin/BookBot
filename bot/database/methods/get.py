@@ -26,7 +26,7 @@ async def get_user_info(user_id: int) -> int:
         fetchone_result: tuple | None = result.fetchone()
 
         if fetchone_result:
-            num_books_to_add: int = int(fetchone_result[0])
+            num_books_to_add: int = fetchone_result[0]
             return num_books_to_add
     
 
