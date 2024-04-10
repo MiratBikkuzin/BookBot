@@ -9,9 +9,9 @@ from database.models import (
 from database.main import database
 
 
-async def add_user(user_id: int, num_books_to_add: int | str) -> None:
+async def add_user(user_id: int, num_books_to_add: int) -> None:
     async with database.session as session:
-        session.add(UsersTable(user_id=user_id, num_books_to_add=str(num_books_to_add)))
+        session.add(UsersTable(user_id=user_id, num_books_to_add=num_books_to_add))
         await session.commit()
 
 

@@ -4,11 +4,11 @@ from database.main import database
 from sqlalchemy import update, and_
 
 
-async def update_quantity_to_add_books(user_id: int, num_books_to_add: int | str) -> None:
+async def update_quantity_to_add_books(user_id: int, num_books_to_add: int) -> None:
     async with database.session as session:
         stmt = (
             update(UsersTable)
-            .values(num_books_to_add=str(num_books_to_add))
+            .values(num_books_to_add=num_books_to_add)
             .where(UsersTable.user_id == user_id)
         )
         await session.execute(stmt)

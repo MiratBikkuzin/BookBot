@@ -91,7 +91,7 @@ async def create_unique_invoice_id(user_id: int) -> int:
 async def is_payment_success(
         inv_id: int,
         aiohttp_session: ClientSession
-) -> tuple[int | str, int] | None:
+) -> tuple[int, int] | None:
 
     payment_verification_link: str = _generate_payment_verification_link(inv_id)
     response = await aiohttp_session.get(payment_verification_link)
@@ -101,11 +101,6 @@ async def is_payment_success(
     if result_code == 0 and int(soup.find('State').find('Code').text) == 100:
     
         user_fields = soup.find('UserFields')
-        num_books_to_add, user_id = (x.text for x in user_fields.find_all('Value'))
-
-        if num_books_to_add != 'unlimited':
-            num_books_to_add = int(num_books_to_add)
-
-        user_id = int(user_id)
+        num_books_to_add, user_id = (int(x.text) for x in user_fields.find_all('Value'))
 
         return num_books_to_add, user_id
