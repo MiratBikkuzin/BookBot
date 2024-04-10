@@ -1,6 +1,6 @@
 from config_data.config import merchant_settings
 from database.methods.create import add_user_payment_info
-from database.methods.get import check_is_user_invoice_id_unique, get_user_invoice_id
+from database.methods.get import check_is_invoice_id_unique, get_user_invoice_id
 from database.methods.update import update_payment_info
 
 from urllib import parse
@@ -76,7 +76,7 @@ async def create_unique_invoice_id(user_id: int) -> int:
 
     while is_unique is False:
         inv_id = randint(1, 2147483646)
-        if await check_is_user_invoice_id_unique(inv_id):
+        if await check_is_invoice_id_unique(inv_id):
             is_unique = True
 
     if await get_user_invoice_id(user_id):

@@ -141,7 +141,7 @@ async def get_user_invoice_id(user_id: int) -> int:
         return result.fetchone()
     
 
-async def check_is_user_invoice_id_unique(inv_id: int) -> bool:
+async def check_is_invoice_id_unique(inv_id: int) -> bool:
     async with database.session as session:
         stmt1 = (
             select(PaymentsInfoTable.id)
