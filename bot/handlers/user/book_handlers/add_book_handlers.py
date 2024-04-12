@@ -83,7 +83,7 @@ async def process_user_send_book_file(message: Message, bot: Bot, book_file_id: 
         binary_book: BytesIO = await bot.download(book_file_id)
 
         if file_format == 'pdf':
-            book_text: str = parse_pdf(binary_book)
+            book_text: str = await parse_pdf(binary_book)
 
         else:
 
