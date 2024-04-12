@@ -16,7 +16,7 @@ def parse_fb2(fb2_doc: str) -> str:
     return soup.get_text(separator='\n', strip=True)
 
 
-def parse_pdf(pdf_doc: str) -> str:
+async def parse_pdf(pdf_doc: str) -> str:
 
     reader = PdfReader(stream=pdf_doc)
     all_pages_content: str = ''

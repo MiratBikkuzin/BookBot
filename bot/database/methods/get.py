@@ -1,11 +1,18 @@
-from database.models import UsersTable, UserBooksTable, BookmarksTable, AdminBooksTable
+from database.models import (
+    UsersTable,
+    UserBooksTable,
+    BookmarksTable,
+    AdminBooksTable,
+    PaymentsInfoTable,
+    SuccessfulPaymentsTable
+)
 from database.main import database
 
 from sqlalchemy import select, and_
 from itertools import chain
 
 
-async def get_user_info(user_id: int) -> int | str:
+async def get_user_info(user_id: int) -> int:
 
     async with database.session as session:
 
@@ -18,15 +25,9 @@ async def get_user_info(user_id: int) -> int | str:
         result = await session.execute(stmt)
         fetchone_result: tuple | None = result.fetchone()
 
-        if fetchone_result is None:
-            return
-        
-        num_books_to_add = fetchone_result[0]
-
-        if num_books_to_add != "unlimited":
-            num_books_to_add: int = int(num_books_to_add)
-
-        return num_books_to_add
+        if fetchone_result:
+            num_books_to_add: int = fetchone_result[0]
+            return num_books_to_add
     
 
 async def get_admin_book_info(book_id: int) -> tuple[str, int]:
@@ -121,3 +122,36 @@ async def get_num_readers_book(book_id: str) -> int:
         )
         result = await session.execute(stmt)
         return len(result.fetchall())
+    
+
+async def get_user_invoice_id(user_id: int) -> int:
+    async with database.session as session:
+        stmt = (
+            select(PaymentsInfoTable.invoice_id)
+            .select_from(PaymentsInfoTable)
+            .where(PaymentsInfoTable.user_id == user_id)
+        )
+        result = await session.execute(stmt)
+        return result.fetchone()
+    
+
+async def check_is_invoice_id_unique(inv_id: int) -> bool:
+    async with database.session as session:
+        stmt1 = (
+            select(PaymentsInfoTable.id)
+            .select_from(PaymentsInfoTable)
+            .where(PaymentsInfoTable.invoice_id == inv_id)
+        )
+        stmt2 = (
+            select(SuccessfulPaymentsTable.id)
+            .select_from(SuccessfulPaymentsTable)
+            .where(SuccessfulPaymentsTable.invoice_id == inv_id)
+        )
+        
+        result1 = await session.execute(stmt1)
+        result2 = await session.execute(stmt2)
+
+        rows_count1: int = len(result1.fetchall())
+        rows_count2: int = len(result2.fetchall())
+
+        return (False, True)[rows_count1 <= 1 and rows_count2 == 0]

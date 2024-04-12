@@ -8,6 +8,7 @@ from handlers import (read_book_handlers, bookmark_handlers, info_handlers, edit
                       add_admin_book_handlers, edit_admin_book_handlers, other_handlers)
 from keyboards.main_menu import set_main_menu
 from services.object_store.main import register_object_store
+from utils.aiohttp_utils import AiohttpSingleton
 
 from aiogram import Bot, Dispatcher
 from aiogram.fsm.storage.memory import MemoryStorage
@@ -47,9 +48,12 @@ async def start_bot() -> None:
     await set_main_menu(bot)
     await register_models()
     await register_object_store()
+    await AiohttpSingleton()
     
     await bot.delete_webhook(drop_pending_updates=True)
     await dp.start_polling(bot)
+
+    await AiohttpSingleton.session.close()
 
 
 if __name__ == '__main__':

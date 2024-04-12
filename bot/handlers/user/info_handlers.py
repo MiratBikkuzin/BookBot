@@ -17,7 +17,7 @@ async def process_profile_command(message: Message):
     user_id: int = message.from_user.id
 
     books_num: int = len(await get_user_books(user_id))
-    num_books_to_add: int | str = await get_user_info(user_id)
+    num_books_to_add: int = await get_user_info(user_id)
     bookmarks_num: int = await get_total_bookmarks_num(user_id)
 
     result: str = get_profile_command_text(name, user_id, books_num, num_books_to_add, bookmarks_num)

@@ -17,7 +17,7 @@ async def process_start_command(message: Message):
     firstname: str = message.from_user.first_name
 
     if not await get_user_info(user_id):
-        await add_user(user_id, num_books_to_add=5)
+        await add_user(user_id, num_books_to_add=3)
         await message.answer(LEXICON_RU[message.text] % firstname)
 
     else:
