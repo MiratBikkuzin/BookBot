@@ -29,6 +29,8 @@ class DatabaseSettings(BaseSettings):
 
 class NatsSettings(BaseSettings):
     bucket: str
+    host: str
+    port: int
 
     model_config = SettingsConfigDict(env_file='.env', env_prefix='NATS_', case_sensitive=False)
 

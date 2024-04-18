@@ -15,7 +15,7 @@ object_store: ObjectStore
 async def register_object_store() -> ObjectStore:
     global object_store
 
-    nc: Client = await nats.connect()
+    nc: Client = await nats.connect(f'nats://{nats_settings.host}:{nats_settings.port}')
     js: JetStreamContext = nc.jetstream()
     
     try:
