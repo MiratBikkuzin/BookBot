@@ -1,6 +1,5 @@
 # BookBot
 
-This is a telegram bot created on the aiogram framework for reading a book.
-In the future, it is planned to upgrade to a larger level.
-This version of the bot is very small and it's specially made for GitHub.
-The source code of the bot that I will make for the scale level will not post its sources on GitHub.
+This project allows users to read books in telegram by sending the book file and adding it to the library. There's a lot going on here. The user can also add the book page they like to bookmarks. Also edit your book library. The number of book additions is limited, so the real payment process with Robokassa is still implemented here. The project provides hands-on experience with the aiogram framework, Robokassa payment integration system, asynchronous version of SqlAlchemy, NATS JetStream, NATS Object Store and many other technologies and libraries
+
+Этот проект позволяет пользователям читать книги в телеграмме, отправив файл книги и добавив его в библиотеку. Тут есть много чего. Пользователь также может добавить понравившуюся страницу книги в закладки. Также редактировать свою библиотеку книг. Количество добавлений книг ограниченно, поэтому здесь ещё реализован реальный процесс оплаты с Robokassa. Проект предоставляет практический опыт с фреймворком aiogram, системой платежных интеграций Robokassa, асинхронной версией SqlAlchemy, NATS JetStream, NATS Object Store и множеством других технологий и библиотек
